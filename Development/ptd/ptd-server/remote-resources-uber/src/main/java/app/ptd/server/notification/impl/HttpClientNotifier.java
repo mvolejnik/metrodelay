@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class HttpClientNotifier implements StatusUpdateNotifier {
 
-    private static final Logger l = LogManager.getLogger(StatusUpdateNotifier.class);
+    private static final Logger l = LogManager.getLogger(HttpClientNotifier.class);
 
     @Override
     public void send(StatusUpdateNotification notification) {

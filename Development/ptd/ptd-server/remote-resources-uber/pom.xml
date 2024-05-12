@@ -8,13 +8,13 @@
 		<groupId>app.ptd.server</groupId>
 		<artifactId>ptd-server</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath/>
+    <relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>remote-resources-uber</artifactId>
 
 	<packaging>jar</packaging>
-	<name>PT Delays - App - Remote resources application</name>
+	<name>PT Delays - App - Remote resources</name>
 	<url>https://github.com/mvolejnik/public-transport-delays</url>
         
         <properties>

@@ -23,7 +23,6 @@
 		<module>ptd-server</module>
 	</modules>
 
-
 	<repositories>
 
 		<repository>

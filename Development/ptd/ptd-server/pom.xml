@@ -5,13 +5,13 @@
     <groupId>app.ptd</groupId>
     <artifactId>ptd-build</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <relativePath/>
+    <relativePath>../ptd-build/pom.xml</relativePath>
   </parent>
   <groupId>app.ptd.server</groupId>
   <artifactId>ptd-server</artifactId>
   <packaging>pom</packaging>
   <version>0.0.1-SNAPSHOT</version>
-  <name>PT Delays - App - Server Application</name>
+  <name>PT Delays - Server Application</name>
   <url>https://github.com/mvolejnik/public-transport-delays</url>
   <modules>
     <module>ptd-core</module>
@@ -20,5 +20,7 @@
     <module>lib-rss</module>
     <module>remote-resources-uber</module>
     <module>ptd-ws-rest</module>
+    <module>lib-registry</module>
   </modules>
+  
 </project>

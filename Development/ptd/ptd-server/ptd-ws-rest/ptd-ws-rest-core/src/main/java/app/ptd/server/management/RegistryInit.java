@@ -15,7 +15,6 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.time.Duration;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -30,24 +29,24 @@ import org.apache.logging.log4j.Logger;
 @WebListener
 public class RegistryInit implements ServletContextListener {
 
-    private static final String CONTEXT_PARAM_INTERVAL = "schedulerjobinterval";
-    private static final String REGISTRY_MULTICAST_IP = "registryMulticastIp";
-    private static final String REGISTRY_MULTICAST_PORT = "registryMulticastPort";
-    private static final String REGISTRY_STATUS_UPDATE_SERVICE_URI = "serviceStatusUpdate";
+    public static final String CONTEXT_PARAM_INTERVAL = "schedulerjobinterval";
+    public static final String REGISTRY_MULTICAST_IP = "registryMulticastIp";
+    public static final String REGISTRY_MULTICAST_PORT = "registryMulticastPort";
+    public static final String REGISTRY_STATUS_UPDATE_SERVICE_URI = "serviceStatusUpdate";
     private final ScheduledExecutorService scheduler
             = Executors.newScheduledThreadPool(1);
     private static final Logger l = LogManager.getLogger(RegistryInit.class);
 
     @Override
     public void contextInitialized(ServletContextEvent contextEvent) {
-        l.debug("contextInitialized::");
+        l.info("contextInitialized::");
         try {
             ServletContext context = contextEvent.getServletContext();
             Duration interval = Duration.parse(context.getInitParameter(CONTEXT_PARAM_INTERVAL));
             ServiceRegistryClient registryClient = new ServiceRegistryClientImpl(
                     new InetSocketAddress(context.getInitParameter(REGISTRY_MULTICAST_IP).trim(), Integer.parseInt(context.getInitParameter(REGISTRY_MULTICAST_PORT).trim())),// 233.146.53.48 
                     new URI(context.getInitParameter(REGISTRY_STATUS_UPDATE_SERVICE_URI).trim()),
-                    new URL("https://localhost:8443" + context.getContextPath() + "/transport"));
+                    URI.create("https://localhost:8443" + context.getContextPath() + "/transport").toURL());
             scheduler.scheduleWithFixedDelay(() -> {
                 l.debug("Register service {}", registryClient.getServiceUri());
                 registryClient.register();
