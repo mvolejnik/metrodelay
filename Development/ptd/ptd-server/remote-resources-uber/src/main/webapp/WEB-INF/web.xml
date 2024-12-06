@@ -20,7 +20,7 @@
 		<param-name>schedulerjobintervalrandom</param-name>
 		<param-value>PT1M</param-value>
 	</context-param>
-        <context-param>
+  <context-param>
 		<description>List of operators.</description>
 		<param-name>operators</param-name>
 		<param-value>

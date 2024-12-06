@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>app.ptd.server</groupId>
   <artifactId>ptd-ws-rest-uber</artifactId>
-  <name>PT Delays - REST WS Uber</name>
+  <name>PT Delays - App - REST API</name>
   <version>0.0.1-SNAPSHOT</version>
   <url>https://github.com/mvolejnik/public-transport-delays</url>
   <build>
@@ -19,7 +19,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>app.ptd.server.ws.rs.App</mainClass>
+              <mainClass>app.ptd.server.api.rs.App</mainClass>
             </manifest>
           </archive>
         </configuration>
@@ -36,7 +36,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>app.ptd.server.ws.rs.App</mainClass>
+                  <mainClass>app.ptd.server.api.rs.App</mainClass>
                 </transformer>
               </transformers>
             </configuration>
@@ -48,7 +48,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.0.0</version>
         <configuration>
-          <mainClass>app.ptd.server.ws.rs.App</mainClass>
+          <mainClass>app.ptd.server.api.rs.App</mainClass>
         </configuration>
       </plugin>
     </plugins>

@@ -7,10 +7,11 @@
 		<groupId>app.ptd.server</groupId>
 		<artifactId>ptd-server</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>lib-remote-resources</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>PT Delays - Lib - Remote Resources Library</name>
+	<name>PT Delays - Lib - Remote Resources</name>
 	<url>http://maven.apache.org</url>
         
         <properties>

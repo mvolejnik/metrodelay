@@ -8,12 +8,12 @@
         <groupId>app.ptd.server</groupId>
         <artifactId>ptd-server</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath/>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <groupId>app.ptd.server</groupId>
     <artifactId>lib-rss</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>PT Delays - Lib - RSS Library</name>
+    <name>PT Delays - Lib - RSS</name>
     <url>https://github.com/mvolejnik/public-transport-delays</url>
     
     <properties>

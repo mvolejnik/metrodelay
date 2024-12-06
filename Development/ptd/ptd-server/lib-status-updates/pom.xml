@@ -8,7 +8,6 @@
         <groupId>app.ptd.server</groupId>
         <artifactId>ptd-server</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath />
     </parent>
     <artifactId>lib-status-updates</artifactId>
     <version>0.0.1-SNAPSHOT</version>

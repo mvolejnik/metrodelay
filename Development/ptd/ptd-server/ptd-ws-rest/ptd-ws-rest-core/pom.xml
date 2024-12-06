@@ -8,7 +8,7 @@
         <groupId>app.ptd.server</groupId>
         <artifactId>ptd-ws-rest</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath />
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>ptd-ws-rest-core</artifactId>
@@ -27,7 +27,7 @@
     <dependencies>
         <dependency>
             <groupId>app.ptd.server</groupId>
-            <artifactId>ptd-core</artifactId>
+            <artifactId>lib-registry</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
