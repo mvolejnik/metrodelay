@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>app.metrodelay.server</groupId>
+        <artifactId>metrodelay-server</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <groupId>app.metrodelay.server</groupId>
+    <artifactId>lib-rss</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>Metro Delay - Lib - RSS</name>
+    <url>https://github.com/mvolejnik/public-transport-delays</url>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <plugins>
+            <!--
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <configuration>
+                    <packageName>app.metrodelay.libs.rss.jaxb.rss20</packageName>
+                    <schemaDirectory>${basedir}/src/main/resources</schemaDirectory>
+                    <schemaFiles>rss-2_0.xsd</schemaFiles>
+                </configuration>
+            </plugin>
+            -->
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>jakarta.activation</groupId>
+          <artifactId>jakarta.activation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+        </dependency>
+    </dependencies>
+</project>
