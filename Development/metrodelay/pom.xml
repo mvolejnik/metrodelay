@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>app.metrodelay</groupId>
+	<artifactId>metro-delay</artifactId>
+	<packaging>pom</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Metro Delay</name>
+	<url>https://github.com/mvolejnik/public-transport-delays</url>
+
+	<properties>
+		<projectVersion>0.0.1-SNAPSHOT</projectVersion>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<metrodelay.logging.level>DEBUG</metrodelay.logging.level>
+		<metrodelay.logging.pattern>%d{dd-MM-yyyy HH:mm:ss,SSS} [%t] %-5p:%n%m%n%n</metrodelay.logging.pattern>
+	</properties>
+
+	<modules>
+	 <module>metrodelay-server</module>
+	 <module>metrodelay-build</module>
+	</modules>
+
+	<repositories>
+
+		<repository>
+			<id>EclipseLink</id>
+			<url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
+		</repository>
+
+		<repository>
+			<id>xebia-mojo-repo</id>
+			<url>http://mojo.os.xebia.com/repository/</url>
+		</repository>
+
+		<repository>
+			<id>mvn repository</id>
+			<url>http://mvnrepository.com/artifact/</url>
+		</repository>
+
+	</repositories>
+
+
+</project>

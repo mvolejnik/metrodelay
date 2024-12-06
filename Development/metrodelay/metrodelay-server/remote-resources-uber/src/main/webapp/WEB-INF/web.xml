@@ -1,0 +1,33 @@
+<web-app
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+  metadata-complete="false"
+	version="3.1">
+	<display-name>Metro Delay - WEB Scheduler</display-name>
+	<context-param>
+		<description>Scheduler start delay.</description>
+		<param-name>schedulerdelay</param-name>
+		<param-value>PT1M</param-value>
+	</context-param>
+	<context-param>
+		<description>Scheduler jobs interval.</description>
+		<param-name>schedulerjobinterval</param-name>
+		<param-value>PT2M</param-value>
+	</context-param>
+	<context-param>
+		<description>Scheduler jobs random offset addition.</description>
+		<param-name>schedulerjobintervalrandom</param-name>
+		<param-value>PT1M</param-value>
+	</context-param>
+  <context-param>
+		<description>List of operators.</description>
+		<param-name>operators</param-name>
+		<param-value>
+      <![CDATA[
+          cz.prg.dpp=https://www.dpp.cz/rss/cz/mimoradne-udalosti.xml;
+          cz.prg.pid=https://pid.cz/feed/rss-mimoradnosti/;
+      ]]>
+    </param-value>
+	</context-param>
+</web-app>
