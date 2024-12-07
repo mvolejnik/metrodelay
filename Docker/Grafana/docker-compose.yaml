@@ -1,0 +1,55 @@
+networks:
+  grafana:
+    driver: bridge
+
+services:
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:11.4.0
+    hostname: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - grafana
+  loki:
+    container_name: loki
+    image: grafana/loki:3.2.2
+    hostname: loki
+    ports:
+      - "3100:3100"
+    networks:
+      - grafana
+    volumes:
+      - type: bind
+        source: ./loki.yaml
+        target: /etc/loki/local-config.yaml
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v3.0.1
+    hostname: prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - grafana
+    volumes:
+      - type: bind
+        source: ./prometheus.yaml
+        target: /prometheus/prometheus.yaml
+      - type: bind
+        source: ./data/prometheus
+        target: /test
+    command: "--config.file=prometheus.yaml --storage.tsdb.retention.time=60d"
+  node_exporter:
+    container_name: node_exporter
+    image: prom/node-exporter:v1.8.2
+    hostname: nodeexporter
+    ports:
+      - "9100:9100"
+    command:
+      - '--path.rootfs=/host'
+    pid: host
+    restart: unless-stopped
+    networks:
+      - grafana
+    volumes:
+      - '/:/host:ro,rslave'

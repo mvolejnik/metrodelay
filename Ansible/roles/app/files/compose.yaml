@@ -1,0 +1,30 @@
+networks:
+  metrodelay:
+    driver: bridge
+
+services:
+  remote-resources:
+    image: ewr.vultrcr.com/metrodelay/remote-resources:0.0.1
+    container_name: remote-resources
+    networks:
+      - metrodelay
+  promtail:
+    container_name: promtail
+    image: grafana/promtail:3.2.2
+    hostname: promtail
+    networks:
+      - metrodelay
+    volumes:
+      - type: bind
+        source: ./promtail.yaml
+        target: /etc/promtail/promtail.yaml
+      - type: bind
+        source: /var/log
+        target: /var/log
+      - type: bind
+        source: /var/lib/docker/containers
+        target: /var/lib/docker/containers
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock        
+    command: "-config.file=/etc/promtail/promtail.yaml"

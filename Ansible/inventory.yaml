@@ -1,0 +1,17 @@
+localhost:
+  hosts:
+    localhost:
+  vars:
+    cluster: blue
+sre-blue:
+  hosts:
+    grafana-blue:
+      ansible_host: 80.240.29.245
+      ansible_user: root
+blue:
+  hosts:
+    app-blue:
+      ansible_host: 136.244.85.69
+      ansible_user: root
+  vars:
+    cluster: blue
