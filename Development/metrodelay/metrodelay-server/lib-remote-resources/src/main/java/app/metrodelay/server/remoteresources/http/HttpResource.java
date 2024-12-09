@@ -18,6 +18,8 @@ import app.metrodelay.server.remoteresources.RemoteResourceException;
 import app.metrodelay.server.remoteresources.Resource;
 import app.metrodelay.server.remoteresources.ResourceImpl;
 import java.util.Objects;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 
 public class HttpResource implements AutoCloseable {
 
@@ -31,7 +33,10 @@ public class HttpResource implements AutoCloseable {
   CloseableHttpClient httpclient;
 
   public HttpResource() {
-    httpclient = HttpClients.createDefault();
+    httpclient = HttpClients
+            .custom()
+            .setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build())
+            .build();
   }
 
   /**
