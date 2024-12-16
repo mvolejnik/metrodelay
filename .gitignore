@@ -18,3 +18,5 @@ target/
 .checkstyle
 nbproject/
 nb-configuration.xml
+
+.vault.yaml

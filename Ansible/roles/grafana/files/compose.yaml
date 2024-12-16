@@ -1,0 +1,82 @@
+networks:
+  grafana:
+    driver: bridge
+
+services:
+  grafana:
+    container_name: grafana
+    image: ewr.vultrcr.com/metrodelay/grafana:11.4.0
+    hostname: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      grafana:
+        aliases:
+          - grafana.metrodelay.app
+  loki:
+    container_name: loki
+    image: ewr.vultrcr.com/metrodelay/loki:3.2.2
+    hostname: loki
+    ports:
+      - "3100:3100"
+    networks:
+      grafana:
+        aliases:
+          - loki.metrodelay.app
+    volumes:
+      - type: bind
+        source: ./loki.yaml
+        target: /etc/loki/loki.yaml
+  prometheus:
+    container_name: prometheus
+    image: ewr.vultrcr.com/metrodelay/prometheus:v3.0.1
+    hostname: prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      grafana:
+        aliases:
+          - prometheus.metrodelay.app
+    volumes:
+      - type: bind
+        source: ./prometheus.yaml
+        target: /prometheus/prometheus.yaml
+      - type: bind
+        source: ./data/prometheus
+        target: /var/prometheus
+    command: "--config.file=prometheus.yaml --storage.tsdb.retention.time=60d"
+  node_exporter:
+    container_name: node_exporter
+    image: ewr.vultrcr.com/metrodelay/node-exporter:v1.8.2
+    hostname: nodeexporter
+    ports:
+      - "9100:9100"
+    command:
+      - '--path.rootfs=/host'
+    pid: host
+    restart: unless-stopped
+    networks:
+      - grafana
+    volumes:
+      - '/:/host:ro,rslave'
+  promtail:
+    container_name: promtail
+    image: grafana/promtail:3.2.2
+    hostname: promtail
+    networks:
+      - grafana
+    volumes:
+      - type: bind
+        source: ./promtail.yaml
+        target: /etc/promtail/promtail.yaml
+      - type: bind
+        source: /var/log
+        target: /var/log
+      - type: bind
+        source: /var/lib/docker/containers
+        target: /var/lib/docker/containers
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock        
+    command: "-config.file=/etc/promtail/promtail.yaml"
+
