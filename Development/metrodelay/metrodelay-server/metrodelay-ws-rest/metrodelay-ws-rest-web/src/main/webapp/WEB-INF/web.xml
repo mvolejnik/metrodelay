@@ -24,7 +24,7 @@
         <context-param>
 		<description>Status update service URI.</description>
 		<param-name>serviceStatusUpdate</param-name>
-		<param-value>urn:transportdelays.app:service:statusupdate:1.0</param-value>
+		<param-value>urn:metrodelay.app:service:statusupdate:1.0</param-value>
 	</context-param>
 
 	<servlet>

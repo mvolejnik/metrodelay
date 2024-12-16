@@ -19,7 +19,7 @@ scrape_configs:
         refresh_interval: 5s
         filters:
           - name: name
-            values: [remote-resources]
+            values: [remote-resources, metrodelay-ws-rest]
     relabel_configs:
       - source_labels: ['__meta_docker_container_name']
         regex: '/(.*)'

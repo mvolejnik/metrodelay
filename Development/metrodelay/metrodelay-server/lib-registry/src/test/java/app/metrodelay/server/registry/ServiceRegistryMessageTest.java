@@ -5,7 +5,6 @@
  */
 package app.metrodelay.server.registry;
 
-import app.metrodelay.server.registry.ServiceRegistryMessage;
 import java.io.ByteArrayInputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -43,14 +42,13 @@ public class ServiceRegistryMessageTest {
      */
     @Test
     public void testToJson() {
-        System.out.println("testToJson");
-        String expectedJson = "{\"test\":{\"srv\":\"" + URN + "\",\"url\":\"" + MSG_URL + "\"}}";
+        String expectedJson = """
+                              {"test":{"srv":"%s","url":"%s"}}""".formatted(URN, MSG_URL);
         assertEquals(expectedJson, new ServiceRegistryMessage(URN, MSG_URL).toJson(ACTION), "Produced JSON is incorrect.");
     }
     
     @Test
     public void testMessageValidity() throws URISyntaxException, MalformedURLException {
-        System.out.println("testMessageValidity");
         try {
             JsonParser p = Json.createParser(new ByteArrayInputStream(new ServiceRegistryMessage(URN, MSG_URL).toJson(ACTION).getBytes()));
             while (p.hasNext()) {
@@ -59,6 +57,18 @@ public class ServiceRegistryMessageTest {
         } catch (JsonException e) {
             fail("Produced JSON not proper json object.");
         }
+    }
+    
+    @Test
+    public void testFromJson() throws URISyntaxException, MalformedURLException {
+        String json = """
+                              {"test":{"srv":"%s","url":"%s"}}""".formatted(URN, MSG_URL);
+        var keyValue = ServiceRegistryMessage.fromJson("test", json);
+        assertNotNull(keyValue);
+        assertAll(
+                () -> assertEquals(URN, keyValue.uri()),
+                () -> assertEquals(MSG_URL, keyValue.url())
+        );
     }
     
 }
