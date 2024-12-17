@@ -10,16 +10,16 @@
     </parent>
   
     <groupId>app.metrodelay.server</groupId>
-    <artifactId>metrodelay-ws-rest</artifactId>
+    <artifactId>metrodelay-rest</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Metro Delay - REST API</name>
     <url>https://github.com/mvolejnik/public-transport-delays</url>
     <packaging>pom</packaging>
 
   <modules>
-    <module>metrodelay-ws-rest-uber</module>
-    <module>metrodelay-ws-rest-core</module>
-    <module>metrodelay-ws-rest-web</module>
+    <module>metrodelay-rest-uber</module>
+    <module>metrodelay-rest-core</module>
+    <module>metrodelay-rest-web</module>
   </modules>
   
 </project>
