@@ -50,7 +50,7 @@ public class App {
         servletHolder.setInitParameter("jersey.config.server.logging.logger.level","DEBUG");
         context.setInitParameter(RegistryInit.REGISTRY_MULTICAST_IP, "233.146.53.48");
         context.setInitParameter(RegistryInit.REGISTRY_MULTICAST_PORT, "6839");
-        context.setInitParameter(RegistryInit.REGISTRY_STATUS_UPDATE_SERVICE_URI, "urn:transportdelays.app:service:statusupdate:1.0");
+        context.setInitParameter(RegistryInit.REGISTRY_STATUS_UPDATE_SERVICE_URI, "urn:metrodelay.app:service:statusupdate:1.0");
         context.setInitParameter(RegistryInit.CONTEXT_PARAM_INTERVAL, "PT2M");
         context.addEventListener(new RegistryInit());
         return context;

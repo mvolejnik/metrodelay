@@ -44,11 +44,11 @@ public class RegistryInit implements ServletContextListener {
             ServletContext context = contextEvent.getServletContext();
             Duration interval = Duration.parse(context.getInitParameter(CONTEXT_PARAM_INTERVAL));
             ServiceRegistryClient registryClient = new ServiceRegistryClientImpl(
-                    new InetSocketAddress(context.getInitParameter(REGISTRY_MULTICAST_IP).trim(), Integer.parseInt(context.getInitParameter(REGISTRY_MULTICAST_PORT).trim())),// 233.146.53.48 
+                    new InetSocketAddress(context.getInitParameter(REGISTRY_MULTICAST_IP).trim(), Integer.parseInt(context.getInitParameter(REGISTRY_MULTICAST_PORT).trim())),
                     new URI(context.getInitParameter(REGISTRY_STATUS_UPDATE_SERVICE_URI).trim()),
                     URI.create("https://localhost:8443" + context.getContextPath() + "/transport").toURL());
             scheduler.scheduleWithFixedDelay(() -> {
-                l.debug("Register service {}", registryClient.getServiceUri());
+                l.info("Register service {}", registryClient.getServiceUri());
                 registryClient.register();
             }, 1, interval.toSeconds(), TimeUnit.SECONDS);
         } catch (MalformedURLException | URISyntaxException ex) {

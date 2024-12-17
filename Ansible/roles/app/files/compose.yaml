@@ -8,6 +8,11 @@ services:
     container_name: remote-resources
     networks:
       - metrodelay
+  metrodelay-ws-rest:
+    image: ewr.vultrcr.com/metrodelay/metrodelay-ws-rest:0.0.1
+    container_name: metrodelay-ws-rest
+    networks:
+      - metrodelay
   promtail:
     container_name: promtail
     image: grafana/promtail:3.2.2

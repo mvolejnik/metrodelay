@@ -1,5 +1,6 @@
 package app.metrodelay.server;
 
+import app.metrodelay.server.registry.ServiceRegistryImpl;
 import app.metrodelay.server.scheduler.QuartzInit;
 import java.time.Duration;
 import org.apache.commons.cli.CommandLine;
@@ -37,8 +38,13 @@ public class App {
   
   public static void main(String[] args) throws Exception
     {
-        CommandLine line = new DefaultParser().parse( options(), args );
-        try (QuartzInit scheduler = new QuartzInit(
+        CommandLine line = new DefaultParser().parse(options(), args );
+        var serviceRegistry = new ServiceRegistryImpl(
+                line.getOptionValue(REGISTRY_MULTICAST_IP, ServiceRegistryImpl.MULTICAST_ADDRESS),
+                Integer.parseInt(line.getOptionValue(REGISTRY_MULGTICAST_PORT, String.valueOf(ServiceRegistryImpl.MULTICAST_PORT))));
+        serviceRegistry.init();
+        Registry.serviceRegistry(serviceRegistry);
+        try (var scheduler = new QuartzInit(
             Duration.parse(line.getOptionValue(JOB_INTERVAL, "PT2S")),
             Duration.parse(line.getOptionValue(JOB_INTERVAL_DELAY, "PT1M")),
             Duration.parse(line.getOptionValue(JOB_INTERVAL_RANDOM, "PT1M")),

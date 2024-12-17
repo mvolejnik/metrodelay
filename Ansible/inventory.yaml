@@ -6,12 +6,12 @@ localhost:
 sre-blue:
   hosts:
     grafana-blue:
-      ansible_host: 80.240.29.245
+      ansible_host: 45.77.142.152
       ansible_user: root
 blue:
   hosts:
     app-blue:
-      ansible_host: 136.244.85.69
+      ansible_host: 209.250.238.242
       ansible_user: root
   vars:
     cluster: blue

@@ -73,6 +73,11 @@
 			<artifactId>lib-remote-resources</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+    <dependency>
+			<groupId>app.metrodelay.server</groupId>
+			<artifactId>lib-registry</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
