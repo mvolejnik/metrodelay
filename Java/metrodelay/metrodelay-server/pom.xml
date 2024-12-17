@@ -19,7 +19,7 @@
     <module>lib-remote-resources</module>
     <module>lib-rss</module>
     <module>remote-resources-uber</module>
-    <module>metrodelay-ws-rest</module>
+    <module>metrodelay-rest</module>
     <module>lib-registry</module>
   </modules>
   

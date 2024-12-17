@@ -4,18 +4,18 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>app.metrodelay.server</groupId>
-        <artifactId>metrodelay-ws-rest</artifactId>
+        <artifactId>metrodelay-rest</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <groupId>app.metrodelay.server</groupId>
-    <artifactId>metrodelay-ws-rest-uber</artifactId>
+    <artifactId>metrodelay-rest-uber</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Metro Delay - App - REST API</name>
     <url>https://github.com/mvolejnik/public-transport-delays</url>
   
     <build>
-        <finalName>metrodelay-ws-rest-uber</finalName>
+        <finalName>metrodelay-rest-uber</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -62,7 +62,7 @@
     <dependencies>
         <dependency>
             <groupId>app.metrodelay.server</groupId>
-            <artifactId>metrodelay-ws-rest-core</artifactId>
+            <artifactId>metrodelay-rest-core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
