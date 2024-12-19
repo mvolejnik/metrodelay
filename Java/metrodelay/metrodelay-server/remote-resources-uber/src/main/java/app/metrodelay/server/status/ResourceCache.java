@@ -5,13 +5,13 @@
  */
 package app.metrodelay.server.status;
 
-import app.metrodelay.server.remoteresources.Resource;
-import app.metrodelay.server.scheduler.GetUrlResourceJob;
+import app.metrodelay.server.scheduler.CachedItem;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,29 +19,29 @@ import org.apache.logging.log4j.Logger;
  *
  * @author mvolejnik
  */
-public class ResourceCache {
+public class ResourceCache<T> {
     
     private static final int CACHE_SIZE_INIT = 100;
 
-    private Map<URL, Resource> cache = new HashMap<>(CACHE_SIZE_INIT);
+    private Map<URL, CachedItem<T>> cache = new HashMap<>(CACHE_SIZE_INIT);
     
     private static final Logger l = LogManager.getLogger(ResourceCache.class);
 
-    synchronized public ResourceCache resource(URL url, Resource resource) {
+    synchronized public ResourceCache resource(URL url, CachedItem<T> item) {
         Objects.nonNull(url);
-        Objects.nonNull(resource);
+        Objects.nonNull(item);
         if (cache.get(url) == null
-                || !resource.fingerprint().equals(cache.get(url).fingerprint())
-                && !resource.digest().equals(cache.get(url).digest())) {
-            cache.put(url, resource);
-            l.debug("Resource updated '{}'", url);
+                || !Objects.equals(item.fingerprint(), cache.get(url).fingerprint())
+                && !Objects.equals(item.digest(), cache.get(url).digest())) {
+            cache.put(url, item);
+            l.info("resource updated '{}', fingerprint '{}', digest '{}'", url, item.fingerprint(), item.digest().map(d -> Hex.encodeHexString(d)));
         } else {
-            l.debug("Not updating resource '{}'", url);
+            l.debug("not updating resource '{}', fingerprint '{}', digest '{}'", url, item.digest().map(d -> Hex.encodeHexString(d)));
         }
         return this;
     }
 
-    public Optional<Resource> resource(URL url) {
+    public Optional<CachedItem<T>> resource(URL url) {
         return Optional.ofNullable(cache.get(url));
     }
 

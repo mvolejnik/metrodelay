@@ -3,7 +3,9 @@
  */
 package app.metrodelay.server.notification;
 
-import java.net.URL;
+import app.metrodelay.server.status.StatusUpdate;
+import java.net.URI;
+import java.util.List;
 
  /**
  *
@@ -11,6 +13,6 @@ import java.net.URL;
  */
 public interface StatusUpdateNotifier {
 
-    void send(URL url, StatusUpdateNotification notification);
+    void send(URI uri, List<StatusUpdate> statusUpdates);
 
 }

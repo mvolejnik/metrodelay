@@ -3,6 +3,7 @@ package app.metrodelay.server.status;
 import app.metrodelay.server.status.cz.prg.dpp.DppFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,7 +19,7 @@ public class ContentFactoryRegistry {
   
   // Returns operator content factory
   public static OperatorFactory get(String operatorId){
-    var clazz = Optional.ofNullable(REGISTRY.get(operatorId)).orElseThrow();
+    var clazz = Optional.ofNullable(REGISTRY.get(operatorId)).orElseThrow(() -> new NoSuchElementException(String.format("No value present for '%s'", operatorId)));
     try {
       return clazz.getDeclaredConstructor().newInstance();
     } catch (NoSuchMethodException|SecurityException|InstantiationException|IllegalAccessException|IllegalArgumentException|InvocationTargetException ex) {

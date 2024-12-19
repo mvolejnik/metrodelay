@@ -4,13 +4,12 @@
  */
 package app.metrodelay.server.status;
 
+import app.metrodelay.server.status.StatusUpdate;
+import app.metrodelay.server.status.StatusUpdateException;
 import java.io.InputStream;
 import java.util.List;
 
-/**
- *
- * @author mvolejnik
- */
+@FunctionalInterface
 public interface OperatorFactory {
   List<StatusUpdate> statusUpdates(InputStream contentInputStream) throws StatusUpdateException;
 }

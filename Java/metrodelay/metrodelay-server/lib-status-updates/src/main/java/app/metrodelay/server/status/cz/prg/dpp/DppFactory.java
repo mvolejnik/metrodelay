@@ -37,6 +37,9 @@ import app.metrodelay.libs.rss.impl.Rss20Impl;
 import app.metrodelay.libs.rss.jaxb.rss20.Guid;
 import app.metrodelay.libs.rss.jaxb.rss20.RssItem;
 import app.metrodelay.server.status.OperatorFactory;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DppFactory implements OperatorFactory{
 
@@ -62,7 +65,6 @@ public class DppFactory implements OperatorFactory{
   }
 
   private StatusUpdate parseStatusUpdate(RssItem rss) throws StatusUpdateException {
-    l.info("parseStatusUpdate::");
     String title = null;
     String description = null;
     String type = null;
@@ -75,34 +77,34 @@ public class DppFactory implements OperatorFactory{
       if (attr instanceof JAXBElement<?>) {
         JAXBElement e = (JAXBElement) attr;
         Class clazz = ((JAXBElement) attr).getDeclaredType();
-        l.trace("parseStatusUpdate:: Attribute of type [{}].", clazz);
+        l.trace("Attribute of type [{}].", clazz);
         String name = ((JAXBElement) attr).getName().getNamespaceURI() + ":"
             + ((JAXBElement) attr).getName().getLocalPart();
         Object value = ((JAXBElement) attr).getValue();
         if (value != null) {
           switch (name) {
           case ":guid":
-            l.debug("parseStatusUpdate:: Processing GUID");
+            l.debug("Processing GUID");
             Guid guid = (Guid) value;
-            l.debug("parseStatusUpdate:: GUID [{}]", guid.getValue());
+            l.debug("GUID [{}]", guid.getValue());
             if (!guid.getValue().isEmpty() && guid.getValue().length() > 0) {
               uuid = UuidGenerator.generate(guid.getValue());
             } else {
-              l.warn("parseStatusUpdate:: Item's GUID is empty.");
+              l.warn("Item's GUID is empty.");
             }
             break;
           case ":title":
-            l.debug("parseStatusUpdate:: Processing title");
+            l.debug("Processing title");
             title = value.toString().trim();
             if (StringUtils.isEmpty(title)) {
-              l.info("parseStatusUpdate:: Item's title is empty.");
+              l.info("Item's title is empty.");
             }
             break;
           case ":description":
-            l.debug("parseStatusUpdate:: Processing description");
+            l.debug("Processing description");
             description = StringUtils.trim(value.toString());
             if (StringUtils.isEmpty(description)) {
-              l.debug("parseStatusUpdate:: Item's description is empty.");
+              l.debug("Item's description is empty.");
             }
             break;
           case ":link":
@@ -116,7 +118,7 @@ public class DppFactory implements OperatorFactory{
             }
             break;
           default:
-            l.debug("parseStatusUpdate:: unable to parse [{}]", name);
+            l.debug("unable to parse [{}]", name);
           }
         }
       } else if (attr instanceof Element) {
@@ -124,7 +126,7 @@ public class DppFactory implements OperatorFactory{
         String name = element.getLocalName();
         switch (name) {
         case "content_encoded":
-          l.debug("parseStatusUpdate:: Processing content_encoded");
+          l.debug("Processing content_encoded");
           CharacterData text = (CharacterData) element.getFirstChild();
           try {
             Content c = parseContent(text.getData());
@@ -132,21 +134,21 @@ public class DppFactory implements OperatorFactory{
             type = c.getEmergencyType();
           } catch (DOMException | XMLStreamException e) {
             l.warn("Unable to parse RSS Item Content Data", e);
-            l.debug("parseStatusUpdate:: [{}]", text);
+            l.debug("[{}]", text);
           }
           break;
         default:
-          l.debug("parseStatusUpdate:: unable to parse [{}]", name);
+          l.debug("unable to parse [{}]", name);
         }
       }
     }
     if (uuid == null) {
-      l.warn("parseStatusUpdate:: GUID is null, generating spare (always unique) UUID.");
-      uuid = UuidGenerator.generate();
-      l.info("parseStatusUpdate:: Generated UUID [{}]", uuid.toString());
+      l.warn("GUID is null, generating spare UUID.");
+      uuid = UuidGenerator.generate(Stream.of(Objects.toString(title), Objects.toString(type), Objects.toString(lines)).collect(Collectors.joining()));
+      l.info("Generated UUID [{}]", uuid.toString());
     }
     StatusUpdate update = new StatusUpdateImpl(uuid, title, description, type, lines, infoReference);
-    l.debug("parseStatusUpdate:: StatusUpdate [{}]", update);
+    l.debug("StatusUpdate [{}]", update);
     return update;
   }
 

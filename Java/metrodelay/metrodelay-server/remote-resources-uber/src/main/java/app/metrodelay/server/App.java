@@ -22,7 +22,7 @@ public class App {
   private static final String SERVICE_STATUS_UPDATE = "serviceStatusUpdate";  
   private static final String OPERATORS_DEFAULT = """
                                                   cz.prg.dpp=https://www.dpp.cz/rss/cz/mimoradne-udalosti.xml;
-                                                  cz.prg.pid=https://pid.cz/feed/rss-mimoradnosti/;""";
+                                                  cz.prg.pid=https://pid.cz/feed/rss-mimoradnosti/""";
   
   private static Options options(){
         var options = new Options();

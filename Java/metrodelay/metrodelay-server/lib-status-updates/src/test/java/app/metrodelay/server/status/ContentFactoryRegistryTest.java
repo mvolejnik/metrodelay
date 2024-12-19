@@ -28,7 +28,7 @@ public class ContentFactoryRegistryTest {
   @Test
   public void getUndefined() {
     var ex = assertThrows(NoSuchElementException.class, () -> ContentFactoryRegistry.get("un.defined.operator"));
-    assertEquals("No value present", ex.getMessage());
+    assertEquals("No value present for 'un.defined.operator'", ex.getMessage());
   }
   
 }
