@@ -32,7 +32,7 @@ public class HttpClientNotifier implements StatusUpdateNotifier {
     HttpRequest request;
     Jsonb jsonb = JsonbBuilder.create();
     for (var statusUpdate : statusUpdates) {
-      var requestUri = URI.create(uri.toString().concat("/updates/%s".formatted(statusUpdate.getUuid())));
+      var requestUri = URI.create(uri.toString().concat("/updates/%s".formatted(statusUpdate.uuid())));
       request = HttpRequest.newBuilder()
               .uri(requestUri)
               .header("Content-Type", "application/json")
