@@ -16,7 +16,6 @@ import app.metrodelay.server.status.StatusUpdate;
 import app.metrodelay.server.status.StatusUpdateException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import org.junit.jupiter.api.Assertions;
 
 public class DppFactoryTest {
@@ -35,16 +34,6 @@ public class DppFactoryTest {
 		StatusUpdate su = updates.get(0);
 		assertEquals("Právnická fakulta - Čechův most, resp. Nemocnice Na Františku (oba směry)", su.title(), "Unexpected RSS item title!");
 	}
-	
-	@Test
-	@Tag("fast")
-	@DisplayName("Parsing RSS - description.")
-	public void testStatusUpdatesSimpleDescription() throws StatusUpdateException, IOException {
-		DppStatusUpdates dppFactory = new DppStatusUpdates();
-		List<StatusUpdate> updates = dppFactory.statusUpdates(FileUtils.openInputStream(new File(RSS_DPP_SIMPLE)));
-		StatusUpdate su = updates.get(0);
-		assertEquals("", su.description(), "Unexpected RSS item description!");
-	}
   
 	@Test
 	@Tag("fast")
@@ -53,7 +42,7 @@ public class DppFactoryTest {
 		DppStatusUpdates dppFactory = new DppStatusUpdates();
 		List<StatusUpdate> updates = dppFactory.statusUpdates(FileUtils.openInputStream(new File(RSS_DPP_SIMPLE)));
 		StatusUpdate su = updates.get(0);
-		assertEquals(new URI("https://www.dpp.cz/omezeni-a-mimoradne-udalosti/detail/26079").toURL(), su.link());
+		assertEquals(new URI("https://www.dpp.cz/omezeni-a-mimoradne-udalosti/detail/26079"), su.link());
 	}
 	
 	@Test

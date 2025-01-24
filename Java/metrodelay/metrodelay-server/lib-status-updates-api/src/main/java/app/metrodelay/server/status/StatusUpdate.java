@@ -1,7 +1,6 @@
 package app.metrodelay.server.status;
 
-import java.net.URL;
-import java.util.Collection;
+import java.net.URI;
 import java.util.UUID;
 
 public interface StatusUpdate {
@@ -10,12 +9,6 @@ public interface StatusUpdate {
 
   public String title();
 
-  public String description();
-
-  public String type();
-
-  public Collection<String> lines();
-
-  public URL link();
+  public URI link();
 
 }
