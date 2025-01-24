@@ -11,14 +11,14 @@ import org.apache.logging.log4j.Logger;
 /// Operators content factory registry
 public class ContentFactoryRegistry {
   
-  private static Map<String, Class<? extends OperatorFactory>> REGISTRY = Map.of(
+  private static Map<String, Class<? extends OperatorContentFactory>> REGISTRY = Map.of(
           "cz.prg.dpp", DppFactory.class
   );
   
   private static final Logger l = LogManager.getLogger(ContentFactoryRegistry.class);
   
   // Returns operator content factory
-  public static OperatorFactory get(String operatorId){
+  public static OperatorContentFactory get(String operatorId){
     var clazz = Optional.ofNullable(REGISTRY.get(operatorId)).orElseThrow(() -> new NoSuchElementException(String.format("No value present for '%s'", operatorId)));
     try {
       return clazz.getDeclaredConstructor().newInstance();

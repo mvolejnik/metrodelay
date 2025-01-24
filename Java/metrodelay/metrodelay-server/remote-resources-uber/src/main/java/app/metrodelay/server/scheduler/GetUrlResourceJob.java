@@ -11,8 +11,9 @@ import app.metrodelay.server.status.StatusUpdate;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +24,8 @@ import org.quartz.JobExecutionException;
 
 public class GetUrlResourceJob implements Job {
 
-  private static final ResourceCache<List<StatusUpdate>> RESOURCE_CACHE = new ResourceCache<>();
+  private static final Map<String, String> OPERATOR_CACHE = new HashMap<>();
+  private static final ResourceCache<StatusUpdate> RESOURCE_CACHE = new ResourceCache<>();
   private static final int NOTIFICATION_POOL_SIZE = 5;
   private static final ExecutorService NOTIFICATION_EXECUTOR = Executors.newFixedThreadPool(NOTIFICATION_POOL_SIZE);
   static final String DATA_OPERATOR = "opr";
@@ -36,27 +38,27 @@ public class GetUrlResourceJob implements Job {
     l.info("job [{}] started", context.getJobDetail().getKey());
     var operatorId = context.getJobDetail().getJobDataMap().getString(DATA_OPERATOR);
     var urlParam = context.getJobDetail().getJobDataMap().getString(DATA_URL);
+    var contentFactory = ContentFactoryRegistry.get(operatorId);
     l.debug("resource url '{}'", urlParam);
     try {
-      var url = new URL(urlParam);
-      var cached = RESOURCE_CACHE.resource(url);
-      l.debug("resource '{}' already in cache '{}' with fingerprint '{}'", url, cached.isPresent(), cached.isPresent() ? cached.get().digest() : "");
-      l.debug("getting resource '{}'", url.toExternalForm());
-      var resource = new HttpResource().content(url, cached.isPresent() ? cached.get().fingerprint().orElse(null) : null, null);
+      var uri = URI.create(urlParam);
+      var cachedFingerpint = OPERATOR_CACHE.get(operatorId);
+      l.debug("operator '{}' resource '{}' cached fingerpring '{}'", operatorId, uri, cachedFingerpint);
+      l.debug("getting resource '{}'", uri);
+      var resource = new HttpResource().content(uri.toURL(), cachedFingerpint, null);
       l.debug("resource has content '{}'", resource.isPresent());
       resource.ifPresent(r -> {
-        var contentFactory = ContentFactoryRegistry.get(operatorId);
         try {
           var statusUpdates = contentFactory.statusUpdates(r.content().get());
-          RESOURCE_CACHE.resource(url, new CachedItem(statusUpdates, r.fingerprint().orElse(null), r.digest().orElse(null)));          
+          //RESOURCE_CACHE.resource(, new CachedItem(statusUpdates, r.fingerprint().orElse(null), r.digest().orElse(null)));          
         } catch (StatusUpdateException ex) {
           l.error("unable to process '{}' content", operatorId);
         }        
        });
-      cached = RESOURCE_CACHE.resource(url);
+      /* cached = RESOURCE_CACHE.resource(url);
       if (cached.isPresent()) {
         notifyServices(operatorId, cached.get().content());
-      }
+      } */
     } catch (MalformedURLException | RemoteResourceException e) {
       l.error("Incorrect URL to download resource '{}'", urlParam);
       l.info("job [{}] finished ✗", context.getJobDetail().getKey());
