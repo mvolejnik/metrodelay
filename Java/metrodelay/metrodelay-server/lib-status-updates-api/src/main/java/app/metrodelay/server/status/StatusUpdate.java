@@ -6,16 +6,16 @@ import java.util.UUID;
 
 public interface StatusUpdate {
 
-  public UUID getUuid();
+  public UUID uuid();
 
-  public String getTitle();
+  public String title();
 
-  public String getDescription();
+  public String description();
 
-  public String getType();
+  public String type();
 
-  public Collection<String> getLines();
+  public Collection<String> lines();
 
-  public URL getInfoReference();
+  public URL link();
 
 }

@@ -4,7 +4,7 @@
  */
 package app.metrodelay.server.status;
 
-import app.metrodelay.server.status.cz.prg.dpp.DppFactory;
+import app.metrodelay.server.status.cz.prg.dpp.DppStatusUpdates;
 import java.util.NoSuchElementException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,7 +22,7 @@ public class ContentFactoryRegistryTest {
   public void get() {
     var factory = ContentFactoryRegistry.get("cz.prg.dpp");
     assertNotNull(factory);
-    assertInstanceOf(DppFactory.class, factory);
+    assertInstanceOf(DppStatusUpdates.class, factory);
   }
   
   @Test

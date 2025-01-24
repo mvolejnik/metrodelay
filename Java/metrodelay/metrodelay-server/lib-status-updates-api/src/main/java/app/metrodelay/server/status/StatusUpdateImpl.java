@@ -1,96 +1,37 @@
 package app.metrodelay.server.status;
 
-import app.metrodelay.server.status.StatusUpdate;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 /**
- * TODO
  * 
  * @author mvolejnik
  *
  */
-public class StatusUpdateImpl implements StatusUpdate {
-
-  private UUID uuid;
-  private String title;
-  private String description;
-  private String type;
-  private Collection<String> lines;
-  private URL infoReference;
-
-  public StatusUpdateImpl() {
-  }
-	
-  public StatusUpdateImpl(UUID uuid, String title, String description, String type, Collection<String> lines, URL infoReference) {
-    super();
-    this.uuid = uuid;
-    this.title = title;
-    this.description = description;
-    this.type = type;
-    this.lines = lines;
-    this.infoReference = infoReference;
+public record StatusUpdateImpl (
+        UUID uuid,
+        String title,
+        String description,
+        String type,
+        Collection<String> lines,
+        URL link) implements StatusUpdate
+  {
+  
+  public StatusUpdateImpl{
+    Objects.requireNonNull(uuid, "UUID is mandatory");
+    Objects.requireNonNull(link, "link is mandatory");
   }
 
-  @Override
-  public UUID getUuid() {
-    return uuid;
+  public StatusUpdateImpl(UUID uuid, String title, URL link) {
+    this(uuid, title, null, null, Set.of(), link);
   }
-
-  @Override
-  public String getTitle() {
-    return title;
-  }
-
-  @Override
-  public String getDescription() {
-    return description;
-  }
-
-  @Override
-  public String getType() {
-    return type;
-  }
-	
-  @Override
-  public Collection<String> getLines() {
-    return lines;
-  }
-
-  @Override
-  public URL getInfoReference() {
-    return infoReference;
-  }
-
-  public void setUuid(UUID uuid) {
-    this.uuid = uuid;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  public void setType(String type) {
-    this.type = type;
-  }
-
-  public void setLines(Collection<String> lines) {
-    this.lines = lines;
-  }
-
-  public void setInfoReference(URL infoReference) {
-    this.infoReference = infoReference;
-  }
-
+  
   @Override
   public int hashCode() {
-    return Objects.hash(uuid, title, description, type, infoReference, lines);
+    return Objects.hash(uuid, title, description, type, link, lines);
   }
 
   @Override
@@ -107,10 +48,10 @@ public class StatusUpdateImpl implements StatusUpdate {
         return false;
     } else if (!description.equals(other.description))
       return false;
-    if (infoReference == null) {
-      if (other.infoReference != null)
+    if (link == null) {
+      if (other.link != null)
         return false;
-    } else if (!infoReference.equals(other.infoReference))
+    } else if (!link.equals(other.link))
       return false;
     if (lines == null) {
       if (other.lines != null)
@@ -138,7 +79,7 @@ public class StatusUpdateImpl implements StatusUpdate {
   @Override
   public String toString() {
     return "StatusUpdateImpl [uuid=" + uuid + ", title=" + title + ", description=" + description + ", type=" + type
-        + ", lines=" + lines + ", infoReference=" + infoReference + "]";
+        + ", lines=" + lines + ", link=" + link + "]";
   }
 
 }
