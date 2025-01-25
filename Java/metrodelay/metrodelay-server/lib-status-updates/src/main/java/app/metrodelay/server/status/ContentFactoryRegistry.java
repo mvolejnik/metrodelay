@@ -11,7 +11,8 @@ import org.apache.logging.log4j.Logger;
 /// Operators content factory registry
 public class ContentFactoryRegistry {
   
-  private static Map<String, Class<? extends OperatorStatusUpdates>> REGISTRY = Map.of("cz.prg.dpp", DppStatusUpdates.class
+  private static Map<String, Class<? extends OperatorStatusUpdates>> REGISTRY = Map.of(
+          "cz.prg.dpp", DppStatusUpdates.class
   );
   
   private static final Logger l = LogManager.getLogger(ContentFactoryRegistry.class);

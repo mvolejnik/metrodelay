@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.ehcache.CacheManager;
 
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 

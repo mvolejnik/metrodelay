@@ -6,7 +6,6 @@ import app.metrodelay.server.notification.impl.HttpClientNotifier;
 import app.metrodelay.server.remoteresources.http.HttpResource;
 import app.metrodelay.server.remoteresources.RemoteResourceException;
 import app.metrodelay.server.status.ContentFactoryRegistry;
-import app.metrodelay.server.status.ResourceCache;
 import app.metrodelay.server.status.StatusUpdate;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -18,6 +17,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.ehcache.Cache;
+import org.ehcache.CacheManager;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -25,13 +26,13 @@ import org.quartz.JobExecutionException;
 public class GetUrlResourceJob implements Job {
 
   private static final Map<String, String> OPERATOR_CACHE = new HashMap<>();
-  private static final ResourceCache<StatusUpdate> RESOURCE_CACHE = new ResourceCache<>();
   private static final int NOTIFICATION_POOL_SIZE = 5;
   private static final ExecutorService NOTIFICATION_EXECUTOR = Executors.newFixedThreadPool(NOTIFICATION_POOL_SIZE);
   static final String DATA_OPERATOR = "opr";
   static final String DATA_URL = "url";
   private static final Logger l = LogManager.getLogger(GetUrlResourceJob.class);
   private static final String STORAGE_PATH = "/api/countries/%s/cities/%s/operators/%s";
+  private static Cache cache;
 
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -50,7 +51,7 @@ public class GetUrlResourceJob implements Job {
       resource.ifPresent(r -> {
         try {
           var statusUpdates = contentFactory.statusUpdates(r.content().get());
-          //RESOURCE_CACHE.resource(, new CachedItem(statusUpdates, r.fingerprint().orElse(null), r.digest().orElse(null)));          
+          //RESOURCE_CACHE.resource(, new CachedItem(statusUpdates, r.fingerprint().orElse(null), r.digest().orElse(null)));
         } catch (StatusUpdateException ex) {
           l.error("unable to process '{}' content", operatorId);
         }        
@@ -82,6 +83,10 @@ public class GetUrlResourceJob implements Job {
         l.error("unable to send {} notification to {}", operatorId, baseUrl, ex);
       }
     }
+  }
+  
+  public static void initCache(Cache cache){
+    GetUrlResourceJob.cache = cache;
   }
 
 }

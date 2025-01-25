@@ -323,6 +323,14 @@
         <artifactId>jsoup</artifactId>
         <version>1.18.3</version>
       </dependency>
+      
+      <!-- Cache -->
+      <dependency>
+        <groupId>org.ehcache</groupId>
+        <artifactId>ehcache</artifactId>
+        <version>3.10.8</version>
+      </dependency>
+
 
       <!-- Apache Libs -->
       <dependency>

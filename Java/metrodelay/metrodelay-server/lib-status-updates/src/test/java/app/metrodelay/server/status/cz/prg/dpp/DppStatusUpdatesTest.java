@@ -16,9 +16,10 @@ import app.metrodelay.server.status.StatusUpdate;
 import app.metrodelay.server.status.StatusUpdateException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 
-public class DppFactoryTest {
+public class DppStatusUpdatesTest {
 
 	private static final String RSS_DPP_SIMPLE = "src/test/resources/cz.dpp/simple.xml";
 	private static final String RSS_DPP_EMPTY = "src/test/resources/cz.dpp/empty.xml";
@@ -37,8 +38,8 @@ public class DppFactoryTest {
 	
 	@Test
   @Tag("fast")
-  @DisplayName("Empty title.")
-	public void testStatusUpdatesEmptyTitle() throws StatusUpdateException, IOException {
+  @DisplayName("Empty link.")
+	public void testStatusUpdatesEmptyLink() throws StatusUpdateException, IOException {
 		DppStatusUpdates dppFactory = new DppStatusUpdates();
 		var ex = Assertions.assertThrows(NullPointerException.class, () -> dppFactory.statusUpdates(FileUtils.openInputStream(new File(RSS_DPP_EMPTY))));
     assertEquals("link is mandatory", ex.getMessage());
@@ -52,6 +53,7 @@ public class DppFactoryTest {
 		List<StatusUpdate> updates = dppFactory.statusUpdates(FileUtils.openInputStream(new File(RSS_DPP_GUID_MISSING)));
 		StatusUpdate su = updates.get(0);
 		assertNotNull(su.uuid(), "Unexpected UUID for missing GUID.");
+    assertEquals(UUID.fromString("f2efc90b-7e32-6639-f0ca-9bee1c002cc6"), su.uuid());
 	}
   
   @Test
@@ -62,6 +64,7 @@ public class DppFactoryTest {
 		List<StatusUpdate> updates = dppFactory.statusUpdates(FileUtils.openInputStream(new File(RSS_DPP_GUID_EMPTY)));
 		StatusUpdate su = updates.get(0);
 		assertNotNull(su.uuid(), "Unexpected UUID for empty GUID.");
+    assertEquals(UUID.fromString("f2efc90b-7e32-6639-f0ca-9bee1c002cc6"), su.uuid());
 	}
 	
 }

@@ -22,8 +22,6 @@ import app.metrodelay.libs.rss.jaxb.rss20.Guid;
 import app.metrodelay.libs.rss.jaxb.rss20.RssItem;
 import app.metrodelay.server.status.DetailImpl;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import app.metrodelay.server.status.OperatorStatusUpdates;
 import java.net.URI;
 import java.net.URISyntaxException;
