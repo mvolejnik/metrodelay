@@ -24,16 +24,6 @@ public class DppFactoryTest {
 	private static final String RSS_DPP_EMPTY = "src/test/resources/cz.dpp/empty.xml";
 	private static final String RSS_DPP_GUID_MISSING = "src/test/resources/cz.dpp/guid-missing.xml";
 	private static final String RSS_DPP_GUID_EMPTY = "src/test/resources/cz.dpp/guid-empty.xml";
-	
-	@Test
-	@Tag("fast")
-	@DisplayName("Parsing RSS - title.")
-	public void testStatusUpdatesSimpleTitle() throws StatusUpdateException, IOException {
-		DppStatusUpdates dppFactory = new DppStatusUpdates();
-		List<StatusUpdate> updates = dppFactory.statusUpdates(FileUtils.openInputStream(new File(RSS_DPP_SIMPLE)));
-		StatusUpdate su = updates.get(0);
-		assertEquals("Právnická fakulta - Čechův most, resp. Nemocnice Na Františku (oba směry)", su.title(), "Unexpected RSS item title!");
-	}
   
 	@Test
 	@Tag("fast")

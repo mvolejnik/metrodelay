@@ -5,10 +5,10 @@ import java.util.UUID;
 
 public interface StatusUpdate {
 
-  public UUID uuid();
+  UUID uuid();
 
-  public String title();
-
-  public URI link();
+  URI link();
+  
+  Detail detail();
 
 }

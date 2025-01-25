@@ -5,6 +5,7 @@
 package app.metrodelay.server.status.cz.prg.dpp;
 
 import java.io.File;
+import java.net.URI;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,7 +22,8 @@ public class DppStatusUpdateTest {
   @Test
   public void testStatusUpdates() throws Exception {
     var dpp = new DppStatusUpdate();
-    var statusUpdate = dpp.statusUpdate(FileUtils.openInputStream(new File(HTML_DPP_SIMPLE)), "26079", "https://dummy.url/");
+    var statusUpdate = dpp.statusUpdate(FileUtils.openInputStream(new File(HTML_DPP_SIMPLE)), "26079", new URI("https://dummy.url/"));
+    assertNotNull(statusUpdate);
   }
   
 }

@@ -20,6 +20,7 @@ import app.metrodelay.libs.rss.RssException;
 import app.metrodelay.libs.rss.impl.Rss20Impl;
 import app.metrodelay.libs.rss.jaxb.rss20.Guid;
 import app.metrodelay.libs.rss.jaxb.rss20.RssItem;
+import app.metrodelay.server.status.DetailImpl;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -66,7 +67,7 @@ public class DppStatusUpdates implements OperatorStatusUpdates{
         Object value = ((JAXBElement) attr).getValue();
         if (value != null) {
           switch (name) {
-          case ":guid":
+          case ":guid" -> {
             l.debug("Processing GUID");
             Guid guid = (Guid) value;
             l.debug("GUID [{}]", guid.getValue());
@@ -75,15 +76,15 @@ public class DppStatusUpdates implements OperatorStatusUpdates{
             } else {
               l.warn("Item's GUID is empty.");
             }
-            break;
-          case ":title":
+            }
+          case ":title" -> {
             l.debug("Processing title");
             title = value.toString().trim();
             if (StringUtils.isEmpty(title)) {
               l.info("Item's title is empty.");
             }
-            break;
-          case ":link":
+            }
+          case ":link" -> {
             String linkValue = value.toString();
             if (StringUtils.isNotEmpty(linkValue)) {
               try {
@@ -92,19 +93,18 @@ public class DppStatusUpdates implements OperatorStatusUpdates{
                 l.warn("Unable to parse link [{}]", linkValue);
               }
             }
-            break;
-          default:
-            l.debug("unable to parse [{}]", name);
+            }
+          default -> l.debug("unable to parse [{}]", name);
           }
         }
       }
     }
     if (uuid == null) {
-      l.warn("GUID is null, generating spare UUID.");
-      uuid = UuidGenerator.generate(Stream.of(Objects.toString(title), Objects.toString(type)).collect(Collectors.joining()));
+      l.warn("GUID is null, generating spare UUID");
+      uuid = UuidGenerator.generate(Objects.toString(title));
       l.info("Generated UUID [{}]", uuid.toString());
     }
-    var update = new StatusUpdateImpl(uuid, title, link);
+    var update = new StatusUpdateImpl(uuid, link, new DetailImpl(title));
     l.debug("StatusUpdate [{}]", update);
     return update;
   }

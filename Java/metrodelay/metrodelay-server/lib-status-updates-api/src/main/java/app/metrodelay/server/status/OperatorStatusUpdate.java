@@ -5,6 +5,7 @@
 package app.metrodelay.server.status;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.util.Optional;
 
 /**
@@ -19,5 +20,5 @@ public interface OperatorStatusUpdate {
   /// @return
   /// @throws StatusUpdateException 
   ///
-  Optional<StatusUpdate> statusUpdate(InputStream contentInputStream, String guid, String baseUrl) throws StatusUpdateException;
+  Optional<StatusUpdate> statusUpdate(InputStream contentInputStream, String guid, URI baseUri) throws StatusUpdateException;
 }

@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package app.metrodelay.server.status;
 
 ///
@@ -16,17 +11,37 @@ import java.util.Optional;
 ///
 public class DetailImpl implements Detail{
   
+  String title;
   Collection<String> lines;
   Instant start;
   Instant end;
   Validity validity;
 
-  public DetailImpl(Collection<String> lines, Instant start, Validity validity) {
+  public DetailImpl(String title) {
+    this.title = title;
+    this.validity = Validity.UNKNWON;
+  }
+  
+  public DetailImpl(String title, Collection<String> lines, Instant start, Validity validity) {
+    this.title = title;
     this.lines = lines;
     this.start = start;
     this.validity = validity;
   }
+  
+  public DetailImpl(String title, Collection<String> lines, Instant start, Instant end, Validity validity) {
+    this.title = title;
+    this.lines = lines;
+    this.start = start;
+    this.end = end;
+    this.validity = validity;
+  }
 
+  @Override
+  public String title() {
+    return title;
+  }
+  
   @Override
   public Collection<String> lines() {
     return lines;
@@ -42,31 +57,36 @@ public class DetailImpl implements Detail{
     return Optional.ofNullable(end);
   }
 
-  public void end(Instant end) {
+  public DetailImpl end(Instant end) {
     this.end = end;
+    return this;
   }
 
-  public void validity(Validity validity) {
+  public DetailImpl validity(Validity validity) {
     this.validity = validity;
+    return this;
   }
 
   public Validity validity() {
     return validity;
   }
   
-  public void update(Collection<String> lines, Instant start, Validity validity){
+  public DetailImpl update(String title, Collection<String> lines, Instant start, Validity validity){
+    this.title = title;
     this.lines = lines;
     this.start = start;
     this.validity = validity;
+    return this;
   }
 
   @Override
   public int hashCode() {
-    int hash = 3;
-    hash = 47 * hash + Objects.hashCode(this.lines);
-    hash = 47 * hash + Objects.hashCode(this.start);
-    hash = 47 * hash + Objects.hashCode(this.end);
-    hash = 47 * hash + Objects.hashCode(this.validity);
+    int hash = 7;
+    hash = 29 * hash + Objects.hashCode(this.title);
+    hash = 29 * hash + Objects.hashCode(this.lines);
+    hash = 29 * hash + Objects.hashCode(this.start);
+    hash = 29 * hash + Objects.hashCode(this.end);
+    hash = 29 * hash + Objects.hashCode(this.validity);
     return hash;
   }
 
@@ -82,11 +102,25 @@ public class DetailImpl implements Detail{
       return false;
     }
     final DetailImpl other = (DetailImpl) obj;
-    return true;
+    if (!Objects.equals(this.title, other.title)) {
+      return false;
+    }
+    if (!Objects.equals(this.lines, other.lines)) {
+      return false;
+    }
+    if (!Objects.equals(this.start, other.start)) {
+      return false;
+    }
+    if (!Objects.equals(this.end, other.end)) {
+      return false;
+    }
+    return this.validity == other.validity;
   }
 
   @Override
   public String toString() {
-    return "DetailImpl{" + "lines=" + lines + ", start=" + start + ", end=" + end + ", validity=" + validity + '}';
+    return "DetailImpl{" + "title=" + title + ", lines=" + lines + ", start=" + start + ", end=" + end + ", validity=" + validity + '}';
   }
+  
+  
 }

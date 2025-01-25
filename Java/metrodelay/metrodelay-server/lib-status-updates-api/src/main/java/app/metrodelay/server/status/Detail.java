@@ -15,6 +15,8 @@ import java.util.Optional;
 ///
 public interface Detail {
   
+  String title();
+  
   Collection<String> lines();
 
   Instant start();

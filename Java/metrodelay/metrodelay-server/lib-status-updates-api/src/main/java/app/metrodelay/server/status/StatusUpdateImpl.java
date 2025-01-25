@@ -13,7 +13,6 @@ import java.util.UUID;
  */
 public record StatusUpdateImpl (
         UUID uuid,
-        String title,
         URI link,
         Detail detail) implements StatusUpdate
   {
@@ -22,20 +21,15 @@ public record StatusUpdateImpl (
     Objects.requireNonNull(uuid, "UUID is mandatory");
     Objects.requireNonNull(link, "link is mandatory");
   }
-
-  public StatusUpdateImpl(UUID uuid, String title, URI link) {
-    this(uuid, title, link, null, null);
-  }
   
   public StatusUpdateImpl(UUID uuid, String title, URI link, Instant start, List lines) {
-    this(uuid, title, link, new DetailImpl(lines, start, Validity.of(start)));
+    this(uuid, link, new DetailImpl(title, lines, start, Validity.of(start)));
   }
 
   @Override
   public int hashCode() {
     int hash = 5;
     hash = 29 * hash + Objects.hashCode(this.uuid);
-    hash = 29 * hash + Objects.hashCode(this.title);
     hash = 29 * hash + Objects.hashCode(this.link);
     hash = 29 * hash + Objects.hashCode(this.detail);
     return hash;
@@ -58,9 +52,7 @@ public record StatusUpdateImpl (
 
   @Override
   public String toString() {
-    return "StatusUpdateImpl{" + "uuid=" + uuid + ", title=" + title + ", link=" + link + ", detail=" + detail + '}';
+    return "StatusUpdateImpl{" + "uuid=" + uuid + ", link=" + link + ", detail=" + detail + '}';
   }
-
-  
 
 }
