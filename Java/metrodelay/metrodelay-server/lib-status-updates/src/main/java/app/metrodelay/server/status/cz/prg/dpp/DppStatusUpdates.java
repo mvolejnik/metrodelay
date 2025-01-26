@@ -28,6 +28,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Optional;
@@ -36,7 +37,7 @@ import org.jsoup.Jsoup;
 public class DppStatusUpdates implements OperatorStatusUpdates{
 
   private static final String UNTIL_FUTHER_NOTICE = "until further notice";
-  private static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("d.M.yyyy[,]HH:ss");
+  private static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("d.M.yyyy[,]HH:mm").withZone(ZoneId.of("Europe/Prague"));
   private static final Logger l = LogManager.getLogger(DppStatusUpdates.class);
 
   public List<StatusUpdate> statusUpdates(InputStream rssInputStream) throws StatusUpdateException {

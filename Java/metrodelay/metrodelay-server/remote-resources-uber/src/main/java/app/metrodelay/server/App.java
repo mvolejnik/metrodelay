@@ -85,9 +85,7 @@ public class App {
                             .disk(128, MemoryUnit.MB)))
             .withCache("status",
                     CacheConfigurationBuilder.newCacheConfigurationBuilder(UUID.class, StatusUpdate.class, ResourcePoolsBuilder.newResourcePoolsBuilder()
-                            .heap(8, MemoryUnit.MB)
-                            .offheap(16, MemoryUnit.MB)
-                            .disk(128, MemoryUnit.MB)))
+                            .heap(10_000, EntryUnit.ENTRIES)))
             .build();
   }
 
