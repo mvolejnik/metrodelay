@@ -10,29 +10,29 @@ import app.metrodelay.server.status.StatusUpdate;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ehcache.Cache;
-import org.ehcache.CacheManager;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 public class GetUrlResourceJob implements Job {
 
-  private static final Map<String, String> OPERATOR_CACHE = new HashMap<>();
   private static final int NOTIFICATION_POOL_SIZE = 5;
   private static final ExecutorService NOTIFICATION_EXECUTOR = Executors.newFixedThreadPool(NOTIFICATION_POOL_SIZE);
   static final String DATA_OPERATOR = "opr";
   static final String DATA_URL = "url";
   private static final Logger l = LogManager.getLogger(GetUrlResourceJob.class);
   private static final String STORAGE_PATH = "/api/countries/%s/cities/%s/operators/%s";
-  private static Cache cache;
+  private static Cache<String, String> operatorCache;
+  private static Cache<CachedItemKey, CachedItem> resourceCache;
+  private static Cache<UUID, StatusUpdate> statusCache;
 
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -43,23 +43,34 @@ public class GetUrlResourceJob implements Job {
     l.debug("resource url '{}'", urlParam);
     try {
       var uri = URI.create(urlParam);
-      var cachedFingerpint = OPERATOR_CACHE.get(operatorId);
+      var cachedFingerpint = operatorCache.get(operatorId);
       l.debug("operator '{}' resource '{}' cached fingerpring '{}'", operatorId, uri, cachedFingerpint);
       l.debug("getting resource '{}'", uri);
       var resource = new HttpResource().content(uri.toURL(), cachedFingerpint, null);
       l.debug("resource has content '{}'", resource.isPresent());
       resource.ifPresent(r -> {
         try {
-          var statusUpdates = contentFactory.statusUpdates(r.content().get());
-          //RESOURCE_CACHE.resource(, new CachedItem(statusUpdates, r.fingerprint().orElse(null), r.digest().orElse(null)));
+          var toCheck = contentFactory.statusUpdates(r.content().get()).stream()
+                  .filter(su -> {var cached = statusCache.get(su.uuid()); return cached == null? true : cached.detail().validity().valid();})
+                  .toList();
+          for (StatusUpdate su : toCheck){
+            l.debug("getting resource '{}'", su.link());
+            try {
+              var detailResource = new HttpResource().content(su.link().toURL(), null, null); // TODO fingerprints
+              l.debug("detail resource has content '{}'", detailResource.isPresent());
+              var refreshed = contentFactory.statusUpdate(detailResource.get().content().get(), su.uuid(), su.link());
+              if (refreshed.isPresent()){
+                statusCache.put(refreshed.get().uuid(), refreshed.get());
+              }
+            } catch (RemoteResourceException|MalformedURLException ex) {
+              l.warn("unable to fetch resource '{}'", su.link(), ex);
+            }
+          }
+          
         } catch (StatusUpdateException ex) {
           l.error("unable to process '{}' content", operatorId);
-        }        
+        }
        });
-      /* cached = RESOURCE_CACHE.resource(url);
-      if (cached.isPresent()) {
-        notifyServices(operatorId, cached.get().content());
-      } */
     } catch (MalformedURLException | RemoteResourceException e) {
       l.error("Incorrect URL to download resource '{}'", urlParam);
       l.info("job [{}] finished ✗", context.getJobDetail().getKey());
@@ -85,8 +96,13 @@ public class GetUrlResourceJob implements Job {
     }
   }
   
-  public static void initCache(Cache cache){
-    GetUrlResourceJob.cache = cache;
+  public static void initCache(
+          Cache<String, String> operatorCache,
+          Cache<CachedItemKey, CachedItem> resourceCache,
+          Cache<UUID, StatusUpdate> statusCache){
+    GetUrlResourceJob.operatorCache = operatorCache;
+    GetUrlResourceJob.resourceCache = resourceCache;
+    GetUrlResourceJob.statusCache = statusCache;
   }
 
 }

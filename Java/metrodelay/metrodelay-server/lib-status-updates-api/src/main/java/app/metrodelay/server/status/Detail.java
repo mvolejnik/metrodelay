@@ -7,13 +7,14 @@ package app.metrodelay.server.status;
 
 ///
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Optional;
 
 /// @author mvolejnik
 ///
-public interface Detail {
+public interface Detail extends Serializable{
   
   String title();
   

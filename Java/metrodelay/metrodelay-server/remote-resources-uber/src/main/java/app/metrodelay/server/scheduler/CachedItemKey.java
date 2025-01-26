@@ -4,6 +4,7 @@
  */
 package app.metrodelay.server.scheduler;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -11,7 +12,9 @@ import java.util.UUID;
  *
  * @author mvolejnik
  */
-public class CachedItemKey {
+public class CachedItemKey implements Serializable{
+  
+  static final long serialVersionUID = 1L;
   
   private String operatorId;
   

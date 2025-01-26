@@ -1,11 +1,14 @@
 package app.metrodelay.server.scheduler;
 
 import app.metrodelay.server.remoteresources.ResourceImpl;
+import java.io.Serializable;
 import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class CachedItem<T> {
+public class CachedItem<T>  implements Serializable{
+  
+  static final long serialVersionUID = 1L;
 
   private T content;
 

@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import app.metrodelay.server.status.StatusUpdate;
 import app.metrodelay.server.status.StatusUpdateException;
+import app.metrodelay.server.status.UuidGenerator;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
@@ -25,6 +26,7 @@ public class DppStatusUpdatesTest {
 	private static final String RSS_DPP_EMPTY = "src/test/resources/cz.dpp/empty.xml";
 	private static final String RSS_DPP_GUID_MISSING = "src/test/resources/cz.dpp/guid-missing.xml";
 	private static final String RSS_DPP_GUID_EMPTY = "src/test/resources/cz.dpp/guid-empty.xml";
+  private static final String HTML_DPP_SIMPLE = "src/test/resources/cz.dpp/26104.html";
   
 	@Test
 	@Tag("fast")
@@ -66,5 +68,13 @@ public class DppStatusUpdatesTest {
 		assertNotNull(su.uuid(), "Unexpected UUID for empty GUID.");
     assertEquals(UUID.fromString("f2efc90b-7e32-6639-f0ca-9bee1c002cc6"), su.uuid());
 	}
+  
+
+  @Test
+  public void testStatusUpdates() throws Exception {
+    var dpp = new DppStatusUpdates();
+    var statusUpdate = dpp.statusUpdate(FileUtils.openInputStream(new File(HTML_DPP_SIMPLE)), UuidGenerator.generate("26079"), new URI("https://dummy.url/"));
+    assertNotNull(statusUpdate);
+  }
 	
 }

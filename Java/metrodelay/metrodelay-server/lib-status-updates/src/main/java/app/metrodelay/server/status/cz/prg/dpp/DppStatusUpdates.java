@@ -23,11 +23,20 @@ import app.metrodelay.libs.rss.jaxb.rss20.RssItem;
 import app.metrodelay.server.status.DetailImpl;
 import java.util.Objects;
 import app.metrodelay.server.status.OperatorStatusUpdates;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Optional;
+import org.jsoup.Jsoup;
 
 public class DppStatusUpdates implements OperatorStatusUpdates{
 
+  private static final String UNTIL_FUTHER_NOTICE = "until further notice";
+  private static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("d.M.yyyy[,]HH:ss");
   private static final Logger l = LogManager.getLogger(DppStatusUpdates.class);
 
   public List<StatusUpdate> statusUpdates(InputStream rssInputStream) throws StatusUpdateException {
@@ -107,5 +116,50 @@ public class DppStatusUpdates implements OperatorStatusUpdates{
     return update;
   }
 
+  @Override
+  public Optional<StatusUpdate> statusUpdate(InputStream contentInputStream, UUID uuid, URI uri) throws StatusUpdateException {
+    try {
+      var doc = Jsoup.parse(contentInputStream, StandardCharsets.UTF_8.name(), uri.toString());
+      var root = doc.selectXpath("/html/body/div[1]/div[2]");
+      var e = root.select("h1");      
+      if (e == null || e.textNodes() == null || e.textNodes().isEmpty()){
+        l.warn("unable to select xpath - h1");
+        return Optional.empty();
+      }
+      var title = e.textNodes().getLast().text();
+      l.debug("title '{}'", title);
+      var trafficContent = root.select("div.Traffic-content");
+      var times = trafficContent.select("time[datetime]");
+      if (times == null){
+        l.warn("unable to select xpath - time");
+        return Optional.empty();
+      }
+      var startValue = times.get(0).attributes().get("datetime");      
+      l.debug("start '{}'", startValue);
+      var start = dateTime(startValue);
+      Instant end = null;
+      if (times.size() > 1){
+        var endValue = StringUtils.trim(times.get(1).attributes().get("datetime"));
+        l.debug("end '{}'", endValue);
+        if (!UNTIL_FUTHER_NOTICE.equals(endValue)){
+          end = dateTime(endValue);
+        }
+      }
+      var statusUpdate = new StatusUpdateImpl(uuid, uri, new DetailImpl(title, null, start, null));
+      l.debug("status update '{}'", statusUpdate);
+      return Optional.of(statusUpdate);
+    } catch (IOException ex) {
+      throw new StatusUpdateException(ex);
+    }
+  }
+  
+  public Instant dateTime(String dateTime){
+    try {
+      return DATETIME_FORMATTER.parse(dateTime.replaceAll("\\s+",""), Instant::from);
+    } catch (DateTimeParseException dtpe){
+      l.warn("unable to parse date '{}'", dateTime);
+      return null;
+    }
+  }
 }
 

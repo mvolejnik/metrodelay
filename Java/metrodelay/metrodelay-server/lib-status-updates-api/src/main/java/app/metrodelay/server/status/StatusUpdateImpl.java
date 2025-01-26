@@ -1,5 +1,6 @@
 package app.metrodelay.server.status;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.time.Instant;
 import java.util.List;
@@ -11,11 +12,13 @@ import java.util.UUID;
  * @author mvolejnik
  *
  */
-public record StatusUpdateImpl (
+public record StatusUpdateImpl(
         UUID uuid,
         URI link,
-        Detail detail) implements StatusUpdate
+        Detail detail) implements StatusUpdate, Serializable
   {
+  
+  private static final long serialVersionUID = 1L;
   
   public StatusUpdateImpl{
     Objects.requireNonNull(uuid, "UUID is mandatory");

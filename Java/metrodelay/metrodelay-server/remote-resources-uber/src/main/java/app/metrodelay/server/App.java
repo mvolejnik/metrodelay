@@ -5,7 +5,10 @@ import app.metrodelay.server.scheduler.CachedItem;
 import app.metrodelay.server.scheduler.CachedItemKey;
 import app.metrodelay.server.scheduler.GetUrlResourceJob;
 import app.metrodelay.server.scheduler.QuartzInit;
+import app.metrodelay.server.status.StatusUpdate;
+import java.io.File;
 import java.time.Duration;
+import java.util.UUID;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
@@ -13,6 +16,7 @@ import org.ehcache.CacheManager;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
+import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
 
 /**
@@ -29,8 +33,8 @@ public class App {
   private static final String REGISTRY_MULGTICAST_PORT = "multicastport";
   private static final String SERVICE_STATUS_UPDATE = "serviceStatusUpdate";
   private static final String OPERATORS_DEFAULT = """
-                                                  cz.prg.dpp=https://www.dpp.cz/rss/cz/mimoradne-udalosti.xml;
-                                                  cz.prg.pid=https://pid.cz/feed/rss-mimoradnosti/""";
+                                                  cz.prg.dpp=https://www.dpp.cz/rss/cz/mimoradne-udalosti.xml""";
+                                                  //cz.prg.pid=https://pid.cz/feed/rss-mimoradnosti/""";
 
   private static Options options() {
     var options = new Options();
@@ -58,7 +62,10 @@ public class App {
                     Duration.parse(line.getOptionValue(JOB_INTERVAL_RANDOM, "PT1M")),
                     line.getOptionValue(OPERATORS, OPERATORS_DEFAULT))) {
       cache.init();
-      GetUrlResourceJob.initCache(cache.getCache("resource", CachedItemKey.class, CachedItem.class));
+      GetUrlResourceJob.initCache(
+              cache.getCache("operator", String.class, String.class),
+              cache.getCache("resource", CachedItemKey.class, CachedItem.class),
+              cache.getCache("status", UUID.class, StatusUpdate.class));
       while (true) {
         Thread.sleep(100);
       }
@@ -67,13 +74,17 @@ public class App {
 
   private static CacheManager cacheManager() {
     return CacheManagerBuilder.newCacheManagerBuilder()
+            .with(CacheManagerBuilder.persistence(String.format("%s%s%s%s", System.getProperty("java.io.tmpdir"), File.separator, "metrodelay", File.separator, "cache")))
+            .withCache("operator",
+                    CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, ResourcePoolsBuilder.newResourcePoolsBuilder()
+                            .heap(200, EntryUnit.ENTRIES)))
             .withCache("resource",
                     CacheConfigurationBuilder.newCacheConfigurationBuilder(CachedItemKey.class, CachedItem.class, ResourcePoolsBuilder.newResourcePoolsBuilder()
                             .heap(8, MemoryUnit.MB)
                             .offheap(16, MemoryUnit.MB)
                             .disk(128, MemoryUnit.MB)))
             .withCache("status",
-                    CacheConfigurationBuilder.newCacheConfigurationBuilder(Long.class, String.class, ResourcePoolsBuilder.newResourcePoolsBuilder()
+                    CacheConfigurationBuilder.newCacheConfigurationBuilder(UUID.class, StatusUpdate.class, ResourcePoolsBuilder.newResourcePoolsBuilder()
                             .heap(8, MemoryUnit.MB)
                             .offheap(16, MemoryUnit.MB)
                             .disk(128, MemoryUnit.MB)))

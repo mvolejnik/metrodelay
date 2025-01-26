@@ -12,7 +12,6 @@ import java.util.Optional;
  * Adapter interface to produce status update details.
  * 
  */
-@FunctionalInterface
 public interface OperatorStatusUpdate {
   /// 
   /// @param contentInputStream

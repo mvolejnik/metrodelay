@@ -15,16 +15,16 @@ public enum Validity {
   FUTURE(false),
   ONGOING(true),
   PAST(false),
-  UNKNWON(false);
+  UNKNWON(true);
   
-  final boolean status;
+  final boolean valid;
 
   private Validity(boolean status) {
-    this.status = status;
+    this.valid = status;
   }
 
-  public boolean status() {
-    return status;
+  public boolean valid() {
+    return valid;
   }  
   
   public static Validity of(Instant start){

@@ -11,6 +11,8 @@ import java.util.Optional;
 ///
 public class DetailImpl implements Detail{
   
+  private static final long serialVersionUID = 1L;
+  
   String title;
   Collection<String> lines;
   Instant start;
