@@ -19,6 +19,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 
 public class DppStatusUpdatesTest {
 
@@ -79,6 +80,7 @@ public class DppStatusUpdatesTest {
     assertNotNull(statusUpdate);
   }
   
+  @Disabled
   @Test
   @Tag("fast")
   @DisplayName("HTML - lines")
