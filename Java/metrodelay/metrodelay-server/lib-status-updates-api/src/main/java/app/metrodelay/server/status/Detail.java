@@ -26,4 +26,6 @@ public interface Detail extends Serializable{
   
   Validity validity();  
   
+  boolean valid();
+  
 }

@@ -50,8 +50,14 @@ public record StatusUpdateImpl(
       return false;
     }
     final StatusUpdateImpl other = (StatusUpdateImpl) obj;
-    return true;
-  }
+    if (!Objects.equals(this.uuid, other.uuid)) {
+      return false;
+    }
+    if (!Objects.equals(this.link, other.link)) {
+      return false;
+    }
+    return Objects.equals(this.detail, other.detail);
+  }  
 
   @Override
   public String toString() {

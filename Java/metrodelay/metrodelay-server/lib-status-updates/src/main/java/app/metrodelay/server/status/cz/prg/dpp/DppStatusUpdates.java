@@ -23,6 +23,7 @@ import app.metrodelay.libs.rss.jaxb.rss20.RssItem;
 import app.metrodelay.server.status.DetailImpl;
 import java.util.Objects;
 import app.metrodelay.server.status.OperatorStatusUpdates;
+import app.metrodelay.server.status.Validity;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -32,11 +33,13 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 
 public class DppStatusUpdates implements OperatorStatusUpdates{
 
-  private static final String UNTIL_FUTHER_NOTICE = "until further notice";
+  private static final String UNTIL_FUTHER_NOTICE_EN = "until further notice";
+  private static final String UNTIL_FUTHER_NOTICE_CZ = "do odvolání";
   private static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("d.M.yyyy[,]HH:mm").withZone(ZoneId.of("Europe/Prague"));
   private static final Logger l = LogManager.getLogger(DppStatusUpdates.class);
 
@@ -142,11 +145,13 @@ public class DppStatusUpdates implements OperatorStatusUpdates{
       if (times.size() > 1){
         var endValue = StringUtils.trim(times.get(1).attributes().get("datetime"));
         l.debug("end '{}'", endValue);
-        if (!UNTIL_FUTHER_NOTICE.equals(endValue)){
+        if (!UNTIL_FUTHER_NOTICE_CZ.equals(endValue) && !UNTIL_FUTHER_NOTICE_EN.equals(endValue)){
           end = dateTime(endValue);
         }
       }
-      var statusUpdate = new StatusUpdateImpl(uuid, uri, new DetailImpl(title, null, start, null));
+      var lines = trafficContent.select("span.Traffic-lineName");
+       //TODO
+      var statusUpdate = new StatusUpdateImpl(uuid, uri, new DetailImpl(title, null, start, Validity.of(start, end)));
       l.debug("status update '{}'", statusUpdate);
       return Optional.of(statusUpdate);
     } catch (IOException ex) {

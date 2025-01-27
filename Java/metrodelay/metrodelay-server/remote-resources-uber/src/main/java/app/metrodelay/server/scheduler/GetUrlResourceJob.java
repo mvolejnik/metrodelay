@@ -11,6 +11,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,17 +52,18 @@ public class GetUrlResourceJob implements Job {
       l.debug("resource has content '{}'", resource.isPresent());
       resource.ifPresent(r -> {
         try {
-          var toCheck = contentFactory.statusUpdates(r.content().get()).stream()
-                  .filter(su -> {var cached = statusCache.get(su.uuid()); return cached == null? true : cached.detail().validity().valid();})
-                  .toList();
-          for (StatusUpdate su : toCheck){
-            l.debug("getting resource '{}'", su.link());
+          for (StatusUpdate su : contentFactory.statusUpdates(r.content().get())){
             try {
-              var detailResource = new HttpResource().content(su.link().toURL(), null, null); // TODO fingerprints
-              l.debug("detail resource has content '{}'", detailResource.isPresent());
-              var refreshed = contentFactory.statusUpdate(detailResource.get().content().get(), su.uuid(), su.link());
-              if (refreshed.isPresent()){
-                statusCache.put(refreshed.get().uuid(), refreshed.get());
+              var cached = statusCache.get(su.uuid());
+              if (cached == null || cached.detail().valid()){
+                l.debug("getting resource '{}'", su.link());
+                var detailResource = new HttpResource().content(su.link().toURL(), null, null);
+                l.debug("detail resource has content '{}'", detailResource.isPresent());
+                var refreshed = contentFactory.statusUpdate(detailResource.get().content().get(), su.uuid(), su.link());
+                if (refreshed.isPresent() && !Objects.equals(cached, refreshed.get())){
+                  l.debug("status update change '{}'", refreshed.get());
+                  statusCache.put(refreshed.get().uuid(), refreshed.get());
+                }
               }
             } catch (RemoteResourceException|MalformedURLException ex) {
               l.warn("unable to fetch resource '{}'", su.link(), ex);

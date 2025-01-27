@@ -15,7 +15,7 @@ public enum Validity {
   FUTURE(false),
   ONGOING(true),
   PAST(false),
-  UNKNWON(true);
+  UNKNWON(false);
   
   final boolean valid;
 
@@ -28,6 +28,13 @@ public enum Validity {
   }  
   
   public static Validity of(Instant start){
+    return of(start, null);
+  }
+  
+  public static Validity of(Instant start, Instant end){
+    if (end != null && end.isBefore(Instant.now())){
+      return PAST;
+    }
     return switch (start){
       case null -> ONGOING;
       case Instant s when Instant.now().isBefore(start) -> FUTURE;

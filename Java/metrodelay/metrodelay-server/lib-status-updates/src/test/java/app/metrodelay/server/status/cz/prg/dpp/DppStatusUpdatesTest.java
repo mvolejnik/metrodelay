@@ -27,6 +27,7 @@ public class DppStatusUpdatesTest {
 	private static final String RSS_DPP_GUID_MISSING = "src/test/resources/cz.dpp/guid-missing.xml";
 	private static final String RSS_DPP_GUID_EMPTY = "src/test/resources/cz.dpp/guid-empty.xml";
   private static final String HTML_DPP_SIMPLE = "src/test/resources/cz.dpp/26104.html";
+  private static final String HTML_DPP_LINES = "src/test/resources/cz.dpp/26130.html";
   
 	@Test
 	@Tag("fast")
@@ -69,12 +70,25 @@ public class DppStatusUpdatesTest {
     assertEquals(UUID.fromString("f2efc90b-7e32-6639-f0ca-9bee1c002cc6"), su.uuid());
 	}
   
-
   @Test
+  @Tag("fast")
+  @DisplayName("Simple HTML")
   public void testStatusUpdates() throws Exception {
     var dpp = new DppStatusUpdates();
     var statusUpdate = dpp.statusUpdate(FileUtils.openInputStream(new File(HTML_DPP_SIMPLE)), UuidGenerator.generate("26079"), new URI("https://dummy.url/"));
     assertNotNull(statusUpdate);
+  }
+  
+  @Test
+  @Tag("fast")
+  @DisplayName("HTML - lines")
+  public void testStatusUpdatesLines() throws Exception {
+    var dpp = new DppStatusUpdates();
+    var statusUpdate = dpp.statusUpdate(FileUtils.openInputStream(new File(HTML_DPP_LINES)), UuidGenerator.generate("26130"), new URI("https://dummy.url/"));
+    assertNotNull(statusUpdate);
+    assertNotNull(statusUpdate.get().detail());
+    assertNotNull(statusUpdate.get().detail().lines());
+    assertEquals(6, statusUpdate.get().detail().lines().size());
   }
 	
 }

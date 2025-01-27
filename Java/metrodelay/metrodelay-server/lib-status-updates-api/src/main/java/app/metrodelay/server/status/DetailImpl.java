@@ -72,6 +72,13 @@ public class DetailImpl implements Detail{
   public Validity validity() {
     return validity;
   }
+
+  @Override
+  public boolean valid() {
+    return validity.valid()
+            || validity == Validity.FUTURE && Instant.now().isAfter(start)
+            || validity == Validity.UNKNWON;
+  }
   
   public DetailImpl update(String title, Collection<String> lines, Instant start, Validity validity){
     this.title = title;
