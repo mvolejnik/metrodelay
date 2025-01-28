@@ -9,7 +9,7 @@ package app.metrodelay.server.status;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /// @author mvolejnik
@@ -18,7 +18,7 @@ public interface Detail extends Serializable{
   
   String title();
   
-  Collection<String> lines();
+  List<String> lines();
 
   Instant start();
   

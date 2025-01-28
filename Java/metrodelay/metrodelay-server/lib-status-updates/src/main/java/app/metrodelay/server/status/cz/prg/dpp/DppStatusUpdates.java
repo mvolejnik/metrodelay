@@ -32,8 +32,12 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Comparator;
 import java.util.Optional;
+import static java.util.function.Predicate.not;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jsoup.Jsoup;
 
 public class DppStatusUpdates implements OperatorStatusUpdates{
@@ -149,9 +153,16 @@ public class DppStatusUpdates implements OperatorStatusUpdates{
           end = dateTime(endValue);
         }
       }
-      var lines = trafficContent.select("span.Traffic-lineName");
-       //TODO
-      var statusUpdate = new StatusUpdateImpl(uuid, uri, new DetailImpl(title, null, start, Validity.of(start, end)));
+      var lines = trafficContent.select("span.Traffic-lineName")
+              .eachText()
+              .stream()
+              .filter(Objects::nonNull)
+              .flatMap(t -> Stream.of(t.split("[,\\.\\s]")))
+              .filter(StringUtils::isNotBlank)
+              .map(String::trim)
+              .sorted(linesComparator())
+              .toList();
+      var statusUpdate = new StatusUpdateImpl(uuid, uri, new DetailImpl(title, lines, start, Validity.of(start, end)));
       l.debug("status update '{}'", statusUpdate);
       return Optional.of(statusUpdate);
     } catch (IOException ex) {
@@ -166,6 +177,34 @@ public class DppStatusUpdates implements OperatorStatusUpdates{
       l.warn("unable to parse date '{}'", dateTime);
       return null;
     }
+  }
+  
+  private Comparator<String> linesComparator(){
+    return (line1, line2) -> {
+      if (line1 == null){
+        return line2 == null ? 0 : -1;
+      }
+      if (line2 == null){
+        return 1;
+      }
+      if (line1.equals(line2)){
+        return 0;
+      }
+      var metro1 = line1.matches("[a-zA-Z]+");
+      var metro2 = line2.matches("[a-zA-Z]+");
+      if (metro1 && metro2){
+        return line1.compareToIgnoreCase(line2);
+      } else if (metro1) {
+        return 1;
+      } else if (metro2) {
+        return -1;
+      }
+      if (NumberUtils.isParsable(line1) && NumberUtils.isParsable(line2)){
+        return Integer.compare(Integer.parseInt(line1), Integer.parseInt(line2));
+      } else {
+        return line1.compareToIgnoreCase(line2);
+      }
+    };
   }
 }
 

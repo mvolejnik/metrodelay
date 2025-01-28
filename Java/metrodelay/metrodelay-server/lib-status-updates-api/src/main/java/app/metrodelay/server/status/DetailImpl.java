@@ -3,7 +3,7 @@ package app.metrodelay.server.status;
 ///
 
 import java.time.Instant;
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -14,7 +14,7 @@ public class DetailImpl implements Detail{
   private static final long serialVersionUID = 1L;
   
   String title;
-  Collection<String> lines;
+  List<String> lines;
   Instant start;
   Instant end;
   Validity validity;
@@ -24,14 +24,14 @@ public class DetailImpl implements Detail{
     this.validity = Validity.UNKNWON;
   }
   
-  public DetailImpl(String title, Collection<String> lines, Instant start, Validity validity) {
+  public DetailImpl(String title, List<String> lines, Instant start, Validity validity) {
     this.title = title;
     this.lines = lines;
     this.start = start;
     this.validity = validity;
   }
   
-  public DetailImpl(String title, Collection<String> lines, Instant start, Instant end, Validity validity) {
+  public DetailImpl(String title, List<String> lines, Instant start, Instant end, Validity validity) {
     this.title = title;
     this.lines = lines;
     this.start = start;
@@ -45,7 +45,7 @@ public class DetailImpl implements Detail{
   }
   
   @Override
-  public Collection<String> lines() {
+  public List<String> lines() {
     return lines;
   }
 
@@ -80,7 +80,7 @@ public class DetailImpl implements Detail{
             || validity == Validity.UNKNWON;
   }
   
-  public DetailImpl update(String title, Collection<String> lines, Instant start, Validity validity){
+  public DetailImpl update(String title, List<String> lines, Instant start, Validity validity){
     this.title = title;
     this.lines = lines;
     this.start = start;
