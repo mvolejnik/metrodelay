@@ -8,7 +8,7 @@ Most Wanted Cities:
 * Washingto - http://www.wmata.com/rider_tools/metro_service_status/feeds/rail_Advisories.xml?
 * Madrid - https://www.metromadrid.es/en/
 * Berlin
-* Frankfurt am Main
+* Frankfurt am Main - https://www.rmv.de/c/de/fahrplan/verbindungssuche-hinweise/verkehrsmeldungen?journeyProducts=24
 * Wien
 * Ostrava - http://www.dpo.cz/aktuality/udalosti.html
 
