@@ -61,15 +61,15 @@ public class GetUrlResourceJob implements Job {
                 l.debug("detail resource has content '{}'", detailResource.isPresent());
                 var refreshed = contentFactory.statusUpdate(detailResource.get().content().get(), su.uuid(), su.link());
                 if (refreshed.isPresent() && !Objects.equals(cached, refreshed.get())){
-                  l.debug("status update change '{}'", refreshed.get());
-                  statusCache.put(refreshed.get().uuid(), refreshed.get());
+                  var updated = refreshed.get();
+                  l.info("[{}] status update '{}'", updated.detail().valid() ? "✗" : "✓", updated);
+                  statusCache.put(updated.uuid(), updated);
                 }
               }
             } catch (RemoteResourceException|MalformedURLException ex) {
               l.warn("unable to fetch resource '{}'", su.link(), ex);
             }
           }
-          
         } catch (StatusUpdateException ex) {
           l.error("unable to process '{}' content", operatorId);
         }
