@@ -1,22 +1,16 @@
 package app.metrodelay.server.scheduler;
 
 import app.metrodelay.server.status.StatusUpdateException;
-import app.metrodelay.server.Registry;
-import app.metrodelay.server.notification.impl.HttpClientNotifier;
 import app.metrodelay.server.remoteresources.http.HttpResource;
 import app.metrodelay.server.remoteresources.RemoteResourceException;
 import app.metrodelay.server.status.ContentFactoryRegistry;
 import app.metrodelay.server.status.StatusUpdate;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ehcache.Cache;
@@ -31,10 +25,8 @@ public class GetUrlResourceJob implements Job {
   static final String DATA_OPERATOR = "opr";
   static final String DATA_URL = "url";
   private static final Logger l = LogManager.getLogger(GetUrlResourceJob.class);
-  private static final String STORAGE_PATH = "/api/countries/%s/cities/%s/operators/%s";
   private static Cache<String, String> operatorCache;
   private static Cache<CachedItemKey, CachedItem> resourceCache;
-  private static Cache<UUID, StatusUpdate> statusCache;
 
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -54,7 +46,7 @@ public class GetUrlResourceJob implements Job {
         try {
           for (StatusUpdate su : contentFactory.statusUpdates(r.content().get())){
             try {
-              var cached = statusCache.get(su.uuid());
+              var cached = StatusCache.get().get(su.uuid());
               if (cached == null || cached.detail().valid()){
                 l.debug("getting resource '{}'", su.link());
                 var detailResource = new HttpResource().content(su.link().toURL(), null, null);
@@ -63,7 +55,7 @@ public class GetUrlResourceJob implements Job {
                 if (refreshed.isPresent() && !Objects.equals(cached, refreshed.get())){
                   var updated = refreshed.get();
                   l.info("[{}] status update '{}'", updated.detail().valid() ? "✗" : "✓", updated);
-                  statusCache.put(updated.uuid(), updated);
+                  StatusCache.get().put(updated.uuid(), updated);
                 }
               }
             } catch (RemoteResourceException|MalformedURLException ex) {
@@ -85,27 +77,12 @@ public class GetUrlResourceJob implements Job {
     }
     l.info("execute:: job [{}] finished ✓", context.getJobDetail().getKey());
   }
-
-  protected void notifyServices(String operatorId, List<StatusUpdate> statusUpdates) {
-    var baseUrl = Registry.serviceRegistry().get(URI.create("urn:metrodelay.app:service:statusupdate:1.0"));
-    if (baseUrl.isPresent()) {
-      try {
-        var operatorPathParts = operatorId.split("\\.", 3);
-        var serviceUri = new URI(baseUrl.get().toString() + STORAGE_PATH.formatted(operatorPathParts[0], operatorPathParts[1], operatorPathParts[2]));
-        new HttpClientNotifier().send(serviceUri, statusUpdates);
-      } catch (URISyntaxException ex) {
-        l.error("unable to send {} notification to {}", operatorId, baseUrl, ex);
-      }
-    }
-  }
   
   public static void initCache(
           Cache<String, String> operatorCache,
-          Cache<CachedItemKey, CachedItem> resourceCache,
-          Cache<UUID, StatusUpdate> statusCache){
+          Cache<CachedItemKey, CachedItem> resourceCache){
     GetUrlResourceJob.operatorCache = operatorCache;
     GetUrlResourceJob.resourceCache = resourceCache;
-    GetUrlResourceJob.statusCache = statusCache;
   }
 
 }

@@ -16,6 +16,7 @@ import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -25,7 +26,6 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.ehcache.CacheManager;
 
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
@@ -52,6 +52,7 @@ public class QuartzInit implements AutoCloseable {
         OPERATORS.entrySet().stream()
                 .filter(e -> e.getValue() != null)
                 .forEach(e -> initQuartzResourceJob(jobTimeParameteres, e.getKey(), e.getValue()));
+        initQuartzNotifyService();
     }
 
     private Map<String, URL> initOperatorsResources(final String operatorResourceList) {
@@ -104,6 +105,25 @@ public class QuartzInit implements AutoCloseable {
         } catch (SchedulerException se) {
             l.error("initQuartz:: unable to initialize quartz scheduler", se);
         }
+    }
+    
+    private void initQuartzNotifyService() {
+      try {
+        var scheduler = StdSchedulerFactory.getDefaultScheduler();
+        scheduler.start();
+        var jobId = "notify";
+        var startAt = Instant.now().plusSeconds(90);
+        l.info("initQuartz:: scheduling job [{}] to start at [{}]", jobId, startAt);
+        var job = newJob(NotifyJob.class).withIdentity(jobId + "~job", "notify").build();
+        var trigger = newTrigger().withIdentity(jobId + "~trigger", "download")
+              .startAt(Date.from(startAt))
+              .withSchedule(simpleSchedule().withIntervalInSeconds((int) 20).repeatForever())
+              .build();
+      
+        scheduler.scheduleJob(job, trigger);
+      } catch (SchedulerException se) {
+        l.error("initQuartz:: unable to initialize quartz scheduler", se);
+      }
     }
 
     private void shutdownQuartz() {

@@ -34,8 +34,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Comparator;
 import java.util.Optional;
-import static java.util.function.Predicate.not;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jsoup.Jsoup;

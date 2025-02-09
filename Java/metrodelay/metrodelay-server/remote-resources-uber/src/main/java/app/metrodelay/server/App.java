@@ -5,6 +5,7 @@ import app.metrodelay.server.scheduler.CachedItem;
 import app.metrodelay.server.scheduler.CachedItemKey;
 import app.metrodelay.server.scheduler.GetUrlResourceJob;
 import app.metrodelay.server.scheduler.QuartzInit;
+import app.metrodelay.server.scheduler.StatusCache;
 import app.metrodelay.server.status.StatusUpdate;
 import java.io.File;
 import java.time.Duration;
@@ -56,7 +57,8 @@ public class App {
     serviceRegistry.init();
     Registry.serviceRegistry(serviceRegistry);
     try (
-            var cache = cacheManager(); var scheduler = new QuartzInit(
+            var cache = cacheManager();
+            var scheduler = new QuartzInit(
                     Duration.parse(line.getOptionValue(JOB_INTERVAL, "PT2S")),
                     Duration.parse(line.getOptionValue(JOB_INTERVAL_DELAY, "PT1M")),
                     Duration.parse(line.getOptionValue(JOB_INTERVAL_RANDOM, "PT1M")),
@@ -64,8 +66,8 @@ public class App {
       cache.init();
       GetUrlResourceJob.initCache(
               cache.getCache("operator", String.class, String.class),
-              cache.getCache("resource", CachedItemKey.class, CachedItem.class),
-              cache.getCache("status", UUID.class, StatusUpdate.class));
+              cache.getCache("resource", CachedItemKey.class, CachedItem.class));
+      StatusCache.init(cache.getCache("status", UUID.class, StatusUpdate.class));
       while (true) {
         Thread.sleep(100);
       }
