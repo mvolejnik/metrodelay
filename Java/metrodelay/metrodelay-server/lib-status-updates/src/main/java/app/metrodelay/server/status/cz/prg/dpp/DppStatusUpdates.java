@@ -40,6 +40,7 @@ import org.jsoup.Jsoup;
 
 public class DppStatusUpdates implements OperatorStatusUpdates{
 
+  public static final String OPERATOR_ID = "cz.prg.dpp";
   private static final String UNTIL_FUTHER_NOTICE_EN = "until further notice";
   private static final String UNTIL_FUTHER_NOTICE_CZ = "do odvolání";
   private static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("d.M.yyyy[,]HH:mm").withZone(ZoneId.of("Europe/Prague"));
@@ -117,7 +118,7 @@ public class DppStatusUpdates implements OperatorStatusUpdates{
       uuid = UuidGenerator.generate(Objects.toString(title));
       l.info("Generated UUID [{}]", uuid.toString());
     }
-    var update = new StatusUpdateImpl(uuid, link, new DetailImpl(title));
+    var update = new StatusUpdateImpl(OPERATOR_ID, uuid, link, new DetailImpl(title));
     l.debug("StatusUpdate [{}]", update);
     return update;
   }
@@ -160,7 +161,7 @@ public class DppStatusUpdates implements OperatorStatusUpdates{
               .map(String::trim)
               .sorted(linesComparator())
               .toList();
-      var statusUpdate = new StatusUpdateImpl(uuid, uri, new DetailImpl(title, lines, start, Validity.of(start, end)));
+      var statusUpdate = new StatusUpdateImpl(OPERATOR_ID, uuid, uri, new DetailImpl(title, lines, start, Validity.of(start, end)));
       l.debug("status update '{}'", statusUpdate);
       return Optional.of(statusUpdate);
     } catch (IOException ex) {
@@ -195,6 +196,15 @@ public class DppStatusUpdates implements OperatorStatusUpdates{
       } else if (metro1) {
         return 1;
       } else if (metro2) {
+        return -1;
+      }
+      var x1 = line1.matches("[xX]([0-9]+)");
+      var x2 = line2.matches("[xX]([0-9]+)");
+      if (x1 && x2){
+        return line1.compareToIgnoreCase(line2);
+      } else if (x1) {
+        return 1;
+      } else if (x2) {
         return -1;
       }
       if (NumberUtils.isParsable(line1) && NumberUtils.isParsable(line2)){

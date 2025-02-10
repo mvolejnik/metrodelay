@@ -25,7 +25,7 @@ import org.quartz.JobExecutionException;
 ///
 public class NotifyJob implements Job{
   
-  private static final String STORAGE_PATH = "/api/countries/%s/cities/%s/operators/%s";
+  private static final String STORAGE_PATH = "/api";
   private static final Logger l = LogManager.getLogger(NotifyJob.class);
 
   @Override
@@ -36,17 +36,17 @@ public class NotifyJob implements Job{
       return d.valid() || d.end().map(e -> e.isAfter(Instant.now().minus(1, ChronoUnit.DAYS))).orElse(Boolean.FALSE);
     });
     l.info(statusUpdates);
+    statusUpdates.stream().forEach(this::notifyServices);
   }
 
-  protected void notifyServices(String operatorId, List<StatusUpdate> statusUpdates) {
+  protected void notifyServices(StatusUpdate statusUpdate) {
     var baseUrl = Registry.serviceRegistry().get(URI.create("urn:metrodelay.app:service:statusupdate:1.0"));
     if (baseUrl.isPresent()) {
       try {
-        var operatorPathParts = operatorId.split("\\.", 3);
-        var serviceUri = new URI(baseUrl.get().toString() + STORAGE_PATH.formatted(operatorPathParts[0], operatorPathParts[1], operatorPathParts[2]));
-        new HttpClientNotifier().send(serviceUri, statusUpdates);
+        var serviceUri = new URI(baseUrl.get().toString() + STORAGE_PATH);
+        new HttpClientNotifier().send(serviceUri, statusUpdate);
       } catch (URISyntaxException ex) {
-        l.error("unable to send {} notification to {}", operatorId, baseUrl, ex);
+        l.error("unable to send {} notification to {}", baseUrl, ex);
       }
     }
   }

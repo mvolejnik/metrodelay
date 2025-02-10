@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 public class ContentFactoryRegistry {
   
   private static Map<String, Class<? extends OperatorStatusUpdates>> REGISTRY = Map.of(
-          "cz.prg.dpp", DppStatusUpdates.class
+          DppStatusUpdates.OPERATOR_ID, DppStatusUpdates.class
   );
   
   private static final Logger l = LogManager.getLogger(ContentFactoryRegistry.class);

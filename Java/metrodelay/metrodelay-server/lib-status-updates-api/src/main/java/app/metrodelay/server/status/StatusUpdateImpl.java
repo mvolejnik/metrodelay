@@ -8,30 +8,31 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * 
+ *
  * @author mvolejnik
  *
  */
 public record StatusUpdateImpl(
+        String operatorId,
         UUID uuid,
         URI link,
-        Detail detail) implements StatusUpdate, Serializable
-  {
-  
+        Detail detail) implements StatusUpdate, Serializable {
+
   private static final long serialVersionUID = 1L;
-  
-  public StatusUpdateImpl{
+
+  public StatusUpdateImpl    {
     Objects.requireNonNull(uuid, "UUID is mandatory");
     Objects.requireNonNull(link, "link is mandatory");
   }
-  
-  public StatusUpdateImpl(UUID uuid, String title, URI link, Instant start, List lines) {
-    this(uuid, link, new DetailImpl(title, lines, start, Validity.of(start)));
+
+  public StatusUpdateImpl(String operatorId, UUID uuid, String title, URI link, Instant start, List lines) {
+    this(operatorId, uuid, link, new DetailImpl(title, lines, start, Validity.of(start)));
   }
 
   @Override
   public int hashCode() {
     int hash = 5;
+    hash = 29 * hash + Objects.hashCode(this.operatorId);
     hash = 29 * hash + Objects.hashCode(this.uuid);
     hash = 29 * hash + Objects.hashCode(this.link);
     hash = 29 * hash + Objects.hashCode(this.detail);
@@ -50,6 +51,9 @@ public record StatusUpdateImpl(
       return false;
     }
     final StatusUpdateImpl other = (StatusUpdateImpl) obj;
+    if (!Objects.equals(this.operatorId, other.operatorId)) {
+      return false;
+    }
     if (!Objects.equals(this.uuid, other.uuid)) {
       return false;
     }
@@ -57,11 +61,11 @@ public record StatusUpdateImpl(
       return false;
     }
     return Objects.equals(this.detail, other.detail);
-  }  
+  }
 
   @Override
   public String toString() {
-    return "StatusUpdateImpl{" + "uuid=" + uuid + ", link=" + link + ", detail=" + detail + '}';
+    return "StatusUpdateImpl{" + "operatorId=" + operatorId + "uuid=" + uuid + ", link=" + link + ", detail=" + detail + '}';
   }
 
 }

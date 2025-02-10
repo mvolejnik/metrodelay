@@ -6,6 +6,8 @@ import java.util.UUID;
 
 public interface StatusUpdate extends Serializable{
 
+  String operatorId();
+  
   UUID uuid();
 
   URI link();
