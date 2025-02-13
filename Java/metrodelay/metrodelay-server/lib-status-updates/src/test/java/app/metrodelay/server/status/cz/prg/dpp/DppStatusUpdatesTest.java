@@ -90,7 +90,7 @@ public class DppStatusUpdatesTest {
     assertNotNull(statusUpdate.get().detail());
     assertNotNull(statusUpdate.get().detail().lines());
     assertEquals(6, statusUpdate.get().detail().lines().size());
-    assertEquals(List.of(Restriction.DELAY, Restriction.SUSPENSION_OF_OPERATION), statusUpdate.get().detail().types());
+    assertEquals(List.of(Restriction.DELAY, Restriction.OPERATION_SUSPENDED), statusUpdate.get().detail().types());
     assertEquals(List.of("22", "26", "175", "177", "181", "182"), statusUpdate.get().detail().lines());
   }
 	
