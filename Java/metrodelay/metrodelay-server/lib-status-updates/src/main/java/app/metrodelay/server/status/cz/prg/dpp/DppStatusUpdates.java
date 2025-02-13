@@ -160,6 +160,7 @@ public class DppStatusUpdates implements OperatorStatusUpdates {
       if (typeHeading.hasText() && typeHeading.text().contains("Typ události")) {
         var typesText = StringUtils.trimToNull(typeContainer.textNodes().getLast().text());
         if (typesText != null) {
+          l.debug("types '{}'", typesText);
           types = Stream.of(typesText.split(","))
                   .map(StringUtils::trimToNull)
                   .filter(Objects::nonNull)
@@ -234,9 +235,11 @@ public class DppStatusUpdates implements OperatorStatusUpdates {
   private Restriction restriction(String restriction) {
     return switch (StringUtils.trimToNull(restriction)) {
       case "Zpoždění spoje", "Zpoždění spojů" -> Restriction.DELAY;
+      case "Neodjetí spoje" -> Restriction.UNDISPATCHED;
       case "Odklon" -> Restriction.ROUTE_CHANGE;
       case "Zrušení zastávky" -> Restriction.STOP_CLOSER;
-      case "Provoz omezen" -> Restriction.SUSPENSION_OF_OPERATION;
+      case "Provoz omezen" -> Restriction.SUSPENSION_OF_OPERATION;        
+      case "Náhradní doprava" -> Restriction.REPLACEMENT_SERVICE;
       case null, default -> Restriction.UNKNOWN;
     };
   }
