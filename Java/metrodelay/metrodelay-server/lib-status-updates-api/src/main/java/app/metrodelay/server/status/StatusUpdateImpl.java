@@ -65,7 +65,7 @@ public record StatusUpdateImpl(
 
   @Override
   public String toString() {
-    return "StatusUpdateImpl{" + "operatorId=" + operatorId + "uuid=" + uuid + ", link=" + link + ", detail=" + detail + '}';
+    return "StatusUpdateImpl{" + "operatorId=" + operatorId + ", uuid=" + uuid + ", link=" + link + ", detail=" + detail + '}';
   }
 
 }

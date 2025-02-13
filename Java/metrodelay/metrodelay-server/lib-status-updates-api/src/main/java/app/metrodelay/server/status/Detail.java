@@ -28,4 +28,6 @@ public interface Detail extends Serializable{
   
   boolean valid();
   
+  List<Restriction> types();
+  
 }

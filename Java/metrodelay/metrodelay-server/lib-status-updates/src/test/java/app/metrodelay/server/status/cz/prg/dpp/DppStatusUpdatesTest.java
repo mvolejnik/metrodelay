@@ -1,6 +1,7 @@
 package app.metrodelay.server.status.cz.prg.dpp;
 
 
+import app.metrodelay.server.status.Restriction;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -19,7 +20,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 
 public class DppStatusUpdatesTest {
 
@@ -90,6 +90,7 @@ public class DppStatusUpdatesTest {
     assertNotNull(statusUpdate.get().detail());
     assertNotNull(statusUpdate.get().detail().lines());
     assertEquals(6, statusUpdate.get().detail().lines().size());
+    assertEquals(List.of(Restriction.DELAY, Restriction.SUSPENSION_OF_OPERATION), statusUpdate.get().detail().types());
     assertEquals(List.of("22", "26", "175", "177", "181", "182"), statusUpdate.get().detail().lines());
   }
 	

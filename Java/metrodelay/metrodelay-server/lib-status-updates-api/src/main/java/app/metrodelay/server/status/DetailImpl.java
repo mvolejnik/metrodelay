@@ -18,6 +18,7 @@ public class DetailImpl implements Detail{
   Instant start;
   Instant end;
   Validity validity;
+  List<Restriction> types;
 
   public DetailImpl(String title) {
     this.title = title;
@@ -31,12 +32,13 @@ public class DetailImpl implements Detail{
     this.validity = validity;
   }
   
-  public DetailImpl(String title, List<String> lines, Instant start, Instant end, Validity validity) {
+  public DetailImpl(String title, List<String> lines, List<Restriction> types, Instant start, Instant end, Validity validity) {
     this.title = title;
     this.lines = lines;
     this.start = start;
     this.end = end;
     this.validity = validity;
+    this.types = types;
   }
 
   @Override
@@ -79,12 +81,23 @@ public class DetailImpl implements Detail{
             || validity == Validity.FUTURE && Instant.now().isAfter(start)
             || validity == Validity.UNKNWON;
   }
-  
-  public DetailImpl update(String title, List<String> lines, Instant start, Validity validity){
+
+  @Override
+  public List<Restriction> types() {
+    return types;
+  }
+
+  public Detail type(List<Restriction> types) {
+    this.types = types;
+    return this;
+  }
+
+  public DetailImpl update(String title, List<String> lines, Instant start, Validity validity, List<Restriction> types){
     this.title = title;
     this.lines = lines;
     this.start = start;
     this.validity = validity;
+    this.types = types;
     return this;
   }
 
@@ -96,6 +109,7 @@ public class DetailImpl implements Detail{
     hash = 29 * hash + Objects.hashCode(this.start);
     hash = 29 * hash + Objects.hashCode(this.end);
     hash = 29 * hash + Objects.hashCode(this.validity);
+    hash = 29 * hash + Objects.hashCode(this.types);
     return hash;
   }
 
@@ -123,12 +137,15 @@ public class DetailImpl implements Detail{
     if (!Objects.equals(this.end, other.end)) {
       return false;
     }
+    if (!Objects.equals(this.types, other.types)) {
+      return false;
+    }
     return this.validity == other.validity;
   }
 
   @Override
   public String toString() {
-    return "DetailImpl{" + "title=" + title + ", lines=" + lines + ", start=" + start + ", end=" + end + ", validity=" + validity + '}';
+    return "DetailImpl{" + "title=" + title + ", lines=" + lines + ", start=" + start + ", end=" + end + ", validity=" + validity + ", types=" + types + '}';
   }
   
   
