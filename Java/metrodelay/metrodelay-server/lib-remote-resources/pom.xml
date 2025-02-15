@@ -17,18 +17,6 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-        
-     
-        <!--   
-  <build>
-    <plugins>
-      <plugin>
-          <groupId>org.jacoco</groupId>
-          <artifactId>jacoco-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
-  -->
   <reporting>
     <plugins>
       <plugin>
@@ -44,8 +32,12 @@
       </plugin>
     </plugins>
   </reporting>
-
   <dependencies>
+    <dependency>
+      <groupId>app.metrodelay.server</groupId>
+      <artifactId>lib-status-updates-api</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>

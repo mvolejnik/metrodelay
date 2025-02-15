@@ -50,15 +50,14 @@ public class HttpResource implements AutoCloseable {
     return content(resourceUrl, null, null);
   }
 
-  /**
-   * Fetches remote resource.
-   *
-   * @param resourceUrl resource URL
-   * @param etag ETag of the already downloaded resource
-   * @param ifModifiedSince timestamp of already downloaded resource
-   * @return resource or empty Optional instance if resource was not modified since last fetch or has no content
-   * @throws RemoteResourceException if resource cannot be downloaded
-   */
+  
+   // Fetches remote resource.
+   //
+   // @param resourceUrl resource URL
+   // @param etag ETag of the already downloaded resource
+   // @param ifModifiedSince timestamp of already downloaded resource
+   // @return resource or empty Optional instance if resource was not modified since last fetch or has no content
+   // @throws RemoteResourceException if resource cannot be downloaded
   public Optional<Resource> content(URL resourceUrl, String etag, ZonedDateTime ifModifiedSince) throws RemoteResourceException {
     l.debug("content::");
     Objects.nonNull(resourceUrl);
@@ -76,28 +75,28 @@ public class HttpResource implements AutoCloseable {
       if ( ifModifiedSince != null) {
         httpGet.addHeader(ETAG_IF_MODIFIED_SINCE, DATE_TIME_FORMATTER.format(ifModifiedSince));
       }
-      l.debug("content:: downloading url '{}'", resourceUrl);
+      l.debug("downloading url '{}'", resourceUrl);
       var response = httpclient.execute(httpGet);
       var statusCode = new ResponseStatusCode(response.getStatusLine().getStatusCode());
       l.debug("content:: response status code '{}'", statusCode);
       if (statusCode.isOk()) {
         var entity = response.getEntity();
         if (entity == null) {
-          l.error("content:: Server response does not contain any data.");
+          l.error("server response does not contain any data.");
           throw new RemoteResourceException("Missing server data.");
         }
         var responseEtagHeader = response.getFirstHeader(ETAG_HEADER);
-        l.debug("content:: etag header '{}'", responseEtagHeader);
+        l.debug("etag header '{}'", responseEtagHeader);
         resource = Optional.of(new ResourceImpl(entity.getContent(), responseEtagHeader == null ? null : responseEtagHeader.getValue()));
       } else if (statusCode.isNotUpdated()) {
         resource = Optional.empty();
       } else if (statusCode.isClientError()) {
-        l.error("content:: Unable to get resource '{}' due to client error: '{}' ({}).", resourceUrl, statusCode.statusCode,
+        l.error("unable to get resource '{}' due to client error: '{}' ({}).", resourceUrl, statusCode.statusCode,
                 response.getStatusLine().getReasonPhrase());
         throw new RemoteResourceException(String.format("Unable to get resource '%s' due to client error: '%s' (%s).",
                 resourceUrl, statusCode.statusCode, response.getStatusLine().getReasonPhrase()));
       } else {
-        l.warn("content:: Resource '{}' unexpected response '{}' ({}).", resourceUrl, statusCode.statusCode,
+        l.warn("resource '{}' unexpected response '{}' ({}).", resourceUrl, statusCode.statusCode,
                 response.getStatusLine().getReasonPhrase());
         HttpEntity entity = response.getEntity();
         resource = entity == null ? Optional.empty() : Optional.of(new ResourceImpl(entity.getContent()));
