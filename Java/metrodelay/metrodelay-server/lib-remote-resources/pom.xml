@@ -6,29 +6,17 @@
   <parent>
     <groupId>app.metrodelay.server</groupId>
     <artifactId>metrodelay-server</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>lib-remote-resources</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <name>Metro Delay - Lib - Remote Resources</name>
   <url>http://maven.apache.org</url>
         
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-        
-     
-        <!--   
-  <build>
-    <plugins>
-      <plugin>
-          <groupId>org.jacoco</groupId>
-          <artifactId>jacoco-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
-  -->
   <reporting>
     <plugins>
       <plugin>
@@ -44,8 +32,12 @@
       </plugin>
     </plugins>
   </reporting>
-
   <dependencies>
+    <dependency>
+      <groupId>app.metrodelay.server</groupId>
+      <artifactId>lib-status-updates-api</artifactId>
+      <version>0.0.2-SNAPSHOT</version>
+    </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>

@@ -1,39 +1,20 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<rss
-	version="2.0"
-	xmlns:content="http://purl.org/rss/1.0/modules/content/"
-	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
-	xmlns:dc="http://purl.org/dc/elements/1.1/"
-	xmlns:atom="http://www.w3.org/2005/Atom"
-	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
-	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
-	xmlns:media="http://search.yahoo.com/mrss/">
-	<channel>
-		<description></description>
-		<language></language>
-		<link></link>
-		<title></title>
-		<pubDate></pubDate>
-		<lastBuildDate></lastBuildDate>
-		<ttl></ttl>
-		<item>
-			<title></title>
-			<description></description>
-			<content_encoded><![CDATA[
-            <section></section>
-	    <emergency_types></emergency_types>
-	    <time_start></time_start>
-	    <time_stop></time_stop>
-	    <time_final_stop></time_final_stop>
-        <integrated_rescue_system></integrated_rescue_system>
-	    <aff_line_types>
-	        <line></line>
-	    </aff_line_types>
-        <aff_lines></aff_lines>
-	  ]]></content_encoded>
-			<link></link>
-			<pubDate></pubDate>
-			<guid isPermaLink="false"></guid>
-		</item>
-	</channel>
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <description></description>
+    <language></language>
+    <link>http://www.dpp.cz/</link>
+    <title></title>
+    <pubDate></pubDate>
+    <lastBuildDate></lastBuildDate>
+    <ttl></ttl>
+    <item>
+      <title></title>
+      <description><![CDATA[]]></description>
+      <content:encoded xmlns:content="item"><![CDATA[]]></content:encoded>
+      <link></link>
+      <pubDate></pubDate>
+      <guid isPermaLink="false"></guid>
+    </item>
+  </channel>
 </rss>

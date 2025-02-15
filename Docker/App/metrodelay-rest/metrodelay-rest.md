@@ -1,11 +1,11 @@
 # Build
 
 ```
-docker build -t metrodelay/metrodelay-rest:0.0.1 .
+docker build -t metrodelay/metrodelay-rest:0.0.2 .
 ```
 
 # Run
 
 ```
-docker run -ti metrodelay/metrodelay-rest:0.0.1
+docker run -ti metrodelay/metrodelay-rest:0.0.2
 ```

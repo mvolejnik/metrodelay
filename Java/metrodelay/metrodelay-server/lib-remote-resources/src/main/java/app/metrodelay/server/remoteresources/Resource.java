@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface Resource {
 
-  Optional<InputStream> content();
+  Optional<InputStream> content();  
   
   Optional<String> fingerprint();
   
