@@ -46,7 +46,7 @@ public class RegistryInit implements ServletContextListener {
             ServiceRegistryClient registryClient = new ServiceRegistryClientImpl(
                     new InetSocketAddress(context.getInitParameter(REGISTRY_MULTICAST_IP).trim(), Integer.parseInt(context.getInitParameter(REGISTRY_MULTICAST_PORT).trim())),
                     new URI(context.getInitParameter(REGISTRY_STATUS_UPDATE_SERVICE_URI).trim()),
-                    URI.create("https://localhost:8443" + context.getContextPath() + "/transport").toURL());
+                    URI.create("http://localhost:8002" + context.getContextPath()).toURL());
             scheduler.scheduleWithFixedDelay(() -> {
                 l.info("Register service {}", registryClient.getServiceUri());
                 registryClient.register();
