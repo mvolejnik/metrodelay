@@ -10,8 +10,10 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.MediaType;
 import java.io.InputStream;
+import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.ehcache.Cache;
 
 /**
  *
@@ -21,16 +23,22 @@ import org.apache.logging.log4j.Logger;
 public class Status {
   
   private static final Logger l = LogManager.getLogger(Status.class);
+  
+  private static Cache<UUID, StatusUpdate> statusUpdates; 
 	
 	@PUT
   @Consumes(MediaType.APPLICATION_JSON)
-	@Path("/countries/{country}/cities/{city}/operators/{operator}/updates/{guid}")
+	@Path("/updates/{guid}")
 	public void status( @PathParam("guid") String guid, InputStream statusUpdate){
 		l.debug("status:: {}", guid);
     Jsonb jsonb = JsonbBuilder.create();
     var update = jsonb.fromJson(statusUpdate, StatusUpdateImpl.class);
     l.debug("status:: {}", update);
+    statusUpdates.put(UUID.fromString(guid), update);
 	}
   
+  public static void initCache(Cache<UUID, StatusUpdate> statusUpdates){
+    Status.statusUpdates = statusUpdates;
+  }
   
 }

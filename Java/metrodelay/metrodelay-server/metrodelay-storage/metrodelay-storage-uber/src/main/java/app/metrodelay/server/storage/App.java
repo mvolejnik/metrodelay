@@ -1,6 +1,10 @@
 package app.metrodelay.server.storage;
 
 import app.metrodelay.server.management.RegistryInit;
+import app.metrodelay.server.status.StatusUpdate;
+import app.metrodelay.server.storage.rs.Status;
+import java.io.File;
+import java.util.UUID;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
@@ -8,6 +12,11 @@ import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee10.servlet.ServletHandler;
 import org.eclipse.jetty.ee10.servlet.ServletHolder;
 import org.eclipse.jetty.server.handler.ContextHandler;
+import org.ehcache.CacheManager;
+import org.ehcache.config.builders.CacheConfigurationBuilder;
+import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.config.builders.ResourcePoolsBuilder;
+import org.ehcache.config.units.MemoryUnit;
 import org.glassfish.jersey.servlet.ServletContainer;
 
 public class App {
@@ -45,9 +54,23 @@ public class App {
     context.addEventListener(new RegistryInit());
     return context;
   }
+  
+  private static CacheManager cacheManager() {
+    return CacheManagerBuilder.newCacheManagerBuilder()
+            .with(CacheManagerBuilder.persistence(String.format("%s%s%s%s", System.getProperty("java.io.tmpdir"), File.separator, "metrodelay", File.separator, "cache")))
+            .withCache("status",
+                    CacheConfigurationBuilder.newCacheConfigurationBuilder(UUID.class, StatusUpdate.class, ResourcePoolsBuilder.newResourcePoolsBuilder()
+                            .heap(8, MemoryUnit.MB)
+                            .offheap(16, MemoryUnit.MB)
+                            .disk(128, MemoryUnit.MB)))
+            .build();
+  }
 
   public static void main(String[] args) throws InterruptedException, Exception {
         CommandLine line = new DefaultParser().parse( options(), args );
+        var cacheManager = cacheManager();
+        cacheManager.init();
+        Status.initCache(cacheManager.getCache("status", UUID.class, StatusUpdate.class));
         org.eclipse.jetty.server.Server server = server(Integer.parseInt(line.getOptionValue(ARG_PORT, DEFAULT_PORT)));
         server.setHandler(restHandler());
         server.start();
