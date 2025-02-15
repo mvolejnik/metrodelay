@@ -59,7 +59,7 @@ public class ServiceRegistryImpl implements ServiceRegistry {
         if (networkInterface.isEmpty()) {
           throw new IllegalStateException("NetworkInterface not available");
         }
-        l.info("bound to multicast interface '{}'", networkInterface.get().getName());
+        l.info("bound to multicast interface '{}', address '{}', multicast port '{}'", networkInterface.get().getName(), multicastAddress, multicastPort);
         socket.joinGroup(new InetSocketAddress(MULTICAST_ADDRESS, MULTICAST_PORT), networkInterface.get());
         socket.setSoTimeout((int)SO_TIMEOUT.toMillis());
         while (true) {

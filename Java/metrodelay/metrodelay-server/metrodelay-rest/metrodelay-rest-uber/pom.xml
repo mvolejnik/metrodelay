@@ -5,14 +5,14 @@
     <parent>
         <groupId>app.metrodelay.server</groupId>
         <artifactId>metrodelay-rest</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.2-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <groupId>app.metrodelay.server</groupId>
     <artifactId>metrodelay-rest-uber</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>Metro Delay - App - REST API</name>
-    <url>https://github.com/mvolejnik/public-transport-delays</url>
+    <url>https://github.com/mvolejnik/metrodelay</url>
   
     <build>
         <finalName>metrodelay-rest-uber</finalName>
@@ -63,7 +63,7 @@
         <dependency>
             <groupId>app.metrodelay.server</groupId>
             <artifactId>metrodelay-rest-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
           <groupId>org.glassfish.jaxb</groupId>

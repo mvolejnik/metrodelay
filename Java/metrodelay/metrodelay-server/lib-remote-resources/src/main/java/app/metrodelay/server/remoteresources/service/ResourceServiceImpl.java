@@ -13,18 +13,15 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author mvolejnik
- */
+/// Service downloads remote resource.
 public class ResourceServiceImpl implements ResourceService {
 
     private static final Logger l = LogManager.getLogger(ResourceServiceImpl.class);
 
     @Override
-    public Optional<Resource> resource(URL url) throws RemoteResourceException {
+    public Optional<Resource> resource(URL url, String etag) throws RemoteResourceException {
         try {
-            return new HttpResource().content(url);
+            return new HttpResource().content(url, etag, null);
         } catch (RemoteResourceException e) {
             l.warn("Unable to get resource.", e);
             throw new RemoteResourceException(String.format("Unable to get resource '%s'", url), e);

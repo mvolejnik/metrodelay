@@ -33,6 +33,7 @@ public class RegistryInit implements ServletContextListener {
     public static final String REGISTRY_MULTICAST_IP = "registryMulticastIp";
     public static final String REGISTRY_MULTICAST_PORT = "registryMulticastPort";
     public static final String REGISTRY_STATUS_UPDATE_SERVICE_URI = "serviceStatusUpdate";
+    public static final String REGISTRY_STATUS_UPDATE_SERVICE_HOST = "serviceStatusUpdateHost";
     private final ScheduledExecutorService scheduler
             = Executors.newScheduledThreadPool(1);
     private static final Logger l = LogManager.getLogger(RegistryInit.class);
@@ -46,7 +47,7 @@ public class RegistryInit implements ServletContextListener {
             ServiceRegistryClient registryClient = new ServiceRegistryClientImpl(
                     new InetSocketAddress(context.getInitParameter(REGISTRY_MULTICAST_IP).trim(), Integer.parseInt(context.getInitParameter(REGISTRY_MULTICAST_PORT).trim())),
                     new URI(context.getInitParameter(REGISTRY_STATUS_UPDATE_SERVICE_URI).trim()),
-                    URI.create("https://localhost:8443" + context.getContextPath() + "/transport").toURL());
+                    URI.create("http://%s:8002%s".formatted(context.getInitParameter(REGISTRY_STATUS_UPDATE_SERVICE_HOST),context.getContextPath())).toURL());
             scheduler.scheduleWithFixedDelay(() -> {
                 l.info("Register service {}", registryClient.getServiceUri());
                 registryClient.register();

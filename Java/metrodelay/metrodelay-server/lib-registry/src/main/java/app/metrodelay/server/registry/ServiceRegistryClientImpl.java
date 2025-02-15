@@ -66,7 +66,7 @@ public class ServiceRegistryClientImpl implements ServiceRegistryClient {
       InetSocketAddress dest = new InetSocketAddress(inetSocketAddress.getAddress(), inetSocketAddress.getPort());
       DatagramPacket hi = new DatagramPacket(message, message.length, dest);
       sender.send(hi);
-      l.debug("multicast message sent via '{}'", multicastInterface.getName());
+      l.info("multicast message sent via '{}'", multicastInterface.getName());
     } catch (IOException ex) {
       l.error("Unable to obtain network interface.", ex);
     }

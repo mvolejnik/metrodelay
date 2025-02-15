@@ -38,6 +38,5 @@ public class UuidGenerator {
   public static UUID generate(){
     return new UUID(PRNG.get().nextLong(), PRNG.get().nextLong());
   }
-
-
+  
 }

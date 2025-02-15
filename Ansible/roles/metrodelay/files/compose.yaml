@@ -4,14 +4,25 @@ networks:
 
 services:
   remote-resources:
-    image: fra.vultrcr.com/metrodelay/remote-resources:0.0.1
+    image: fra.vultrcr.com/metrodelay/remote-resources:0.0.2
     container_name: remote-resources
+    hostname: remote-resources
     networks:
       - metrodelay
     command: ["-i", "pt2m", "-d", "pt2m"]
+  metrodelay-storage:
+    image: fra.vultrcr.com/metrodelay/metrodelay-storage:0.0.2
+    container_name: metrodelay-storage
+    hostname: metrodelay-storage
+    ports:
+      - "8081:8080"
+    networks:
+      - metrodelay
+    command: ["-h", "metrodelay-storage"]
   metrodelay-rest:
-    image: fra.vultrcr.com/metrodelay/metrodelay-rest:0.0.1
+    image: fra.vultrcr.com/metrodelay/metrodelay-rest:0.0.2
     container_name: metrodelay-rest
+    hostname: metrodelay-rest
     ports:
       - "8080:8080"
     networks:
