@@ -76,7 +76,7 @@ public class App {
 
   private static CacheManager cacheManager() {
     return CacheManagerBuilder.newCacheManagerBuilder()
-            .with(CacheManagerBuilder.persistence(String.format("%s%s%s%s", System.getProperty("java.io.tmpdir"), File.separator, "metrodelay", File.separator, "cache")))
+            .with(CacheManagerBuilder.persistence(String.format("%s%s%s%s%s%s", System.getProperty("java.io.tmpdir"), File.separator, "metrodelay" , File.separator,  "remote-resources", File.separator, "cache")))
             .withCache("operator",
                     CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class, ResourcePoolsBuilder.newResourcePoolsBuilder()
                             .heap(200, EntryUnit.ENTRIES)))

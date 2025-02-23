@@ -2,16 +2,12 @@ package app.metrodelay.server.status;
 
 import java.io.Serializable;
 import java.net.URI;
-import java.time.Instant;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- *
- * @author mvolejnik
- *
- */
+/// @author mvolejnik
+///
+/// 
 public record StatusUpdateImpl(
         String operatorId,
         UUID uuid,
@@ -20,14 +16,10 @@ public record StatusUpdateImpl(
 
   private static final long serialVersionUID = 1L;
 
-  public StatusUpdateImpl    {
+  /*public StatusUpdateImpl{
     Objects.requireNonNull(uuid, "UUID is mandatory");
     Objects.requireNonNull(link, "link is mandatory");
-  }
-
-  public StatusUpdateImpl(String operatorId, UUID uuid, String title, URI link, Instant start, List lines) {
-    this(operatorId, uuid, link, new DetailImpl(title, lines, start, Validity.of(start)));
-  }
+  }*/
 
   @Override
   public int hashCode() {

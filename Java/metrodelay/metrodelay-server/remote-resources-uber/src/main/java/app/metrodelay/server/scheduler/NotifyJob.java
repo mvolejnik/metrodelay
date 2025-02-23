@@ -30,7 +30,7 @@ public class NotifyJob implements Job{
   public void execute(JobExecutionContext context) throws JobExecutionException {
     l.info("job [{}] started", context.getJobDetail().getKey());
     var statusUpdates = StatusCache.get().list(su -> su.detail().valid(Duration.ofDays(1)));
-    l.info(statusUpdates);
+    l.debug(statusUpdates);
     statusUpdates.stream().forEach(this::notifyServices);
   }
 

@@ -241,6 +241,7 @@ public class DppStatusUpdates implements OperatorStatusUpdates {
       case "Provoz omezen" -> Restriction.OPERATION_SUSPENDED;
       case "Provoz zastaven" -> Restriction.OPERATION_HALTED;
       case "Náhradní doprava" -> Restriction.REPLACEMENT_SERVICE;
+      case "Uzavření stanice" -> Restriction.STATION_CLOSED;
       case null, default -> Restriction.UNKNOWN;
     };
   }

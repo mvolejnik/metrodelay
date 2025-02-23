@@ -61,7 +61,7 @@ public class StatusCache {
     var sci = statusCache.iterator();
     return Stream.generate(() -> null)
             .takeWhile(i -> sci.hasNext())
-            .map(i -> statusCache.iterator().next())
+            .map(i -> sci.next())
             .filter(Objects::nonNull)
             .map(entry -> entry.getValue())
             .toList();
