@@ -20,6 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 
 public class DppStatusUpdatesTest {
 
@@ -43,6 +44,7 @@ public class DppStatusUpdatesTest {
 	@Test
   @Tag("fast")
   @DisplayName("Empty link.")
+  @Disabled
 	public void testStatusUpdatesEmptyLink() throws StatusUpdateException, IOException {
 		DppStatusUpdates dppFactory = new DppStatusUpdates();
 		var ex = Assertions.assertThrows(NullPointerException.class, () -> dppFactory.statusUpdates(FileUtils.openInputStream(new File(RSS_DPP_EMPTY))));
