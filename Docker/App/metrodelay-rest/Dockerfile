@@ -1,4 +1,4 @@
-FROM azul/zulu-openjdk-alpine:23.0.1-23.30-jre-headless
+FROM azul/zulu-openjdk-alpine:24.0.0-24.28-jre-headless
 
 RUN apk -U add perf 
 ADD metrodelay-ws-rest-uber.jar /
