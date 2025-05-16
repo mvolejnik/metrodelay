@@ -1,0 +1,5 @@
+{
+    "logs": {
+        "url": "http://loki.metrodelay.app:3100/loki/api/v1/push"
+    }
+}

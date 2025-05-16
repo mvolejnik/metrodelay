@@ -10,6 +10,12 @@ docker build -t metrodelay/remote-resources:0.0.1 .
 docker run -ti metrodelay/remote-resources:0.0.1
 ```
 
+# Install loki plugin
+
+```
+sudo docker plugin install grafana/loki-docker-driver:3.5.0-amd64 --alias loki --grant-all-permissions
+```
+
 # Run with Grafa Lokig log driver
 
 ```

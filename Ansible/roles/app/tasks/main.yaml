@@ -31,10 +31,17 @@
     owner: root
     group: root
     mode: u=rw,g=,o=
-- name: Copy promtail configuration
+- name: Copy alloy configuration
   ansible.builtin.copy:
-    src: ./files/promtail.yaml
-    dest: /var/docker/promtail.yaml
+    src: ./files/config.alloy
+    dest: /var/docker/config.alloy
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+- name: Copy alloy endpoints configuration
+  ansible.builtin.copy:
+    src: ./files/endpoints.json
+    dest: /var/docker/endpoints.json
     owner: root
     group: root
     mode: u=rw,g=r,o=r
