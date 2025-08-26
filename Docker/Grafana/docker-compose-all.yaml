@@ -3,9 +3,34 @@ networks:
     driver: bridge
 
 services:
+  init:
+    image: &tempoImage grafana/tempo:2.8.1
+    user: root
+    entrypoint:
+      - "chown"
+      - "10001:10001"
+      - "/var/tempo"
+    volumes:
+      - ./tempo-data:/var/tempo
+
+  tempo:
+    image: *tempoImage
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    hostname: tempo
+    volumes:
+      - ./tempo.yaml:/etc/tempo.yaml
+      - ./tempo-data:/var/tempo
+    ports:
+      - "3200" # tempo
+      - "4317" # otlp grpc
+    networks:
+      - grafana
+    depends_on:
+      - init
+
   grafana:
     container_name: grafana
-    image: grafana/grafana:12.0.0
+    image: grafana/grafana:12.0.2
     hostname: grafana
     ports:
       - "3000:3000"
@@ -13,7 +38,7 @@ services:
       - grafana
   loki:
     container_name: loki
-    image: grafana/loki:3.5.0
+    image: grafana/loki:3.5.1
     hostname: loki
     ports:
       - "3100:3100"
@@ -45,7 +70,7 @@ services:
 #    command: "-config.file=/etc/promtail/promtail.yaml"
   prometheus:
     container_name: prometheus
-    image: prom/prometheus:v3.3.1
+    image: prom/prometheus:v3.4.1
     hostname: prometheus
     ports:
       - "9090:9090"
@@ -77,7 +102,7 @@ services:
       - '/:/host:ro,rslave'
   alloy:
     container_name: alloy
-    image: grafana/alloy:v1.8.3
+    image: grafana/alloy:v1.9.1
     hostname: alloy
     ports:
       - "12345:12345"
