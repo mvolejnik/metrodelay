@@ -26,7 +26,7 @@ public class GetUrlResourceJob implements Job {
 
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
-    l.info("execute:: job started [{}]", context.getJobDetail().getKey());
+    l.info("execute:: job [{}] started", context.getJobDetail().getKey());
     var urlParam = context.getJobDetail().getJobDataMap().getString(DATA_URL);
     l.debug("execute:: resource url '{}'", urlParam);
     try {
