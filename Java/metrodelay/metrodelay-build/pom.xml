@@ -300,7 +300,7 @@
       <dependency>
         <groupId>org.glassfish.jaxb</groupId>
         <artifactId>jaxb-runtime</artifactId>
-        <version>4.0.5</version>
+        <version>4.0.6</version>
       </dependency>
 
       <!-- HTTP Spec. -->
@@ -322,7 +322,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.18.0</version>
+        <version>3.19.0</version>
       </dependency>
       <dependency>
         <groupId>commons-cli</groupId>
@@ -348,18 +348,18 @@
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-api</artifactId>
         <scope>compile</scope>
-        <version>2.25.1</version>
+        <version>2.25.2</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-core</artifactId>
-        <version>2.25.1</version>
+        <version>2.25.2</version>
       </dependency>
       <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j2-impl -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-slf4j2-impl</artifactId>
-        <version>2.25.1</version>
+        <version>2.25.2</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
@@ -405,28 +405,28 @@
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-server</artifactId>
-        <version>12.1.1</version>
+        <version>12.1.2</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty.ee10</groupId>
         <artifactId>jetty-ee10-servlet</artifactId>
-        <version>12.1.1</version>
+        <version>12.1.2</version>
       </dependency>
       <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-webapp -->
       <dependency>
         <groupId>org.eclipse.jetty.ee10</groupId>
         <artifactId>jetty-ee10-webapp</artifactId>
-        <version>12.1.1</version>
+        <version>12.1.2</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-util</artifactId>
-        <version>12.1.1</version>
+        <version>12.1.2</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-continuation</artifactId>
-        <version>12.1.1</version>
+        <version>12.1.2</version>
       </dependency>
       <dependency>
         <groupId>org.glassfish.jersey.core</groupId>
@@ -486,25 +486,24 @@
         <version>2.5.0</version>
       </dependency>
 
-
       <!-- QA -->
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
-        <version>5.13.4</version>
+        <version>6.0.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
-        <version>5.13.4</version>
+        <version>6.0.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-params</artifactId>
         <scope>test</scope>
-        <version>5.13.4</version>
+        <version>6.0.0</version>
       </dependency>
       <dependency>
         <groupId>org.wiremock</groupId>
