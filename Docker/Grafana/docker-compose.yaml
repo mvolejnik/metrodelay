@@ -5,7 +5,7 @@ networks:
 services:
   grafana:
     container_name: grafana
-    image: grafana/grafana:11.4.0
+    image: grafana/grafana:12.2.0
     hostname: grafana
     ports:
       - "3000:3000"
@@ -13,7 +13,7 @@ services:
       - grafana
   loki:
     container_name: loki
-    image: grafana/loki:3.2.2
+    image: grafana/loki:3.5.7
     hostname: loki
     ports:
       - "3100:3100"
@@ -25,7 +25,7 @@ services:
         target: /etc/loki/local-config.yaml
   prometheus:
     container_name: prometheus
-    image: prom/prometheus:v3.0.1
+    image: prom/prometheus:v3.7.1
     hostname: prometheus
     ports:
       - "9090:9090"
@@ -38,10 +38,12 @@ services:
       - type: bind
         source: ./data/prometheus
         target: /test
-    command: "--config.file=prometheus.yaml --storage.tsdb.retention.time=60d"
+    command: "--config.file=prometheus.yaml --storage.tsdb.retention.time=60d --web.enable-remote-write-receiver"
+    depends_on:
+      - node_exporter
   node_exporter:
     container_name: node_exporter
-    image: prom/node-exporter:v1.8.2
+    image: prom/node-exporter:v1.9.1
     hostname: nodeexporter
     ports:
       - "9100:9100"
@@ -53,3 +55,41 @@ services:
       - grafana
     volumes:
       - '/:/host:ro,rslave'
+  alloy:
+    container_name: alloy
+    image: grafana/alloy:v1.11.2
+    hostname: alloy
+    ports:
+      - "12345:12345"
+      - "12348:12348"
+      - "6832:6832"
+      - "55679:55679"
+      - "4317:4317"
+      - "4318:4318"
+    networks:
+      - grafana
+    volumes:
+      - type: bind
+        source: ./config.alloy
+        target: /etc/alloy/config.alloy
+      - type: bind
+        source: ./endpoints.json
+        target: /etc/alloy/endpoints.json
+      - type: bind
+        source: /var/log
+        target: /var/log
+      - type: bind
+        source: /var/lib/docker/containers
+        target: /var/lib/docker/containers
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock      
+    command: [
+      "run",
+      "--server.http.listen-addr=0.0.0.0:12345",
+      "--stability.level=public-preview",
+      "/etc/alloy/config.alloy",
+    ]
+    depends_on:
+      - loki
+      - prometheus
