@@ -2,5 +2,13 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "packageRules": [
+    {
+      "matchDatasources": ["docker"],
+      "matchPackagePrefixes": ["ewr.vultrcr.com/metrodelay/"],
+      "enabled": false,
+      "description": "Exclude vultrcr.com metrodelay images due to inaccessibility failures."
+    }
   ]
 }
