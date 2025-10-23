@@ -5,16 +5,24 @@
   ],
   "packageRules": [
     {
-      "matchDatasources": ["docker"],
-      "matchPackagePrefixes": ["ewr.vultrcr.com/metrodelay/"],
+      "matchDatasources": [
+        "docker"
+      ],
       "enabled": false,
-      "description": "Exclude vultrcr.com metrodelay images due to inaccessibility."
+      "description": "Exclude vultrcr.com metrodelay images due to inaccessibility.",
+      "matchPackageNames": [
+        "ewr.vultrcr.com/metrodelay/{/,}**"
+      ]
     },
     {
-      "matchDatasources": ["maven"],
-      "matchPackagePatterns": ["/^app\\.metrodelay/"],
+      "matchDatasources": [
+        "maven"
+      ],
       "enabled": false,
-      "description": "Exclude all internal app.metrodelay maven packages from Renovate updates."
+      "description": "Exclude all internal app.metrodelay maven packages from Renovate updates.",
+      "matchPackageNames": [
+        "//^app\\.metrodelay//"
+      ]
     }
   ]
 }
