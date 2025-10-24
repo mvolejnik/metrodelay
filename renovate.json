@@ -11,7 +11,8 @@
       "enabled": false,
       "description": "Exclude vultrcr.com metrodelay images due to inaccessibility.",
       "matchPackageNames": [
-        "ewr.vultrcr.com/metrodelay/{/,}**"
+        "ewr.vultrcr.com/metrodelay/{/,}**",
+        "metrodelay/{/,}**"
       ]
     },
     {
@@ -21,7 +22,7 @@
       "enabled": false,
       "description": "Exclude all internal app.metrodelay maven packages from Renovate updates.",
       "matchPackageNames": [
-        "//^app\\.metrodelay//"
+        "^app\\.metrodelay"
       ]
     }
   ]
