@@ -43,7 +43,7 @@ services:
       - node_exporter
   node_exporter:
     container_name: node_exporter
-    image: prom/node-exporter:v1.10.0
+    image: prom/node-exporter:v1.10.2
     hostname: nodeexporter
     ports:
       - "9100:9100"
