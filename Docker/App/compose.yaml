@@ -15,7 +15,7 @@ services:
         loki-retries: 5
         loki-batch-size: 400
   metrodelay-ws-rest:
-    image: metrodelay/metrodelay-ws-rest:0.0.1
+    image: metrodelay/metrodelay-rest:0.0.1
     container_name: metrodelay-rest
     networks:
       - metrodelay

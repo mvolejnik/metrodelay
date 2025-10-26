@@ -93,3 +93,20 @@ services:
     depends_on:
       - loki
       - prometheus
+  pyroscope:
+    container_name: pyroscope
+    image: grafana/pyroscope:1.15.0
+    hostname: pyroscope
+    ports:
+      - "4040:4040"
+    networks:
+      - grafana
+    volumes:
+      - type: bind
+        source: ./data/pyroscope
+        target: /var/lib/pyroscope
+      - type: bind
+        source: ./pyroscope.yaml
+        target: /etc/pyroscope/config.yaml
+    depends_on:
+      - alloy
