@@ -57,7 +57,7 @@ services:
       - '/:/host:ro,rslave'
   alloy:
     container_name: alloy
-    image: grafana/alloy:v1.11.2
+    image: grafana/alloy:v1.11.3
     hostname: alloy
     ports:
       - "12345:12345"
