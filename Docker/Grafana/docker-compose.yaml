@@ -25,7 +25,7 @@ services:
         target: /etc/loki/local-config.yaml
   prometheus:
     container_name: prometheus
-    image: prom/prometheus:v3.8.0
+    image: prom/prometheus:v3.8.1
     hostname: prometheus
     ports:
       - "9090:9090"
