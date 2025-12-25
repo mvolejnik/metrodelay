@@ -1,5 +1,0 @@
-- hosts: sre-blue
-  roles:
-    - grafana
-#  delegate_to: 127.0.0.1
-#  run_once: true

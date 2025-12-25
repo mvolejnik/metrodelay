@@ -1,98 +1,12 @@
-- name: Create DNS domain
-  vultr.cloud.dns_domain:
-    api_key: "{{ vultr.api_key }}"
-    name: metrodelay.app    
-    dns_sec: enabled
-    server_ip: "{{ ansible_host }}"
-- name: Create DNS record - metrodelay.app
-  vultr.cloud.dns_record:
-    api_key: "{{ vultr.api_key }}"
-    domain: metrodelay.app
-    data: "{{ ansible_host }}"
-- name: Create CNAME record - grafana.metrodelay.app
-  vultr.cloud.dns_record:
-    api_key: "{{ vultr.api_key }}"
-    name: grafana
-    type: CNAME
-    domain: metrodelay.app
-    data: metrodelay.app
-- name: Create CNAME record - loki.metrodelay.app
-  vultr.cloud.dns_record:
-    api_key: "{{ vultr.api_key }}"
-    name: loki
-    type: CNAME
-    domain: metrodelay.app
-    data: metrodelay.app
-- name: Create CNAME record - prometheus.metrodelay.app
-  vultr.cloud.dns_record:
-    api_key: "{{ vultr.api_key }}"
-    name: prometheus
-    type: CNAME
-    domain: metrodelay.app
-    data: metrodelay.app
-- name: Install docker
-  community.general.apk:
-    name: docker
-    update_cache: true
-- name: Install docker compose
-  community.general.apk:
-    name: docker-compose
-    update_cache: true
-- name: Make recursive shared / mount
-  ansible.builtin.command: "mount --make-rshared /"
-- name: Start docker service
-  ansible.builtin.service:
-    name: docker
-    enabled: yes
-    state: started
-- name: Creates docker directory
-  ansible.builtin.file:
-    path: /var/docker
-    state: directory
-- name: Copy grafana docker compose file
-  ansible.builtin.copy:
-    src: ./files/compose.yaml
-    dest: /var/docker/compose.yaml
-    owner: root
-    group: root
-    mode: u=rw,g=,o=
-- name: Copy loki configuration
-  ansible.builtin.copy:
-    src: ./files/loki.yaml
-    dest: /var/docker/loki.yaml
-    owner: root
-    group: root
-    mode: u=rw,g=r,o=r
-- name: Copy prometheus configuration
-  ansible.builtin.copy:
-    src: ./files/prometheus.yaml
-    dest: /var/docker/prometheus.yaml
-    owner: root
-    group: root
-    mode: u=rw,g=r,o=r
-- name: Copy alloy configuration
-  ansible.builtin.copy:
-    src: ./files/config.alloy
-    dest: /var/docker/config.alloy
-    owner: root
-    group: root
-    mode: u=rw,g=r,o=r
-- name: Copy alloy endpoints configuration
-  ansible.builtin.copy:
-    src: ./files/endpoints.json
-    dest: /var/docker/endpoints.json
-    owner: root
-    group: root
-    mode: u=rw,g=r,o=r
-- name: Log into Vultr Docker Registry
-  community.docker.docker_login:
-    registry_url: https://ewr.vultrcr.com/metrodelay
-    username: "{{ vultr.registry.username }}"
-    password: "{{ vultr.registry.api_key }}"
-- name: Start containers
-  community.docker.docker_compose_v2:
-    project_src: /var/docker
-  register: output
-- name: Start containers result
-  ansible.builtin.debug:
-    var: output
+---
+- name: Firewall Rules
+  ansible.builtin.import_tasks: firewall.yaml
+
+- name: Block Storage and Mounts
+  ansible.builtin.import_tasks: storage.yaml
+
+- name: DNS Records
+  ansible.builtin.import_tasks: dns.yaml
+
+- name: Docker Stack
+  ansible.builtin.import_tasks: docker.yaml

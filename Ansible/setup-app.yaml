@@ -16,7 +16,7 @@
       label: app
       tags:
         - app
-        - blue
+        - "{{ cluster }}"
       plan: vc2-1c-1gb
       ssh_keys:
         - ansible

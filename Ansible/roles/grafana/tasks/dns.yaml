@@ -1,0 +1,23 @@
+- name: Create DNS domain
+  vultr.cloud.dns_domain:
+    api_key: "{{ vultr.api_key }}"
+    name: metrodelay.app    
+    dns_sec: enabled
+    server_ip: "{{ ansible_host }}"
+  delegate_to: localhost
+
+- name: Create DNS record - metrodelay.app
+  vultr.cloud.dns_record:
+    api_key: "{{ vultr.api_key }}"
+    domain: metrodelay.app
+    data: "{{ ansible_host }}"
+  delegate_to: localhost
+  
+- name: Create CNAME record - o11y.metrodelay.app
+  vultr.cloud.dns_record:
+    api_key: "{{ vultr.api_key }}"
+    name: o11y
+    type: CNAME
+    domain: metrodelay.app
+    data: metrodelay.app
+  delegate_to: localhost

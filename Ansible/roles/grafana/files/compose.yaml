@@ -3,9 +3,32 @@ networks:
     driver: bridge
 
 services:
+  caddy:
+    container_name: caddy
+    image: fra.vultrcr.com/metrodelay/caddy:2.11-alpine
+    hostname: caddy
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    networks:
+      - grafana
+    volumes:
+      - ./caddy/conf:/etc/caddy
+      - /data/caddy/data:/data
+      - /data/caddy/config:/config
+    deploy:
+      resources:
+        reservations:
+          memory: 64M
+        limits:
+          memory: 128M
   grafana:
     container_name: grafana
-    image: ewr.vultrcr.com/metrodelay/grafana:11.4.0
+    image: fra.vultrcr.com/metrodelay/grafana:12.3.1
     hostname: grafana
     ports:
       - "3000:3000"
@@ -13,9 +36,31 @@ services:
       grafana:
         aliases:
           - grafana.metrodelay.app
+    volumes:
+      - type: bind
+        source: ./grafana/grafana.ini
+        target: /etc/grafana/grafana.ini
+      - type: bind
+        source: ./grafana/datasources.yaml
+        target: /etc/grafana/provisioning/datasources/datasources.yaml
+      - type: bind
+        source: ./grafana/provider.yaml
+        target: /etc/grafana/provisioning/dashboards/provider.yaml
+      - type: bind
+        source: /data/grafana/dashboards
+        target: /var/lib/grafana/dashboards
+    depends_on:
+      - loki
+      - prometheus
+    deploy:
+      resources:
+        reservations:
+          memory: 128M
+        limits:
+          memory: 256M
   loki:
     container_name: loki
-    image: ewr.vultrcr.com/metrodelay/loki:3.2.2
+    image: fra.vultrcr.com/metrodelay/loki:3.6.3
     hostname: loki
     ports:
       - "3100:3100"
@@ -25,11 +70,21 @@ services:
           - loki.metrodelay.app
     volumes:
       - type: bind
-        source: ./loki.yaml
+        source: ./loki/loki.yaml
         target: /etc/loki/loki.yaml
+      - type: bind
+        source: /data/loki
+        target: /var/loki
+    command: -config.file=/etc/loki/loki.yaml
+    deploy:
+      resources:
+        reservations:
+          memory: 128M
+        limits:
+          memory: 256M
   prometheus:
     container_name: prometheus
-    image: ewr.vultrcr.com/metrodelay/prometheus:v3.0.1
+    image: fra.vultrcr.com/metrodelay/prometheus:v3.8.1
     hostname: prometheus
     ports:
       - "9090:9090"
@@ -39,15 +94,23 @@ services:
           - prometheus.metrodelay.app
     volumes:
       - type: bind
-        source: ./prometheus.yaml
+        source: ./prometheus/prometheus.yaml
         target: /prometheus/prometheus.yaml
       - type: bind
-        source: ./data/prometheus
+        source: /data/prometheus
         target: /var/prometheus
-    command: "--config.file=prometheus.yaml --storage.tsdb.retention.time=60d"
+    command: "--config.file=prometheus.yaml --storage.tsdb.retention.time=60d --web.enable-remote-write-receiver --storage.tsdb.path=/var/prometheus"
+    depends_on:
+      - node_exporter
+    deploy:
+      resources:
+        reservations:
+          memory: 128M
+        limits:
+          memory: 384M
   node_exporter:
     container_name: node_exporter
-    image: ewr.vultrcr.com/metrodelay/node-exporter:v1.8.2
+    image: fra.vultrcr.com/metrodelay/node-exporter:v1.10.2
     hostname: nodeexporter
     ports:
       - "9100:9100"
@@ -59,30 +122,17 @@ services:
       - grafana
     volumes:
       - '/:/host:ro,rslave'
-#  promtail:
-#    container_name: promtail
-#    image: grafana/promtail:3.2.2
-#    hostname: promtail
-#    networks:
-#      - grafana
-#    volumes:
-#      - type: bind
-#        source: ./promtail.yaml
-#        target: /etc/promtail/promtail.yaml
-#      - type: bind
-#        source: /var/log
-#        target: /var/log
-#      - type: bind
-#        source: /var/lib/docker/containers
-#        target: /var/lib/docker/containers
-#      - type: bind
-#        source: /var/run/docker.sock
-#        target: /var/run/docker.sock        
-#    command: "-config.file=/etc/promtail/promtail.yaml"
+    deploy:
+      resources:
+        reservations:
+          memory: 16M
+        limits:
+          memory: 32M
   alloy:
     container_name: alloy
-    image: grafana/alloy:v1.12.2
+    image: fra.vultrcr.com/metrodelay/alloy:v1.12.2
     hostname: alloy
+    privileged: true
     ports:
       - "12345:12345"
       - "12348:12348"
@@ -94,10 +144,10 @@ services:
       - grafana
     volumes:
       - type: bind
-        source: ./config.alloy
+        source: ./alloy/config.alloy
         target: /etc/alloy/config.alloy
       - type: bind
-        source: ./endpoints.json
+        source: ./alloy/endpoints.json
         target: /etc/alloy/endpoints.json
       - type: bind
         source: /var/log
@@ -107,13 +157,22 @@ services:
         target: /var/lib/docker/containers
       - type: bind
         source: /var/run/docker.sock
-        target: /var/run/docker.sock      
+        target: /var/run/docker.sock
+      - type: bind
+        source: /data/alloy
+        target: /var/lib/alloy
     command: [
       "run",
       "--server.http.listen-addr=0.0.0.0:12345",
       "--stability.level=public-preview",
       "/etc/alloy/config.alloy",
     ]
+#    deploy:
+#      resources:
+#        reservations:
+#          memory: 64M
+#        limits:
+#          memory: 128M
     depends_on:
       - loki
       - prometheus
