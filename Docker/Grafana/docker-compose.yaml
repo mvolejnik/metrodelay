@@ -3,6 +3,25 @@ networks:
     driver: bridge
 
 services:
+  caddy:
+    container_name: caddy
+    image: caddy:2.11-alpine
+    hostname: caddy
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    networks:
+      - grafana
+    volumes:
+      - $PWD/caddy/conf:/etc/caddy
+      - $PWD/caddy/data:/data
+      - $PWD/caddy/config:/config
+    environment:
+      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
   grafana:
     container_name: grafana
     image: grafana/grafana:12.3.1
@@ -11,6 +30,10 @@ services:
       - "3000:3000"
     networks:
       - grafana
+    volumes:
+      - type: bind
+        source: ./grafana.ini
+        target: /etc/grafana/grafana.ini
   loki:
     container_name: loki
     image: grafana/loki:3.6.3
