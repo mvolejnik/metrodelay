@@ -1,4 +1,4 @@
-- hosts: sre-blue
+- hosts: o11y-blue
   roles:
     - grafana
 #  delegate_to: 127.0.0.1
