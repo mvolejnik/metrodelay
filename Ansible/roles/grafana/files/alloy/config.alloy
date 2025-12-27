@@ -12,17 +12,33 @@ prometheus.exporter.unix "default" {
 
 loki.write "loki" {
   endpoint {
-    url = "http://loki.metrodelay.app:3100/api/prom/push"
+    url = "http://loki:3100/loki/api/v1/push"
   }
 }
 
 prometheus.exporter.cadvisor "grafana" {
   docker_host = "unix:///var/run/docker.sock"
   storage_duration = "5m"
+  store_container_labels = false
+  allowlisted_container_labels = ["grafana", "loki", "alloy"]
 }
 
-prometheus.scrape "scraper" {
+prometheus.exporter.cadvisor "app" {
+  docker_host = "unix:///var/run/docker.sock"
+  storage_duration = "5m"
+  store_container_labels = false
+  allowlisted_container_labels = ["remote-resources", "metrodelay-rest"]
+}
+
+prometheus.scrape "scraper_grafana" {
   targets    = prometheus.exporter.cadvisor.grafana.targets
+  forward_to = [ prometheus.remote_write.prometheus.receiver ]
+
+  scrape_interval = "10s"
+}
+
+prometheus.scrape "scraper_app" {
+  targets    = prometheus.exporter.cadvisor.app.targets
   forward_to = [ prometheus.remote_write.prometheus.receiver ]
 
   scrape_interval = "10s"

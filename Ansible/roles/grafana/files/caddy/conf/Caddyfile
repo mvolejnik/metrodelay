@@ -1,4 +1,4 @@
-:80 localhost:443 {
+:80 {
     log {
 		output file /var/log/caddy.log
 		format json

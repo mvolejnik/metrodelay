@@ -9,24 +9,10 @@
     api_key: "{{ vultr.api_key }}"
     domain: metrodelay.app
     data: "{{ ansible_host }}"
-- name: Create CNAME record - grafana.metrodelay.app
+- name: Create CNAME record - o11y.metrodelay.app
   vultr.cloud.dns_record:
     api_key: "{{ vultr.api_key }}"
-    name: grafana
-    type: CNAME
-    domain: metrodelay.app
-    data: metrodelay.app
-- name: Create CNAME record - loki.metrodelay.app
-  vultr.cloud.dns_record:
-    api_key: "{{ vultr.api_key }}"
-    name: loki
-    type: CNAME
-    domain: metrodelay.app
-    data: metrodelay.app
-- name: Create CNAME record - prometheus.metrodelay.app
-  vultr.cloud.dns_record:
-    api_key: "{{ vultr.api_key }}"
-    name: prometheus
+    name: o11y
     type: CNAME
     domain: metrodelay.app
     data: metrodelay.app
@@ -58,7 +44,7 @@
     mode: u=rw,g=,o=
 - name: Copy loki configuration
   ansible.builtin.copy:
-    src: ./files/loki.yaml
+    src: ./files/loki/loki.yaml
     dest: /var/docker/loki.yaml
     owner: root
     group: root

@@ -74,9 +74,6 @@ services:
       - type: bind
         source: ./prometheus/prometheus.yaml
         target: /prometheus/prometheus.yaml
-      - type: bind
-        source: ./data/prometheus
-        target: /test
     command: "--config.file=prometheus.yaml --storage.tsdb.retention.time=60d --web.enable-remote-write-receiver"
     depends_on:
       - node_exporter
