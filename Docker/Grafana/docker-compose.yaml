@@ -34,6 +34,10 @@ services:
       - type: bind
         source: ./grafana.ini
         target: /etc/grafana/grafana.ini
+      - ./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+    depends_on:
+      - loki
+      - prometheus
   loki:
     container_name: loki
     image: grafana/loki:3.6.3
