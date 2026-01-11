@@ -1,0 +1,51 @@
+prometheus.exporter.unix "default" {
+    disable_collectors = ["udev", "zfs", "xfs", "tapestats", "bcache", "sticky"]
+}
+
+prometheus.exporter.cadvisor "all_containers" {
+    docker_host = "unix:///var/run/docker.sock"
+    disabled_metrics = ["percpu", "sched"]
+    storage_duration = "1m"
+}
+
+prometheus.scrape "metrics_scraper" {
+  targets    = prometheus.exporter.cadvisor.all_containers.targets
+  forward_to = [prometheus.remote_write.prometheus.receiver]
+  scrape_interval = "30s" // Increased from 10s to save I/O and RAM
+}
+
+prometheus.remote_write "prometheus" {
+  endpoint {
+    url = "http://prometheus:9090/api/v1/write"
+  }
+}
+
+discovery.docker "all_containers" {
+ host = "unix:///var/run/docker.sock"
+}
+
+discovery.relabel "filter_logs" {
+  targets = discovery.docker.all_containers.targets
+//  rule {
+//    source_labels = ["__meta_docker_container_name"]
+//    regex = "/(remote-resources|metrodelay-rest)"
+//    action = "keep"
+//  }
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex = "/(.*)"
+    target_label = "container"
+  }
+}
+
+loki.source.docker "default" {
+  host      = "unix:///var/run/docker.sock"
+  targets   = discovery.relabel.filter_logs.output
+  forward_to = [loki.write.loki.receiver]
+}
+
+loki.write "loki" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}

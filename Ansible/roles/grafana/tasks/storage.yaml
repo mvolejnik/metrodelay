@@ -1,0 +1,64 @@
+- name: Make recursive shared / mount
+  ansible.builtin.command: "mount --make-rshared /"
+
+- name: Ensure /data directory exists
+  ansible.builtin.file:
+    path: "{{ mount_path }}"
+    state: directory
+    mode: '0755'
+
+- name: Create ext4 filesystem on the block storage
+  community.general.filesystem:
+    fstype: ext4
+    dev: "{{ device_path }}"
+
+- name: Mount the block storage and add to fstab
+  ansible.builtin.mount:
+    path: "{{ mount_path }}"
+    src: "{{ device_path }}"
+    fstype: ext4
+    state: mounted
+
+- name: Ensure /data/caddy/data directory exists
+  ansible.builtin.file:
+    path: "{{ mount_path }}/caddy/data"
+    state: directory
+    mode: '0755'
+
+- name: Ensure /data/caddy/conf directory exists
+  ansible.builtin.file:
+    path: "{{ mount_path }}/caddy/conf"
+    state: directory
+    mode: '0755'
+
+- name: Ensure grafana directory exists
+  ansible.builtin.file:
+    path: "{{ mount_path }}/grafana/dashboards"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Ensure alloy data directory exists
+  ansible.builtin.file:
+    path: "{{ mount_path }}/alloy"
+    state: directory
+    owner: "473"
+    group: "473"    
+    mode: '0755'
+
+- name: Ensure prometheus directory exists
+  ansible.builtin.file:
+    path: "{{ mount_path }}/prometheus"
+    state: directory
+    owner: "65534"
+    group: "65534"
+    mode: '0755'
+
+- name: Ensure loki data directory exists
+  ansible.builtin.file:
+    path: "{{ mount_path }}/loki"
+    state: directory
+    owner: "10001"
+    group: "10001"    
+    mode: '0755'

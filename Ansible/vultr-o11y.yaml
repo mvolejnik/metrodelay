@@ -1,0 +1,7 @@
+- hosts: g_o11y:&g_{{ cluster }}
+  remote_user: root
+  vars:
+    device_path: /dev/vdb
+    mount_path: /data
+  roles:
+    - grafana

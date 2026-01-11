@@ -1,0 +1,156 @@
+- name: Install docker
+  community.general.apk:
+    name: docker
+    update_cache: true
+
+- name: Install docker compose
+  community.general.apk:
+    name: docker-compose
+    update_cache: true
+
+
+- name: Start docker service
+  ansible.builtin.service:
+    name: docker
+    enabled: yes
+    state: started
+
+- name: Creates docker directory
+  ansible.builtin.file:
+    path: /var/docker
+    state: directory
+
+- name: Copy grafana docker compose file
+  ansible.builtin.copy:
+    src: ./files/compose.yaml
+    dest: /var/docker/compose.yaml
+    owner: root
+    group: root
+    mode: u=rw,g=,o=
+
+- name: Ensure grafana directory exists
+  ansible.builtin.file:
+    path: /var/docker/grafana
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy grafana configuration
+  ansible.builtin.copy:
+    src: ./files/grafana/grafana.ini
+    dest: /var/docker/grafana/grafana.ini
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+
+- name: Copy grafana datasources
+  ansible.builtin.copy:
+    src: ./files/grafana/datasources.yaml
+    dest: /var/docker/grafana/datasources.yaml
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+
+- name: Copy grafana datasources
+  ansible.builtin.copy:
+    src: ./files/grafana/provider.yaml
+    dest: /var/docker/grafana/provider.yaml
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+
+- name: Ensure loki directory exists
+  ansible.builtin.file:
+    path: /var/docker/loki
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy loki configuration
+  ansible.builtin.copy:
+    src: ./files/loki/loki.yaml
+    dest: /var/docker/loki/loki.yaml
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+
+- name: Ensure prometheus directory exists
+  ansible.builtin.file:
+    path: /var/docker/prometheus
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy prometheus configuration  
+  ansible.builtin.copy:
+    src: ./files/prometheus/prometheus.yaml
+    dest: /var/docker/prometheus/prometheus.yaml
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+
+- name: Ensure alloy directory exists
+  ansible.builtin.file:
+    path: /var/docker/alloy
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy alloy configuration
+  ansible.builtin.copy:
+    src: ./files/alloy/config.alloy
+    dest: /var/docker/alloy/config.alloy
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+
+- name: Copy alloy endpoints configuration
+  ansible.builtin.copy:
+    src: ./files/alloy/endpoints.json
+    dest: /var/docker/alloy/endpoints.json
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+
+- name: Ensure caddy directory exists
+  ansible.builtin.file:
+    path: /var/docker/caddy
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Create Caddy conf directory if it does not exist
+  ansible.builtin.file:
+    path: /var/docker/caddy/conf
+    state: directory
+    mode: '0755'
+
+- name: Copy Caddyfile
+  ansible.builtin.template:
+    src: ./files/caddy/conf/Caddyfile.j2
+    dest: /var/docker/caddy/conf/Caddyfile
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+
+- name: Log into Vultr Docker Registry
+  community.docker.docker_login:
+    registry_url: https://fra.vultrcr.com/metrodelay
+    username: "{{ vultr.registry.username }}"
+    password: "{{ vultr.registry.api_key }}"
+
+- name: Start containers
+  community.docker.docker_compose_v2:
+    project_src: /var/docker
+    state: present
+    recreate: always
+  register: output
+
+- name: Start containers result
+  ansible.builtin.debug:
+    var: output

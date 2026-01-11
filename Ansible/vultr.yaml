@@ -1,0 +1,12 @@
+plugin: vultr.cloud.vultr
+#api_key: "{{ vultr.api_key }}"
+compose:
+  ansible_host: vultr_main_ip
+keyed_groups:
+  - key: vultr_tags
+    prefix: "g"
+  - key: vultr_region
+    prefix: "g"
+hostvars_prefix: vultr_
+hostvars_plugins:
+  - vultr.cloud.vultr

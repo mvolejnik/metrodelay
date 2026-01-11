@@ -3,7 +3,40 @@
   "extends": [
     "config:recommended"
   ],
+  "registryAliases": {
+    "vultr-repo": "fra.vultrcr.com" 
+  },
   "packageRules": [
+    {
+      "matchPackageNames": ["fra.vultrcr.com/metrodelay/caddy"],
+      "packageName": "caddy",
+      "datasource": "docker"
+    },
+    {
+      "matchPackageNames": ["ra.vultrcr.com/metrodelay/grafana"],
+      "packageName": "grafana/grafana",
+      "datasource": "docker"
+    },
+    {
+      "matchPackageNames": ["fra.vultrcr.com/metrodelay/loki"],
+      "packageName": "grafana/loki",
+      "datasource": "docker"
+    },
+    {
+      "matchPackageNames": ["fra.vultrcr.com/metrodelay/prometheus"],
+      "packageName": "prom/prometheus",
+      "datasource": "docker"
+    },
+    {
+      "matchPackageNames": ["fra.vultrcr.com/metrodelay/node-exporter"],
+      "packageName": "prom/node-exporter",
+      "datasource": "docker"
+    },
+    {
+      "matchPackageNames": ["fra.vultrcr.com/metrodelay/alloy"],
+      "packageName": "grafana/alloy",
+      "datasource": "docker"
+    },
     {
       "matchDatasources": [
         "docker"
@@ -11,7 +44,7 @@
       "enabled": false,
       "description": "Exclude vultrcr.com metrodelay images due to inaccessibility.",
       "matchPackageNames": [
-        "ewr.vultrcr.com/metrodelay/{/,}**",
+        "fra.vultrcr.com/metrodelay/{/,}**",
         "metrodelay/{/,}**"
       ]
     },

@@ -19,4 +19,4 @@ target/
 nbproject/
 nb-configuration.xml
 
-.vault.yaml
+.vault.password
