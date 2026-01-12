@@ -1,60 +1,28 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": [
+    "config:recommended"
+  ],
   "packageRules": [
     {
-      "groupName": "metrodelay-mirrored-images",
-      "matchDatasources": ["docker"],
+      "matchDatasources": [
+        "docker"
+      ],
+      "enabled": false,
+      "description": "Exclude vultrcr.com metrodelay images due to inaccessibility.",
       "matchPackageNames": [
-        "fra.vultrcr.com/metrodelay/caddy",
-        "fra.vultrcr.com/metrodelay/grafana",
-        "fra.vultrcr.com/metrodelay/loki",
-        "fra.vultrcr.com/metrodelay/prometheus",
-        "fra.vultrcr.com/metrodelay/node-exporter",
-        "fra.vultrcr.com/metrodelay/alloy"
+        "fra.vultrcr.com/metrodelay/{/,}**"
+      ]
+    },
+    {
+      "matchDatasources": [
+        "maven"
       ],
-      "replacementDatasource": "docker"
-    },
-    {
-      "matchPackageNames": ["fra.vultrcr.com/metrodelay/caddy"],
-      "replacementName": "caddy"
-    },
-    {
-      "matchPackageNames": ["fra.vultrcr.com/metrodelay/grafana"],
-      "replacementName": "grafana/grafana"
-    },
-    {
-      "matchPackageNames": ["fra.vultrcr.com/metrodelay/loki"],
-      "replacementName": "grafana/loki"
-    },
-    {
-      "matchPackageNames": ["fra.vultrcr.com/metrodelay/grafana"],
-      "replacementName": "prom/prometheus"
-    },
-    {
-      "matchPackageNames": ["fra.vultrcr.com/metrodelay/grafana"],
-      "replacementName": "prom/node_exporter"
-    },
-    {
-      "matchPackageNames": ["fra.vultrcr.com/metrodelay/grafana"],
-      "replacementName": "grafana/alloy"
-    },
-    {
-      "description": "Disable internal Maven and any unmapped Vultr images",
+      "enabled": false,
+      "description": "Exclude all internal app.metrodelay maven packages from Renovate updates.",
       "matchPackageNames": [
-        "fra.vultrcr.com/metrodelay/**",
-        "metrodelay/**",
-        "/^app\\.metrodelay/"
-      ],
-      "excludePackageNames": [
-        "fra.vultrcr.com/metrodelay/caddy",
-        "fra.vultrcr.com/metrodelay/grafana",
-        "fra.vultrcr.com/metrodelay/loki",
-        "fra.vultrcr.com/metrodelay/prometheus",
-        "fra.vultrcr.com/metrodelay/node-exporter",
-        "fra.vultrcr.com/metrodelay/alloy"
-      ],
-      "enabled": false
+        "//^app\\.metrodelay//"
+      ]
     }
   ]
 }
