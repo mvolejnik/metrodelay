@@ -4,12 +4,12 @@ networks:
 
 services:
   remote-resources:
-    image: ewr.vultrcr.com/metrodelay/remote-resources:0.0.1
+    image: fra.vultrcr.com/metrodelay/remote-resources:0.0.1
     container_name: remote-resources
     networks:
       - metrodelay
   metrodelay-ws-rest:
-    image: ewr.vultrcr.com/metrodelay/metrodelay-ws-rest:0.0.1
+    image: fra.vultrcr.com/metrodelay/metrodelay-ws-rest:0.0.1
     container_name: metrodelay-ws-rest
     networks:
       - metrodelay
