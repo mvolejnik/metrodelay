@@ -4,59 +4,59 @@
     "config:recommended"
   ],
   "registryAliases": {
-    "vultr-repo": "fra.vultrcr.com" 
+    "vultr-repo": "fra.vultrcr.com"
   },
   "packageRules": [
     {
+      "matchDatasources": ["docker"],
       "matchPackageNames": ["fra.vultrcr.com/metrodelay/caddy"],
-      "packageName": "caddy",
-      "datasource": "docker"
+      "replacementName": "caddy"
     },
     {
-      "matchPackageNames": ["ra.vultrcr.com/metrodelay/grafana"],
-      "packageName": "grafana/grafana",
-      "datasource": "docker"
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["fra.vultrcr.com/metrodelay/grafana"],
+      "replacementName": "grafana/grafana"
     },
     {
+      "matchDatasources": ["docker"],
       "matchPackageNames": ["fra.vultrcr.com/metrodelay/loki"],
-      "packageName": "grafana/loki",
-      "datasource": "docker"
+      "replacementName": "grafana/loki"
     },
     {
+      "matchDatasources": ["docker"],
       "matchPackageNames": ["fra.vultrcr.com/metrodelay/prometheus"],
-      "packageName": "prom/prometheus",
-      "datasource": "docker"
+      "replacementName": "prom/prometheus"
     },
     {
+      "matchDatasources": ["docker"],
       "matchPackageNames": ["fra.vultrcr.com/metrodelay/node-exporter"],
-      "packageName": "prom/node-exporter",
-      "datasource": "docker"
+      "replacementName": "prom/node-exporter"
     },
     {
+      "matchDatasources": ["docker"],
       "matchPackageNames": ["fra.vultrcr.com/metrodelay/alloy"],
-      "packageName": "grafana/alloy",
-      "datasource": "docker"
+      "replacementName": "grafana/alloy"
     },
     {
-      "matchDatasources": [
-        "docker"
-      ],
-      "enabled": false,
-      "description": "Exclude vultrcr.com metrodelay images due to inaccessibility.",
+      "description": "Disable all other internal images that aren't explicitly mapped above",
       "matchPackageNames": [
-        "fra.vultrcr.com/metrodelay/{/,}**",
-        "metrodelay/{/,}**"
-      ]
+        "fra.vultrcr.com/metrodelay/**",
+        "metrodelay/**"
+      ],
+      "excludePackageNames": [
+        "fra.vultrcr.com/metrodelay/caddy",
+        "fra.vultrcr.com/metrodelay/grafana",
+        "fra.vultrcr.com/metrodelay/loki",
+        "fra.vultrcr.com/metrodelay/prometheus",
+        "fra.vultrcr.com/metrodelay/node-exporter",
+        "fra.vultrcr.com/metrodelay/alloy"
+      ],
+      "enabled": false
     },
     {
-      "matchDatasources": [
-        "maven"
-      ],
-      "enabled": false,
-      "description": "Exclude all internal app.metrodelay maven packages from Renovate updates.",
-      "matchPackageNames": [
-        "^app\\.metrodelay"
-      ]
+      "matchDatasources": ["maven"],
+      "matchPackageNames": ["^app\\.metrodelay"],
+      "enabled": false
     }
   ]
 }
