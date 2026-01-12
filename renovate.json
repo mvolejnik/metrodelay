@@ -1,47 +1,50 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ],
-  "registryAliases": {
-    "vultr-repo": "fra.vultrcr.com"
-  },
+  "extends": ["config:recommended"],
   "packageRules": [
     {
+      "groupName": "metrodelay-mirrored-images",
       "matchDatasources": ["docker"],
+      "matchPackageNames": [
+        "fra.vultrcr.com/metrodelay/caddy",
+        "fra.vultrcr.com/metrodelay/grafana",
+        "fra.vultrcr.com/metrodelay/loki",
+        "fra.vultrcr.com/metrodelay/prometheus",
+        "fra.vultrcr.com/metrodelay/node-exporter",
+        "fra.vultrcr.com/metrodelay/alloy"
+      ],
+      "replacementDatasource": "docker"
+    },
+    {
       "matchPackageNames": ["fra.vultrcr.com/metrodelay/caddy"],
       "replacementName": "caddy"
     },
     {
-      "matchDatasources": ["docker"],
       "matchPackageNames": ["fra.vultrcr.com/metrodelay/grafana"],
       "replacementName": "grafana/grafana"
     },
     {
-      "matchDatasources": ["docker"],
       "matchPackageNames": ["fra.vultrcr.com/metrodelay/loki"],
       "replacementName": "grafana/loki"
     },
     {
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["fra.vultrcr.com/metrodelay/prometheus"],
+      "matchPackageNames": ["fra.vultrcr.com/metrodelay/grafana"],
       "replacementName": "prom/prometheus"
     },
     {
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["fra.vultrcr.com/metrodelay/node-exporter"],
-      "replacementName": "prom/node-exporter"
+      "matchPackageNames": ["fra.vultrcr.com/metrodelay/grafana"],
+      "replacementName": "prom/node_exporter"
     },
     {
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["fra.vultrcr.com/metrodelay/alloy"],
+      "matchPackageNames": ["fra.vultrcr.com/metrodelay/grafana"],
       "replacementName": "grafana/alloy"
     },
     {
-      "description": "Disable all other internal images that aren't explicitly mapped above",
+      "description": "Disable internal Maven and any unmapped Vultr images",
       "matchPackageNames": [
         "fra.vultrcr.com/metrodelay/**",
-        "metrodelay/**"
+        "metrodelay/**",
+        "/^app\\.metrodelay/"
       ],
       "excludePackageNames": [
         "fra.vultrcr.com/metrodelay/caddy",
@@ -51,11 +54,6 @@
         "fra.vultrcr.com/metrodelay/node-exporter",
         "fra.vultrcr.com/metrodelay/alloy"
       ],
-      "enabled": false
-    },
-    {
-      "matchDatasources": ["maven"],
-      "matchPackageNames": ["^app\\.metrodelay"],
       "enabled": false
     }
   ]
