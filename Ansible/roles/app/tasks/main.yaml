@@ -47,7 +47,7 @@
     mode: u=rw,g=r,o=r
 - name: Log into Vultr Docker Registry
   community.docker.docker_login:
-    registry_url: https://ewr.vultrcr.com/metrodelay
+    registry_url: https://fra.vultrcr.com/metrodelay
     username: "{{ vultr.registry.username }}"
     password: "{{ vultr.registry.api_key }}"
 - name: Start containers
