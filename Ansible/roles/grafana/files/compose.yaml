@@ -1,6 +1,7 @@
 networks:
   grafana:
     driver: bridge
+    name: grafana
 
 services:
   caddy:
