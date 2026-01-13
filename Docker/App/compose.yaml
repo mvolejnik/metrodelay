@@ -52,3 +52,21 @@ services:
       resources:
         limits:
           memory: 96M
+  node_exporter:
+    container_name: node_exporter
+    image: prom/node-exporter:v1.10.2
+    hostname: nodeexporter
+    ports:
+      - "9100:9100"
+    command:
+      - '--path.rootfs=/host'
+    pid: host
+    restart: unless-stopped
+    networks:
+      - grafana
+    volumes:
+      - '/:/host:ro,rslave'
+    deploy:
+      resources:
+        limits:
+          memory: 20M
