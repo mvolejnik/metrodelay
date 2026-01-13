@@ -1,0 +1,32 @@
+
+- name: Install sysstat
+  community.general.apk:
+    name: sysstat
+    update_cache: true
+
+- name: Configure sysstat
+  block:
+    - name: sysstat log directory exists
+      ansible.builtin.file:
+        path: /var/log/sa
+        state: directory
+        mode: '0755'
+
+    - name: Schedule sa1 to collect data
+      ansible.builtin.cron:
+        name: "sysstat collect"
+        minute: "*/10"
+        job: "/usr/lib/sa/sa1 1 1"
+
+    - name: Schedule sa2 to generate daily report
+      ansible.builtin.cron:
+        name: "sysstat report"
+        minute: "53"
+        hour: "23"
+        job: "/usr/lib/sa/sa2 -A"
+
+    - name: Ensure crond is enabled and running
+      ansible.builtin.service:
+        name: crond
+        state: started
+        enabled: yes

@@ -4,7 +4,7 @@ cluster=$1
 
 if [ -z "${cluster}" ];then
   >&2 echo missing cluster parameter
-  exit
+  exit 1
 fi
 
 shift
