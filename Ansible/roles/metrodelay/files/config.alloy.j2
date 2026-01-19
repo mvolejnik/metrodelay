@@ -1,5 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Configuration file
+
 local.file "endpoints" {
     // The endpoints file is used to define the endpoints, credentials and options
     // for the Alloy export to.
@@ -12,7 +13,7 @@ prometheus.exporter.unix "default" {
 
 loki.write "loki" {
   endpoint {
-    url = "http://loki.metrodelay.app:3100/api/prom/push"
+    url = "http://{{ o11y_ip }}:3100/api/prom/push"
   }
 }
 
@@ -30,7 +31,11 @@ prometheus.scrape "scraper" {
 
 prometheus.remote_write "prometheus" {
   endpoint {
-    url = "http://prometheus:9090/api/v1/write"
+    url = "http://{{ o11y_ip }}:9090/api/v1/write"
+  }
+
+  external_labels = {
+    alloy_instance = "instance-metrodelay", 
   }
 }
 

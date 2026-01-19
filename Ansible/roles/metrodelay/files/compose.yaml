@@ -8,31 +8,14 @@ services:
     container_name: remote-resources
     networks:
       - metrodelay
-  metrodelay-ws-rest:
-    image: fra.vultrcr.com/metrodelay/metrodelay-ws-rest:0.0.1
-    container_name: metrodelay-ws-rest
+    command: ["-i", "pt2m", "-d", "pt2m"]
+  metrodelay-rest:
+    image: fra.vultrcr.com/metrodelay/metrodelay-rest:0.0.1
+    container_name: metrodelay-rest
+    ports:
+      - "8080:8080"
     networks:
       - metrodelay
-#  promtail:
-#    container_name: promtail
-#    image: grafana/promtail:3.2.2
-#    hostname: promtail
-#    networks:
-#      - metrodelay
-#    volumes:
-#      - type: bind
-#        source: ./promtail.yaml
-#        target: /etc/promtail/promtail.yaml
-#      - type: bind
-#        source: /var/log
-#        target: /var/log
-#      - type: bind
-#        source: /var/lib/docker/containers
-#        target: /var/lib/docker/containers
-#      - type: bind
-#        source: /var/run/docker.sock
-#        target: /var/run/docker.sock        
-#    command: "-config.file=/etc/promtail/promtail.yaml"
   alloy:
     container_name: alloy
     image: grafana/alloy:v1.12.2
@@ -56,6 +39,9 @@ services:
       - type: bind
         source: /var/log
         target: /var/log
+      # WARNING: Mounting the Docker socket gives this container full control
+      # over the Docker daemon on the host. Consider using the Docker API
+      # over TLS with authentication instead of mounting /var/run/docker.sock directly.
       - type: bind
         source: /var/lib/docker/containers
         target: /var/lib/docker/containers

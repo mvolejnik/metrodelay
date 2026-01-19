@@ -6,7 +6,6 @@
 package app.metrodelay.server.status;
 
 import app.metrodelay.server.remoteresources.Resource;
-import app.metrodelay.server.scheduler.GetUrlResourceJob;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +33,7 @@ public class ResourceCache {
                 || !resource.fingerprint().equals(cache.get(url).fingerprint())
                 && !resource.digest().equals(cache.get(url).digest())) {
             cache.put(url, resource);
-            l.debug("Resource updated '{}'", url);
+            l.info("Resource updated '{}'", url);
         } else {
             l.debug("Not updating resource '{}'", url);
         }

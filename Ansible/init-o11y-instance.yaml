@@ -1,0 +1,58 @@
+- hosts: localhost
+  gather_facts: no
+  vars:
+    instance_plan: "vc2-1c-1gb"
+    instance_region: "fra"
+  tasks:  
+  - name: list instances
+    vultr.cloud.instance_info:
+      region: "{{ instance_region }}"
+      label: "o11y"
+      api_key: "{{ vultr.api_key }}"
+  - name: create instance o11y-{{ cluster }}
+    vultr.cloud.instance:
+      region: "{{ instance_region }}"
+      api_key: "{{ vultr.api_key }}"
+      backups: false
+      hostname: o11y-{{ cluster }}
+      os: Alpine Linux x64
+      label: o11y
+      tags:
+        - o11y
+        - grafana
+        - "{{ cluster }}"
+      plan: "{{ instance_plan }}"
+      ssh_keys:
+        - ansible
+        - toyosu
+      user_scheme: root
+  - name: get instance info
+    vultr.cloud.instance_info:
+      region: "{{ instance_region }}"
+      label: "o11y"
+      api_key: "{{ vultr.api_key }}"
+    register: instance_o11y
+  - name: Block storage volume is present and attached
+    vultr.cloud.block_storage:
+      api_key: "{{ vultr.api_key }}"
+      label: "o11y-storage"
+      size_gb: 40
+      block_type: storage_opt
+      region: "{{ instance_region }}"
+      attached_to_instance: "{{ instance_o11y.vultr_instance_info[0].id }}"
+      live: true
+      state: present
+    delegate_to: localhost
+    register: attach_result
+    until: attach_result is not failed
+    retries: 5
+    delay: 10
+  - name: Instance is attached to Metrodelay VPC
+    vultr.cloud.instance:
+      label: o11y
+      api_key: "{{ vultr.api_key }}"
+      plan: "{{ instance_plan }}"
+      region: "{{ instance_region }}"
+      vpcs:
+        - "{{ metrodelay_vpc.vultr_vpc.description }}"
+      state: present

@@ -1,6 +1,9 @@
 networks:
   metrodelay:
     driver: bridge
+  grafana:
+    driver: bridge
+    name: grafana
 
 services:
   remote-resources:
@@ -8,20 +11,68 @@ services:
     container_name: remote-resources
     networks:
       - metrodelay
-    logging:
-      driver: loki
-      options:
-        loki-url: "http://localhost:3100/loki/api/v1/push"
-        loki-retries: 5
-        loki-batch-size: 400
-  metrodelay-ws-rest:
-    image: metrodelay/metrodelay-ws-rest:0.0.1
+  metrodelay-rest:
+    image: metrodelay/metrodelay-rest:0.0.1
     container_name: metrodelay-rest
     networks:
       - metrodelay
-    logging:
-      driver: loki
-      options:
-        loki-url: "http://localhost:3100/loki/api/v1/push"
-        loki-retries: 5
-        loki-batch-size: 400
+  alloy:
+    container_name: metrodelay_alloy
+    image: grafana/alloy:v1.12.2
+    hostname: alloy
+    ports:
+      - "12346:12345"
+      - "12349:12348"
+      - "6833:6832"
+      - "55680:55679"
+      - "4319:4317"
+      - "4320:4318"
+    networks:
+      - metrodelay
+    volumes:
+      - type: bind
+        source: ./alloy/config.alloy
+        target: /etc/alloy/config.alloy
+      - type: bind
+        source: ./alloy/endpoints.json
+        target: /etc/alloy/endpoints.json
+      - type: bind
+        source: /var/log
+        target: /var/log
+      - type: bind
+        source: /var/lib/docker/containers
+        target: /var/lib/docker/containers
+      # WARNING: Mounting the Docker socket gives this container full control
+      # over the Docker daemon on the host. Consider using the Docker API
+      # over TLS with authentication instead of mounting /var/run/docker.sock directly.
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock      
+    command: [
+      "run",
+      "--server.http.listen-addr=0.0.0.0:12345",
+      "--stability.level=public-preview",
+      "/etc/alloy/config.alloy",
+    ]
+    deploy:
+      resources:
+        limits:
+          memory: 96M
+  node_exporter:
+    container_name: metrodelay_node_exporter
+    image: prom/node-exporter:v1.10.2
+    hostname: nodeexporter
+    ports:
+      - "9101:9100"
+    command:
+      - '--path.rootfs=/host'
+    pid: host
+    restart: unless-stopped
+    networks:
+      - metrodelay
+    volumes:
+      - '/:/host:ro,rslave'
+    deploy:
+      resources:
+        limits:
+          memory: 20M

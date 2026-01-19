@@ -1,0 +1,42 @@
+- hosts: localhost
+  gather_facts: no
+  vars:
+    instance_plan: "vc2-1c-1gb"
+    instance_region: "fra"
+  tasks:  
+  - name: list instances
+    vultr.cloud.instance_info:
+      api_key: "{{ vultr.api_key }}"
+      region: "{{ instance_region }}"
+      label: metrodelay
+  - name: create instance
+    vultr.cloud.instance:
+      region: "{{ instance_region }}"
+      api_key: "{{ vultr.api_key }}"
+      backups: false
+      hostname: metrodelay-{{ cluster }}
+      os: Alpine Linux x64
+      label: metrodelay
+      tags:
+        - app
+        - metrodelay
+        - "{{ cluster }}"
+      plan: "{{ instance_plan }}"
+      ssh_keys:
+        - ansible
+        - toyosu
+      user_scheme: root
+  - name: list instances
+    vultr.cloud.instance_info:
+      api_key: "{{ vultr.api_key }}"
+      region: "{{ instance_region }}"
+      label: metrodelay
+  - name: Instance is attached to Metrodelay VPC
+    vultr.cloud.instance:
+      label: metrodelay
+      api_key: "{{ vultr.api_key }}"
+      plan: "{{ instance_plan }}"
+      region: "{{ instance_region }}"
+      vpcs:
+        - "{{ metrodelay_vpc.vultr_vpc.description }}"
+      state: present

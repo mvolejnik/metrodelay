@@ -1,2 +1,2 @@
 - import_playbook: vultr-o11y.yaml
-- import_playbook: vultr-app.yaml
+- import_playbook: vultr-metrodelay.yaml

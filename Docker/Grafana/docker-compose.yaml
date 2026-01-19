@@ -125,6 +125,9 @@ services:
       - type: bind
         source: /var/lib/docker/containers
         target: /var/lib/docker/containers
+      # WARNING: Mounting the Docker socket gives this container full control
+      # over the Docker daemon on the host. Consider using the Docker API
+      # over TLS with authentication instead of mounting /var/run/docker.sock directly.
       - type: bind
         source: /var/run/docker.sock
         target: /var/run/docker.sock      

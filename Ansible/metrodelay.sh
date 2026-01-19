@@ -8,4 +8,4 @@ if [ -z "$cluster" ]; then
   exit 1
 fi
 
-ansible-playbook all.yaml --limit "g_o11y:&g_${cluster}" -i vultr.yaml --extra-vars "cluster=${cluster}" --extra-vars @.vault.yaml $@
+ansible-playbook all.yaml --limit "g_app:&g_${cluster}" -i vultr.yaml --extra-vars "cluster=${cluster}" --extra-vars @.vault.yaml $@

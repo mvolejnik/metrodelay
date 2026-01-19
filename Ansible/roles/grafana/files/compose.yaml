@@ -1,6 +1,7 @@
 networks:
   grafana:
     driver: bridge
+    name: grafana
 
 services:
   caddy:
@@ -33,9 +34,7 @@ services:
     ports:
       - "3000:3000"
     networks:
-      grafana:
-        aliases:
-          - grafana.metrodelay.app
+      - grafana
     volumes:
       - type: bind
         source: ./grafana/grafana.ini
@@ -65,9 +64,7 @@ services:
     ports:
       - "3100:3100"
     networks:
-      grafana:
-        aliases:
-          - loki.metrodelay.app
+      - grafana
     volumes:
       - type: bind
         source: ./loki/loki.yaml
@@ -89,9 +86,7 @@ services:
     ports:
       - "9090:9090"
     networks:
-      grafana:
-        aliases:
-          - prometheus.metrodelay.app
+      - grafana
     volumes:
       - type: bind
         source: ./prometheus/prometheus.yaml
@@ -155,6 +150,9 @@ services:
       - type: bind
         source: /var/lib/docker/containers
         target: /var/lib/docker/containers
+      # WARNING: Mounting the Docker socket gives this container full control
+      # over the Docker daemon on the host. Consider using the Docker API
+      # over TLS with authentication instead of mounting /var/run/docker.sock directly.
       - type: bind
         source: /var/run/docker.sock
         target: /var/run/docker.sock

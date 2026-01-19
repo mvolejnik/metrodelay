@@ -1,29 +1,27 @@
-- name: Create CNAME record - remoteresources.metrodelay.app
-  vultr.cloud.dns_record:
-    api_key: "{{ vultr.api_key }}"
-    name: remoteresources
-    type: CNAME
-    domain: metrodelay.app
-    data: metrodelay.app
 - name: Install docker
   community.general.apk:
     name: docker
     update_cache: true
+
 - name: Install docker compose
   community.general.apk:
     name: docker-compose
     update_cache: true
+
 - name: Make recursive shared / mount
   ansible.builtin.command: "mount --make-rshared /"
+
 - name: Start docker service
   ansible.builtin.service:
     name: docker
     enabled: yes
     state: started
+
 - name: Creates docker directory
   ansible.builtin.file:
     path: /var/docker
     state: directory
+
 - name: Copy app docker compose file
   ansible.builtin.copy:
     src: ./files/compose.yaml
@@ -31,13 +29,26 @@
     owner: root
     group: root
     mode: u=rw,g=,o=
+
+- name: get instance info
+  vultr.cloud.instance_info:
+    region: "fra"
+    label: "o11y"
+    api_key: "{{ vultr.api_key }}"
+  register: instance_app
+
+- name: Set Metrodelay App IP Fact
+  set_fact:
+    o11y_ip: "{{ (instance_app.vultr_instance_info | map(attribute='internal_ip') | first) | default(none) }}"
+
 - name: Copy alloy configuration
-  ansible.builtin.copy:
-    src: ./files/config.alloy
+  ansible.builtin.template:
+    src: ./files/config.alloy.j2
     dest: /var/docker/config.alloy
     owner: root
     group: root
     mode: u=rw,g=r,o=r
+
 - name: Copy alloy endpoints configuration
   ansible.builtin.copy:
     src: ./files/endpoints.json
@@ -45,15 +56,18 @@
     owner: root
     group: root
     mode: u=rw,g=r,o=r
+
 - name: Log into Vultr Docker Registry
   community.docker.docker_login:
     registry_url: https://fra.vultrcr.com/metrodelay
     username: "{{ vultr.registry.username }}"
     password: "{{ vultr.registry.api_key }}"
+
 - name: Start containers
   community.docker.docker_compose_v2:
     project_src: /var/docker
   register: output
+
 - name: Start containers result
   ansible.builtin.debug:
     var: output

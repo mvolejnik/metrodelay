@@ -1,0 +1,15 @@
+- hosts: localhost
+  gather_facts: no
+  tasks:
+  - name: Create a Vultr VPC
+    vultr.cloud.vpc:
+      api_key: "{{ vultr.api_key }}"
+      description: "metrodelay-internal-network"
+      region: fra
+      v4_subnet: "10.10.0.0"
+      v4_subnet_mask: 24
+      state: present
+    register: metrodelay_vpc
+  - name: Set Metrodelay Network Fact
+    set_fact:
+      metrodelay_vpc: "{{ metrodelay_vpc }}"

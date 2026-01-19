@@ -21,3 +21,12 @@
     domain: metrodelay.app
     data: metrodelay.app
   delegate_to: localhost
+
+- name: Create CNAME record - api.metrodelay.app
+  vultr.cloud.dns_record:
+    api_key: "{{ vultr.api_key }}"
+    name: api
+    type: CNAME
+    domain: metrodelay.app
+    data: metrodelay.app
+  delegate_to: localhost

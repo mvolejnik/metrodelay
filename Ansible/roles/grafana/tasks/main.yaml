@@ -1,4 +1,7 @@
 ---
+- name: OS Set up
+  ansible.builtin.import_tasks: os.yaml
+
 - name: Firewall Rules
   ansible.builtin.import_tasks: firewall.yaml
 
@@ -10,3 +13,4 @@
 
 - name: Docker Stack
   ansible.builtin.import_tasks: docker.yaml
+

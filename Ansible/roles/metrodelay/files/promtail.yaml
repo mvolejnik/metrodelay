@@ -7,10 +7,10 @@ positions:
   filename: /tmp/positions.yaml
 
 client:
-  url: http://loki.metrodelay.app:3100/api/prom/push
+  url: http://loki:3100/api/prom/push
 
 scrape_configs:
-  - job_name: app
+  - job_name: metrodelay
     pipeline_stages:
       - static_labels:
           app: metrodelay
@@ -19,7 +19,7 @@ scrape_configs:
         refresh_interval: 5s
         filters:
           - name: name
-            values: [remote-resources, metrodelay-ws-rest]
+            values: [remote-resources, metrodelay-rest]
     relabel_configs:
       - source_labels: ['__meta_docker_container_name']
         regex: '/(.*)'
