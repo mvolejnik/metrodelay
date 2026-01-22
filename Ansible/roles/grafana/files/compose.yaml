@@ -59,7 +59,7 @@ services:
           memory: 256M
   loki:
     container_name: loki
-    image: fra.vultrcr.com/metrodelay/loki:3.6.3
+    image: fra.vultrcr.com/metrodelay/loki:3.6.4
     hostname: loki
     ports:
       - "3100:3100"
