@@ -1,4 +1,7 @@
 prometheus.exporter.unix "default" {
+    procfs_path = "/host/proc"
+    sysfs_path  = "/host/sys"
+    rootfs_path = "/host"
     disable_collectors = ["udev", "zfs", "xfs", "tapestats", "bcache", "sticky"]
 }
 
@@ -16,7 +19,7 @@ prometheus.scrape "metrics_scraper" {
 
 prometheus.remote_write "prometheus" {
   endpoint {
-    url = "http://prometheus:9090/api/v1/write"
+    url = "http://localhost:9090/api/v1/write"
   }
 }
 
@@ -46,6 +49,6 @@ loki.source.docker "default" {
 
 loki.write "loki" {
   endpoint {
-    url = "http://loki:3100/loki/api/v1/push"
+    url = "http://localhost:3100/loki/api/v1/push"
   }
 }

@@ -50,8 +50,8 @@
     mode: u=rw,g=r,o=r
 
 - name: Copy alloy endpoints configuration
-  ansible.builtin.copy:
-    src: ./files/endpoints.json
+  ansible.builtin.template:
+    src: ./files/endpoints.json.j2
     dest: /var/docker/endpoints.json
     owner: root
     group: root

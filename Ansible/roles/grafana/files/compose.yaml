@@ -127,16 +127,12 @@ services:
     container_name: alloy
     image: fra.vultrcr.com/metrodelay/alloy:v1.12.2
     hostname: alloy
-    privileged: true
-    ports:
-      - "12345:12345"
-      - "12348:12348"
-      - "6832:6832"
-      - "55679:55679"
-      - "4317:4317"
-      - "4318:4318"
-    networks:
-      - grafana
+    user: root
+    cap_add:
+      - SYS_PTRACE
+      - DAC_READ_SEARCH
+    pid: host
+    network_mode: host
     volumes:
       - type: bind
         source: ./alloy/config.alloy
@@ -159,18 +155,21 @@ services:
       - type: bind
         source: /data/alloy
         target: /var/lib/alloy
+      - type: bind
+        source: /
+        target: /host
+        read_only: true
+        bind:
+          propagation: rslave
     command: [
       "run",
       "--server.http.listen-addr=0.0.0.0:12345",
       "--stability.level=public-preview",
       "/etc/alloy/config.alloy",
     ]
-#    deploy:
-#      resources:
-#        reservations:
-#          memory: 64M
-#        limits:
-#          memory: 128M
-    depends_on:
-      - loki
-      - prometheus
+    deploy:
+      resources:
+        reservations:
+          memory: 64M
+        limits:
+          memory: 128M
