@@ -9,6 +9,9 @@ local.file "endpoints" {
 
 // The Alloy exports everything, using an empty block.
 prometheus.exporter.unix "default" {
+  procfs_path = "/host/proc"
+  sysfs_path  = "/host/sys"
+  rootfs_path = "/host"
 }
 
 loki.write "loki" {
