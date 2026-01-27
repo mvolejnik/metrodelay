@@ -14,10 +14,7 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author mvolejnik
- */
+/// Stores remote resource
 public class ResourceCache {
     
     private static final int CACHE_SIZE_INIT = 100;

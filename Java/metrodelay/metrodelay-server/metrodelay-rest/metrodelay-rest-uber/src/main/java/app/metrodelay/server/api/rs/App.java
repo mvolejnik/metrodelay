@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package app.metrodelay.server.api.rs;
 
 import app.metrodelay.server.management.RegistryInit;
@@ -15,28 +10,36 @@ import org.eclipse.jetty.ee10.servlet.ServletHolder;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-/**
- *
- * @author mvolejnik
- */
+import java.net.InetAddress;
+
+///
+/// Metrodelay REST API application.
+///
 public class App {
-    
+
     private static final String ARG_PORT = "port";
+    private static final String ARG_HOST = "host";
     private static final String DEFAULT_PORT = "8080";
-            
-    public static org.eclipse.jetty.server.Server server(int port)
-    {
+    private static final String REGISTRY_MULTICAST_IP = "multicastip";
+    private static final String REGISTRY_MULGTICAST_PORT = "multicastport";
+    private static final String DEFAULT_MULTICAST_IP = "233.146.53.48";
+    private static final String DEFAULT_MULTICAST_PORT = "6839";
+
+    public static org.eclipse.jetty.server.Server server(int port) {
         org.eclipse.jetty.server.Server server = new org.eclipse.jetty.server.Server(port);
         return server;
     }
 
-    private static Options options(){
+    private static Options options() {
         var options = new Options();
         options.addOption("p", ARG_PORT, true, "server port");
+        options.addOption("h", ARG_HOST, true, "server hostname");
+        options.addOption("ma", REGISTRY_MULTICAST_IP, true, "registry service ip address");
+        options.addOption("mp", REGISTRY_MULGTICAST_PORT, true, "registry serivce multicast port");
         return options;
     }
-    
-    private static ContextHandler restHandler(){
+
+    private static ContextHandler restHandler(String multicastAddress, String multicastPort, String hostname) {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
         context.setContextPath("/");
         ServletHandler handler = new ServletHandler();
@@ -45,24 +48,28 @@ public class App {
         ServletHolder servletHolder = handler.addServletWithMapping(ServletContainer.class, "/api/*");
         servletHolder.setInitOrder(1);
         servletHolder.setInitParameter("jersey.config.server.provider.packages", "app.metrodelay.server.api.rs");
-        servletHolder.setInitParameter("jersey.config.server.tracing.type","ALL");
-        servletHolder.setInitParameter("jersey.config.server.tracing.threshold","TRACE");
-        servletHolder.setInitParameter("jersey.config.server.logging.logger.level","DEBUG");
-        context.setInitParameter(RegistryInit.REGISTRY_MULTICAST_IP, "233.146.53.48");
-        context.setInitParameter(RegistryInit.REGISTRY_MULTICAST_PORT, "6839");
+        servletHolder.setInitParameter("jersey.config.server.tracing.type", "ALL");
+        servletHolder.setInitParameter("jersey.config.server.tracing.threshold", "TRACE");
+        servletHolder.setInitParameter("jersey.config.server.logging.logger.level", "DEBUG");
+        context.setInitParameter(RegistryInit.REGISTRY_MULTICAST_IP, multicastAddress);
+        context.setInitParameter(RegistryInit.REGISTRY_MULTICAST_PORT, multicastPort);
         context.setInitParameter(RegistryInit.REGISTRY_STATUS_UPDATE_SERVICE_URI, "urn:metrodelay.app:service:statusupdate:1.0");
-        context.setInitParameter(RegistryInit.CONTEXT_PARAM_INTERVAL, "PT2M");
+        context.setInitParameter(RegistryInit.REGISTRY_STATUS_UPDATE_SERVICE_HOST, hostname);
+        context.setInitParameter(RegistryInit.CONTEXT_PARAM_INTERVAL, "PT1M");
         context.addEventListener(new RegistryInit());
         return context;
     }
-    
-    public static void main(String[] args) throws Exception
-    {
-        CommandLine line = new DefaultParser().parse( options(), args );
+
+    static void main(String[] args) throws Exception {
+        CommandLine line = new DefaultParser().parse(options(), args);
         org.eclipse.jetty.server.Server server = server(Integer.parseInt(line.getOptionValue(ARG_PORT, DEFAULT_PORT)));
-        server.setHandler(restHandler());
+        server.setHandler(restHandler(
+          line.getOptionValue(REGISTRY_MULTICAST_IP, DEFAULT_MULTICAST_IP),
+          line.getOptionValue(REGISTRY_MULGTICAST_PORT, DEFAULT_MULTICAST_PORT),
+          line.getOptionValue(ARG_HOST, InetAddress.getLocalHost().getHostName())
+        ));
         server.start();
         server.join();
     }
-    
+
 }

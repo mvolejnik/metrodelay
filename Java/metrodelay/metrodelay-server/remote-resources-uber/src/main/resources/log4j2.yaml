@@ -4,7 +4,7 @@ Configuration:
       name: stdout
       target: SYSTEM_OUT
       PatternLayout:
-        pattern: "%d %-5p [%t] %c{1.} - %m%n"
+        pattern: "%d %-5p [%t] %c{1.} - %.-2000m%n"
   Loggers:
     Logger:
       - name: app.metrodelay

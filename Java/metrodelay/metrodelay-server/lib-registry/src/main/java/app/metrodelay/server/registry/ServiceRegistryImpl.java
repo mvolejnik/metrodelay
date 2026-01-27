@@ -23,6 +23,8 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -59,14 +61,15 @@ public class ServiceRegistryImpl implements ServiceRegistry {
         if (networkInterface.isEmpty()) {
           throw new IllegalStateException("NetworkInterface not available");
         }
-        l.info("bound to multicast interface '{}'", networkInterface.get().getName());
+        l.info("bound to multicast interface '{}', address '{}', multicast port '{}'", networkInterface.get().getName(), multicastAddress, multicastPort);
         socket.joinGroup(new InetSocketAddress(MULTICAST_ADDRESS, MULTICAST_PORT), networkInterface.get());
         socket.setSoTimeout((int)SO_TIMEOUT.toMillis());
         while (true) {
           try {
             var payload = receiveMulticastMessage(socket);
-            l.info("received '{}'", payload);
+            l.debug("received '{}'", payload);
             var message = ServiceRegistryMessage.fromJson("register", payload);
+            l.log(registry.containsKey(message.uri()) ? Level.DEBUG : Level.INFO, "New registry request '{}'", message);
             registry.put(message.uri(), message.url());
           } catch (SocketTimeoutException ex) {
             l.warn("no multicast packet received in last '{}'", SO_TIMEOUT);

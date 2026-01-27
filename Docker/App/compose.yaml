@@ -7,12 +7,17 @@ networks:
 
 services:
   remote-resources:
-    image: metrodelay/remote-resources:0.0.1
+    image: metrodelay/remote-resources:0.0.2
     container_name: remote-resources
     networks:
       - metrodelay
+  metrodelay-storage:
+    image: metrodelay/metrodelay-storage:0.0.2
+    container_name: metrodelay-storage
+    networks:
+      - metrodelay
   metrodelay-rest:
-    image: metrodelay/metrodelay-rest:0.0.1
+    image: metrodelay/metrodelay-rest:0.0.2
     container_name: metrodelay-rest
     networks:
       - metrodelay
