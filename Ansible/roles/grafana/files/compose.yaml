@@ -29,7 +29,7 @@ services:
           memory: 128M
   grafana:
     container_name: grafana
-    image: fra.vultrcr.com/metrodelay/grafana:12.3.1
+    image: fra.vultrcr.com/metrodelay/grafana:12.3.2
     hostname: grafana
     ports:
       - "3000:3000"
@@ -56,7 +56,7 @@ services:
         reservations:
           memory: 128M
         limits:
-          memory: 256M
+          memory: 196M
   loki:
     container_name: loki
     image: fra.vultrcr.com/metrodelay/loki:3.6.4
@@ -78,10 +78,10 @@ services:
         reservations:
           memory: 128M
         limits:
-          memory: 256M
+          memory: 192M
   prometheus:
     container_name: prometheus
-    image: fra.vultrcr.com/metrodelay/prometheus:v3.8.1
+    image: fra.vultrcr.com/metrodelay/prometheus:v3.9.1
     hostname: prometheus
     ports:
       - "9090:9090"
@@ -95,81 +95,49 @@ services:
         source: /data/prometheus
         target: /var/prometheus
     command: "--config.file=prometheus.yaml --storage.tsdb.retention.time=60d --web.enable-remote-write-receiver --storage.tsdb.path=/var/prometheus"
-    depends_on:
-      - node_exporter
     deploy:
       resources:
         reservations:
+          memory: 64M
+        limits:
           memory: 128M
-        limits:
-          memory: 384M
-  node_exporter:
-    container_name: node_exporter
-    image: fra.vultrcr.com/metrodelay/node-exporter:v1.10.2
-    hostname: nodeexporter
-    ports:
-      - "9100:9100"
-    command:
-      - '--path.rootfs=/host'
-    pid: host
-    restart: unless-stopped
-    networks:
-      - grafana
-    volumes:
-      - '/:/host:ro,rslave'
-    deploy:
-      resources:
-        reservations:
-          memory: 16M
-        limits:
-          memory: 32M
   alloy:
     container_name: alloy
-    image: fra.vultrcr.com/metrodelay/alloy:v1.12.2
+    image: fra.vultrcr.com/metrodelay/alloy:v1.13.0
     hostname: alloy
-    user: root
-    cap_add:
-      - SYS_PTRACE
-      - DAC_READ_SEARCH
-    pid: host
-    network_mode: host
+    networks:
+     - grafana
     volumes:
-      - type: bind
-        source: ./alloy/config.alloy
-        target: /etc/alloy/config.alloy
-      - type: bind
-        source: ./alloy/endpoints.json
-        target: /etc/alloy/endpoints.json
-      - type: bind
-        source: /var/log
-        target: /var/log
-      - type: bind
-        source: /var/lib/docker/containers
-        target: /var/lib/docker/containers
-      # WARNING: Mounting the Docker socket gives this container full control
-      # over the Docker daemon on the host. Consider using the Docker API
-      # over TLS with authentication instead of mounting /var/run/docker.sock directly.
-      - type: bind
-        source: /var/run/docker.sock
-        target: /var/run/docker.sock
-      - type: bind
-        source: /data/alloy
-        target: /var/lib/alloy
-      - type: bind
-        source: /
-        target: /host
-        read_only: true
-        bind:
-          propagation: rslave
+    - type: bind
+      source: ./alloy/config.alloy
+      target: /etc/alloy/config.alloy
+    - type: bind
+      source: /data/alloy
+      target: /var/lib/alloy/data
+    - type: bind
+      source: /var/run/docker.sock
+      target: /var/run/docker.sock
+    - type: bind
+      source: /
+      target: /host
+      read_only: true
+      bind:
+        propagation: rslave
+    - type: bind
+      source: /dev/kmsg
+      target: /dev/kmsg
+      read_only: true
     command: [
       "run",
       "--server.http.listen-addr=0.0.0.0:12345",
-      "--stability.level=public-preview",
+      "--cluster.enabled=false",        # Vypne vnitřní síťový šum
+      "--disable-reporting",            # Neposílá telemetrii do Grafany
+      "--storage.path=/var/lib/alloy/data",
       "/etc/alloy/config.alloy",
     ]
     deploy:
       resources:
         reservations:
-          memory: 64M
+          memory: 96M
         limits:
           memory: 128M

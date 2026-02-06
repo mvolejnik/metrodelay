@@ -15,7 +15,7 @@
     enabled: yes
     state: started
 
-- name: Creates docker directory
+- name: Docker directory exists
   ansible.builtin.file:
     path: /var/docker
     state: directory
@@ -28,7 +28,7 @@
     group: root
     mode: u=rw,g=,o=
 
-- name: Ensure grafana directory exists
+- name: Grafana directory exists
   ansible.builtin.file:
     path: /var/docker/grafana
     state: directory
@@ -104,14 +104,6 @@
   ansible.builtin.copy:
     src: ./files/alloy/config.alloy
     dest: /var/docker/alloy/config.alloy
-    owner: root
-    group: root
-    mode: u=rw,g=r,o=r
-
-- name: Copy alloy endpoints configuration
-  ansible.builtin.copy:
-    src: ./files/alloy/endpoints.json
-    dest: /var/docker/alloy/endpoints.json
     owner: root
     group: root
     mode: u=rw,g=r,o=r

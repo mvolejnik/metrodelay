@@ -30,3 +30,37 @@
     domain: metrodelay.app
     data: metrodelay.app
   delegate_to: localhost
+
+## Alerting app
+- name: Create DNS domain
+  vultr.cloud.dns_domain:
+    api_key: "{{ vultr.api_key }}"
+    name: alertt.app
+    dns_sec: enabled
+    server_ip: "{{ ansible_host }}"
+  delegate_to: localhost
+
+- name: Create DNS record - alertt.app
+  vultr.cloud.dns_record:
+    api_key: "{{ vultr.api_key }}"
+    domain: alertt.app
+    data: "{{ ansible_host }}"
+  delegate_to: localhost
+
+- name: Create CNAME record - o11y.alertt.app
+  vultr.cloud.dns_record:
+    api_key: "{{ vultr.api_key }}"
+    name: o11y
+    type: CNAME
+    domain: alertt.app
+    data: alertt.app
+  delegate_to: localhost
+
+- name: Create CNAME record - api.alertt.app
+  vultr.cloud.dns_record:
+    api_key: "{{ vultr.api_key }}"
+    name: api
+    type: CNAME
+    domain: alertt.app
+    data: alertt.app
+  delegate_to: localhost

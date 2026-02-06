@@ -16,7 +16,7 @@ prometheus.exporter.unix "default" {
 
 loki.write "loki" {
   endpoint {
-    url = "http://{{ o11y_ip }}:3100/api/prom/push"
+    url = "http://{{ o11y_ip }}:3100/loki/api/v1/push"
   }
 }
 
@@ -28,8 +28,7 @@ prometheus.exporter.cadvisor "app" {
 prometheus.scrape "scraper" {
   targets    = prometheus.exporter.cadvisor.app.targets
   forward_to = [ prometheus.remote_write.prometheus.receiver ]
-
-  scrape_interval = "10s"
+  scrape_interval = "20s"
 }
 
 prometheus.remote_write "prometheus" {
@@ -47,7 +46,7 @@ discovery.docker "app" {
 }
 
 discovery.relabel "logs_integrations_docker" {
-  targets = []
+  targets = discovery.docker.app.targets
 
   rule {
     source_labels = ["__meta_docker_container_name"]
@@ -58,8 +57,8 @@ discovery.relabel "logs_integrations_docker" {
 
 loki.source.docker "default" {
   host       = "unix:///var/run/docker.sock"
-  targets    = discovery.docker.app.targets
+  targets    = discovery.relabel.logs_integrations_docker.output
   labels     = {"platform" = "docker"}
-  relabel_rules = discovery.relabel.logs_integrations_docker.rules
+// relabel_rules = discovery.relabel.logs_integrations_docker.rules
   forward_to = [loki.write.loki.receiver]
 }
