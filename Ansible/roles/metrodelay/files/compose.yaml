@@ -66,17 +66,8 @@ services:
         source: ./config.alloy
         target: /etc/alloy/config.alloy
       - type: bind
-        source: ./endpoints.json
-        target: /etc/alloy/endpoints.json
-      - type: bind
         source: /var/log
         target: /var/log
-      # WARNING: Mounting the Docker socket gives this container full control
-      # over the Docker daemon on the host. Consider using the Docker API
-      # over TLS with authentication instead of mounting /var/run/docker.sock directly.
-      - type: bind
-        source: /var/lib/docker/containers
-        target: /var/lib/docker/containers
       - type: bind
         source: /var/run/docker.sock
         target: /var/run/docker.sock
@@ -86,6 +77,10 @@ services:
         read_only: true
         bind:
           propagation: rslave
+      - type: bind
+        source: /dev/kmsg
+        target: /dev/kmsg
+        read_only: true
     command: [
       "run",
       "--server.http.listen-addr=0.0.0.0:12345",

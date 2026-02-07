@@ -1,5 +1,5 @@
 logging {
-  level  = "debug"
+  level  = "info"
   format = "logfmt"
 }
 
@@ -28,7 +28,7 @@ prometheus.exporter.cadvisor "docker" {
   disabled_metrics = ["disk", "tcp", "udp", "percpu", "sched"]
 }
 
-prometheus.scrape "metrics" {
+prometheus.scrape "docker" {
   targets    = prometheus.exporter.cadvisor.docker.targets
   forward_to = [prometheus.remote_write.prometheus.receiver]
   scrape_interval = "20s"
@@ -41,7 +41,7 @@ prometheus.exporter.unix "default" {
   rootfs_path = "/host"
 }
 
-prometheus.scrape "default" {
+prometheus.scrape "unix" {
   targets    = prometheus.exporter.unix.default.targets
   forward_to = [prometheus.remote_write.prometheus.receiver]
 }
