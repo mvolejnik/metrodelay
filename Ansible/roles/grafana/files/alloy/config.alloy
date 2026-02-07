@@ -51,6 +51,10 @@ prometheus.remote_write "prometheus" {
     url = "http://prometheus:9090/api/v1/write"
     remote_timeout = "60s"
   }
+  external_labels = {
+    cluster = "o11y",
+    host    = "o11y-blue",
+  }
 }
 
 // loki
@@ -63,5 +67,8 @@ loki.source.docker "logs" {
 loki.write "loki" {
   endpoint {
     url = "http://loki:3100/loki/api/v1/push"
+  }
+  external_labels = {
+    host = "o11y-blue",
   }
 }

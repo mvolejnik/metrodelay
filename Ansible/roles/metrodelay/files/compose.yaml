@@ -55,11 +55,6 @@ services:
     container_name: alloy
     image: grafana/alloy:v1.12.2
     hostname: alloy
-    user: root
-    cap_add:
-      - SYS_PTRACE
-      - DAC_READ_SEARCH
-    pid: host
     network_mode: host
     volumes:
       - type: bind
