@@ -49,14 +49,6 @@
     group: root
     mode: u=rw,g=r,o=r
 
-- name: Copy alloy endpoints configuration
-  ansible.builtin.template:
-    src: ./files/endpoints.json.j2
-    dest: /var/docker/endpoints.json
-    owner: root
-    group: root
-    mode: u=rw,g=r,o=r
-
 - name: Log into Vultr Docker Registry
   community.docker.docker_login:
     registry_url: https://fra.vultrcr.com/metrodelay

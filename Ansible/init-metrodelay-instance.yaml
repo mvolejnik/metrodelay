@@ -6,9 +6,9 @@
   tasks:  
   - name: list instances
     vultr.cloud.instance_info:
-      api_key: "{{ vultr.api_key }}"
       region: "{{ instance_region }}"
       label: metrodelay
+      api_key: "{{ vultr.api_key }}"
   - name: create instance
     vultr.cloud.instance:
       region: "{{ instance_region }}"
@@ -28,9 +28,46 @@
       user_scheme: root
   - name: list instances
     vultr.cloud.instance_info:
-      api_key: "{{ vultr.api_key }}"
       region: "{{ instance_region }}"
       label: metrodelay
+      api_key: "{{ vultr.api_key }}"
+    register: instance_metrodelay
+  - name: Add instance to in-memory inventory
+    ansible.builtin.add_host:
+      name: "{{ instance_metrodelay.vultr_instance_info[0].main_ip }}"
+      groups: metrodelay
+      ansible_user: root
+
+- hosts: metrodelay
+  gather_facts: no
+  vars:
+    instance_plan: "vc2-1c-1gb"
+    instance_region: "fra"
+  tasks:
+  - name: Wait for SSH port to open
+    ansible.builtin.wait_for:
+      host: "{{ inventory_hostname }}"
+      delay: 5
+      timeout: 100
+    delegate_to: localhost
+  - name: Wait for server connection
+    ansible.builtin.wait_for_connection:
+      delay: 5
+      timeout: 30
+  - name: Gather facts now that we are connected
+    ansible.builtin.setup:
+  - name: Block until cloud-init is done
+    ansible.builtin.shell: |
+      while [ ! -f /var/lib/cloud/instance/boot-finished ]; do
+        sleep 2;
+      done
+  - name: SSH Listen Address
+    ansible.builtin.copy:
+      src: ./01-listen.conf
+      dest: /etc/ssh/sshd_config.d/01-listen.conf
+      owner: root
+      group: root
+      mode: u=rw,g=,o=
   - name: Instance is attached to Metrodelay VPC
     vultr.cloud.instance:
       label: metrodelay
@@ -38,5 +75,16 @@
       plan: "{{ instance_plan }}"
       region: "{{ instance_region }}"
       vpcs:
-        - "{{ metrodelay_vpc.vultr_vpc.description }}"
+        - "{{ hostvars['localhost']['metrodelay_vpc'].vultr_vpc.description }}"
       state: present
+    delegate_to: localhost
+  - name: Wait for SSH port to open
+    ansible.builtin.wait_for:
+      host: "{{ inventory_hostname }}"
+      delay: 5
+      timeout: 100
+    delegate_to: localhost
+  - name: Wait for server connection
+    ansible.builtin.wait_for_connection:
+      delay: 5
+      timeout: 30

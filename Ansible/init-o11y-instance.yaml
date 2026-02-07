@@ -26,12 +26,11 @@
         - ansible
         - toyosu
       user_scheme: root
-  - name: get instance info
+  - name: list instances
     vultr.cloud.instance_info:
       region: "{{ instance_region }}"
       label: "o11y"
       api_key: "{{ vultr.api_key }}"
-    delegate_to: localhost
     register: instance_o11y
   - name: Add instance to in-memory inventory
     ansible.builtin.add_host:
