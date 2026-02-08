@@ -1,0 +1,15 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 3h
+  receiver: 'alert-webhook'
+
+receivers:
+- name: 'alert-webhook'
+  webhook_configs:
+  - url: 'https://api.alertt.app/webhook'
+    send_resolved: true

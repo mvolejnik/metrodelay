@@ -56,6 +56,24 @@
     data: alertt.app
   delegate_to: localhost
 
+- name: Create CNAME record - alertmanager.alertt.app
+  vultr.cloud.dns_record:
+    api_key: "{{ vultr.api_key }}"
+    name: alertmanager
+    type: CNAME
+    domain: alertt.app
+    data: alertt.app
+  delegate_to: localhost
+
+- name: Create CNAME record - prometheus.alertt.app
+  vultr.cloud.dns_record:
+    api_key: "{{ vultr.api_key }}"
+    name: prometheus
+    type: CNAME
+    domain: alertt.app
+    data: alertt.app
+  delegate_to: localhost
+
 - name: Create CNAME record - api.alertt.app
   vultr.cloud.dns_record:
     api_key: "{{ vultr.api_key }}"

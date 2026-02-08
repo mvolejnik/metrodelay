@@ -52,7 +52,7 @@
     group: root
     mode: u=rw,g=r,o=r
 
-- name: Copy grafana datasources
+- name: Copy grafana provider
   ansible.builtin.copy:
     src: ./files/grafana/provider.yaml
     dest: /var/docker/grafana/provider.yaml
@@ -88,6 +88,30 @@
   ansible.builtin.copy:
     src: ./files/prometheus/prometheus.yaml
     dest: /var/docker/prometheus/prometheus.yaml
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+
+- name: Copy prometheus configuration  
+  ansible.builtin.copy:
+    src: ./files/prometheus/alert_rules.yaml
+    dest: /var/docker/prometheus/alert_rules.yaml
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+
+- name: Ensure alertmanager directory exists
+  ansible.builtin.file:
+    path: /var/docker/alertmanager
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy alertmanager config  
+  ansible.builtin.copy:
+    src: ./files/alertmanager/alertmanager.yaml
+    dest: /var/docker/alertmanager/alertmanager.yaml
     owner: root
     group: root
     mode: u=rw,g=r,o=r

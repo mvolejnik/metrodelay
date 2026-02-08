@@ -66,16 +66,6 @@ services:
       - type: bind
         source: /var/run/docker.sock
         target: /var/run/docker.sock
-      - type: bind
-        source: /
-        target: /host
-        read_only: true
-        bind:
-          propagation: rslave
-      - type: bind
-        source: /dev/kmsg
-        target: /dev/kmsg
-        read_only: true
     command: [
       "run",
       "--server.http.listen-addr=0.0.0.0:12345",
@@ -87,7 +77,7 @@ services:
       resources:
         reservations:
           cpus: '0.2'
-          memory: 64M
+          memory: 128M
         limits:
           cpus: '0.4'
-          memory: 128M
+          memory: 256M

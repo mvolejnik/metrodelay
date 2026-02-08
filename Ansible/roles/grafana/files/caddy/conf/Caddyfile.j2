@@ -14,3 +14,29 @@ o11y.metrodelay.app, o11y.alertt.app {
 
     encode zstd gzip
 }
+
+alertmanager.alertt.app {
+    log {
+		output file /var/log/alertmanager-o11y.log
+		format json
+	}
+
+    basic_auth {
+        admin {{ caddy.password_hash.admin }}
+    }
+
+    reverse_proxy alertmanager:9093
+}
+
+prometheus.alertt.app {
+    log {
+		output file /var/log/prometheus-o11y.log
+		format json
+	}
+
+    basic_auth {
+        admin {{ caddy.password_hash.admin }}
+    }
+
+    reverse_proxy prometheus:9090
+}

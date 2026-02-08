@@ -25,13 +25,7 @@ prometheus.exporter.cadvisor "docker" {
 prometheus.scrape "docker" {
   targets    = prometheus.exporter.cadvisor.docker.targets
   forward_to = [ prometheus.remote_write.prometheus.receiver ]
-  scrape_interval = "20s"
-}
-
-prometheus.exporter.unix "default" {
-  procfs_path = "/host/proc"
-  sysfs_path  = "/host/sys"
-  rootfs_path = "/host"
+  scrape_interval = "60s"
 }
 
 prometheus.remote_write "prometheus" {

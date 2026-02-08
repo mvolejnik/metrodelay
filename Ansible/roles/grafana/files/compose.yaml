@@ -27,6 +27,24 @@ services:
           memory: 64M
         limits:
           memory: 128M
+  alertmanager:
+    container_name: alertmanager
+    image: fra.vultrcr.com/metrodelay/alertmanager:v0.31.0
+    networks:
+      - grafana
+    volumes:
+      - /data/alertmanager:/var/alertmanager
+      - ./alertmanager/alertmanager.yaml:/etc/alertmanager/alertmanager.yaml
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yaml'
+      - '--storage.path=/var/alertmanager'
+      - '--web.external-url=https://alertmanager.alertt.app'
+    deploy:
+      resources:
+        reservations:
+          memory: 64M
+        limits:
+          memory: 96M
   grafana:
     container_name: grafana
     image: fra.vultrcr.com/metrodelay/grafana:12.3.2
@@ -54,9 +72,9 @@ services:
     deploy:
       resources:
         reservations:
-          memory: 128M
+          memory: 256M
         limits:
-          memory: 196M
+          memory: 384M
   loki:
     container_name: loki
     image: fra.vultrcr.com/metrodelay/loki:3.6.5
@@ -78,7 +96,7 @@ services:
         reservations:
           memory: 128M
         limits:
-          memory: 192M
+          memory: 256M
   prometheus:
     container_name: prometheus
     image: fra.vultrcr.com/metrodelay/prometheus:v3.9.1
@@ -92,9 +110,12 @@ services:
         source: ./prometheus/prometheus.yaml
         target: /prometheus/prometheus.yaml
       - type: bind
+        source: ./prometheus/alert_rules.yaml
+        target: /prometheus/alert_rules.yaml
+      - type: bind
         source: /data/prometheus
         target: /var/prometheus
-    command: "--config.file=prometheus.yaml --storage.tsdb.retention.time=60d --web.enable-remote-write-receiver --storage.tsdb.path=/var/prometheus"
+    command: "--config.file=/prometheus/prometheus.yaml --storage.tsdb.retention.time=60d --web.enable-remote-write-receiver --storage.tsdb.path=/var/prometheus"
     deploy:
       resources:
         reservations:
@@ -117,16 +138,6 @@ services:
     - type: bind
       source: /var/run/docker.sock
       target: /var/run/docker.sock
-    - type: bind
-      source: /
-      target: /host
-      read_only: true
-      bind:
-        propagation: rslave
-    - type: bind
-      source: /dev/kmsg
-      target: /dev/kmsg
-      read_only: true
     command: [
       "run",
       "--server.http.listen-addr=0.0.0.0:12345",
@@ -138,6 +149,6 @@ services:
     deploy:
       resources:
         reservations:
-          memory: 96M
+          memory: 192M
         limits:
-          memory: 128M
+          memory: 256M

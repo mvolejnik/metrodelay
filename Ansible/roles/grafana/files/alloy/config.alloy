@@ -6,10 +6,10 @@ logging {
 // discovery
 discovery.docker "containers" {
   host = "unix:///var/run/docker.sock"
-  refresh_interval = "5s"
+  refresh_interval = "60s"
   filter {
     name  = "name"
-    values = ["alloy", "caddy", "loki", "prometheus", "grafana"]
+    values = ["alertmanager", "alloy", "caddy", "grafana", "loki", "prometheus"]
   }
 }
 
@@ -31,24 +31,17 @@ prometheus.exporter.cadvisor "docker" {
 prometheus.scrape "docker" {
   targets    = prometheus.exporter.cadvisor.docker.targets
   forward_to = [prometheus.remote_write.prometheus.receiver]
-  scrape_interval = "20s"
-}
-
-//prometheus
-prometheus.exporter.unix "default" {
-  procfs_path = "/host/proc"
-  sysfs_path  = "/host/sys"
-  rootfs_path = "/host"
-}
-
-prometheus.scrape "unix" {
-  targets    = prometheus.exporter.unix.default.targets
-  forward_to = [prometheus.remote_write.prometheus.receiver]
+  scrape_interval = "60s"
 }
 
 prometheus.remote_write "prometheus" {
   endpoint {
     url = "http://prometheus:9090/api/v1/write"
+    queue_config {
+      capacity          = 5000
+      max_backoff       = "5s"
+      max_shards        = 5
+    }
     remote_timeout = "60s"
   }
   external_labels = {
@@ -67,6 +60,8 @@ loki.source.docker "logs" {
 loki.write "loki" {
   endpoint {
     url = "http://loki:3100/loki/api/v1/push"
+    batch_size = "1MiB"
+    batch_wait = "10s"
   }
   external_labels = {
     host = "o11y-blue",

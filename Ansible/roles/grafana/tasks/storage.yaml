@@ -19,6 +19,12 @@
     fstype: ext4
     state: mounted
 
+- name: Ensure /data/alertmanager/data directory exists
+  ansible.builtin.file:
+    path: "{{ mount_path }}/alertmanager/data"
+    state: directory
+    mode: '0755'
+
 - name: Ensure /data/caddy/data directory exists
   ansible.builtin.file:
     path: "{{ mount_path }}/caddy/data"

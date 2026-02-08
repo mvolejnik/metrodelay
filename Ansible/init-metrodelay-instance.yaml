@@ -1,7 +1,7 @@
 - hosts: localhost
   gather_facts: no
   vars:
-    instance_plan: "vc2-1c-2gb"
+    instance_plan: "vc2-1c-1gb"
     instance_region: "fra"
   tasks:  
   - name: list instances
@@ -41,7 +41,7 @@
 - hosts: metrodelay
   gather_facts: no
   vars:
-    instance_plan: "vc2-1c-2gb"
+    instance_plan: "vc2-1c-1gb"
     instance_region: "fra"
   tasks:
   - name: Wait for SSH port to open
