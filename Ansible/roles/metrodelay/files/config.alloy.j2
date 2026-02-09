@@ -1,65 +1,64 @@
-///////////////////////////////////////////////////////////////////////////////
-// Configuration file
-
-local.file "endpoints" {
-    // The endpoints file is used to define the endpoints, credentials and options
-    // for the Alloy export to.
-    filename = "/etc/alloy/endpoints.json"
+logging {
+  level  = "info"
+  format = "logfmt"
 }
 
-// The Alloy exports everything, using an empty block.
-prometheus.exporter.unix "default" {
-  procfs_path = "/host/proc"
-  sysfs_path  = "/host/sys"
-  rootfs_path = "/host"
+discovery.docker "containers" {
+  host = "unix:///var/run/docker.sock"
 }
 
-loki.write "loki" {
-  endpoint {
-    url = "http://{{ o11y_ip }}:3100/api/prom/push"
+discovery.relabel "containers" {
+  targets = discovery.docker.containers.targets
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex = "/(.*)"
+    replacement   = "$1"
+    target_label = "container"
   }
 }
 
-prometheus.exporter.cadvisor "app" {
+prometheus.exporter.cadvisor "docker" {
   docker_host = "unix:///var/run/docker.sock"
+  disabled_metrics = ["disk", "tcp", "udp", "percpu", "sched"]
   storage_duration = "5m"
 }
 
-prometheus.scrape "scraper" {
-  targets    = prometheus.exporter.cadvisor.app.targets
-  forward_to = [ prometheus.remote_write.prometheus.receiver ]
-
-  scrape_interval = "10s"
+prometheus.scrape "docker" {
+  targets    = prometheus.exporter.cadvisor.docker.targets
+  forward_to = [prometheus.remote_write.prometheus.receiver]
+  scrape_interval = "60s"
 }
 
 prometheus.remote_write "prometheus" {
   endpoint {
     url = "http://{{ o11y_ip }}:9090/api/v1/write"
+    queue_config {
+      capacity          = 5000
+      max_backoff       = "5s"
+      max_shards        = 5
+    }
+    remote_timeout = "30s"
   }
-
   external_labels = {
-    alloy_instance = "instance-metrodelay", 
+    cluster = "metrodelay",
+    host    = "metrodelay-blue",
   }
 }
 
-discovery.docker "app" {
-  host = "unix:///var/run/docker.sock"
-}
-
-discovery.relabel "logs_integrations_docker" {
-  targets = []
-
-  rule {
-    source_labels = ["__meta_docker_container_name"]
-    regex = "/(.*)"
-    target_label = "container"
-  }
-}
-
-loki.source.docker "default" {
+loki.source.docker "logs" {
   host       = "unix:///var/run/docker.sock"
-  targets    = discovery.docker.app.targets
+  targets    = discovery.relabel.containers.output
   labels     = {"platform" = "docker"}
-  relabel_rules = discovery.relabel.logs_integrations_docker.rules
   forward_to = [loki.write.loki.receiver]
+}
+
+loki.write "loki" {
+  endpoint {
+    url = "http://{{ o11y_ip }}:3100/loki/api/v1/push"
+    batch_size = "1MiB"
+    batch_wait = "10s"
+  }
+  external_labels = {
+    host = "metrodelay-blue",
+  }
 }

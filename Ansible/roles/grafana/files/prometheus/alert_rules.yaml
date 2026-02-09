@@ -1,0 +1,19 @@
+groups:
+  - name: docker_alerts
+    rules:
+      - alert: ContainerDown
+        expr: (time() - container_last_seen{container!=""}) > 120
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Container missing {{ $labels.container }}"
+          description: "Container on the host {{ $labels.host }} not visible for more than 2m."
+
+      - alert: HighMemoryUsage
+        expr: (container_memory_usage_bytes / container_spec_memory_limit_bytes) * 100 > 90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Container {{ $labels.container }} close to RAM limit"

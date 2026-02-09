@@ -1,6 +1,7 @@
 networks:
   grafana:
     driver: bridge
+    name: grafana
 
 services:
   caddy:
@@ -24,11 +25,13 @@ services:
       - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
     deploy:
       resources:
+        reservations:
+          memory: 64M
         limits:
-          memory: 80M
+          memory: 128M
   grafana:
     container_name: grafana
-    image: grafana/grafana:12.3.1
+    image: grafana/grafana:12.3.2
     hostname: grafana
     ports:
       - "3000:3000"
@@ -44,11 +47,13 @@ services:
       - prometheus
     deploy:
       resources:
+        reservations:
+          memory: 256M
         limits:
-          memory: 200M
+          memory: 384M
   loki:
     container_name: loki
-    image: grafana/loki:3.6.4
+    image: grafana/loki:3.6.5
     hostname: loki
     ports:
       - "3100:3100"
@@ -60,8 +65,10 @@ services:
         target: /etc/loki/local-config.yaml
     deploy:
       resources:
+        reservations:
+          memory: 128M
         limits:
-          memory: 150M
+          memory: 256M
   prometheus:
     container_name: prometheus
     image: prom/prometheus:v3.9.1
@@ -75,41 +82,22 @@ services:
         source: ./prometheus/prometheus.yaml
         target: /prometheus/prometheus.yaml
     command: "--config.file=prometheus.yaml --storage.tsdb.retention.time=60d --web.enable-remote-write-receiver"
-    depends_on:
-      - node_exporter
     deploy:
       resources:
+        reservations:
+          memory: 128M
         limits:
-          memory: 300M
-  node_exporter:
-    container_name: node_exporter
-    image: prom/node-exporter:v1.10.2
-    hostname: nodeexporter
-    ports:
-      - "9100:9100"
-    command:
-      - '--path.rootfs=/host'
-    pid: host
-    restart: unless-stopped
-    networks:
-      - grafana
-    volumes:
-      - '/:/host:ro,rslave'
-    deploy:
-      resources:
-        limits:
-          memory: 20M
+          memory: 384M
   alloy:
     container_name: alloy
-    image: grafana/alloy:v1.12.2
+    image: grafana/alloy:v1.13.0
     hostname: alloy
-    ports:
-      - "12345:12345"
-      - "12348:12348"
-      - "6832:6832"
-      - "55679:55679"
-      - "4317:4317"
-      - "4318:4318"
+    user: root
+    cap_add:
+      - SYSLOG
+      - SYS_PTRACE
+      - DAC_READ_SEARCH
+    pid: host
     networks:
       - grafana
     volumes:
@@ -131,16 +119,29 @@ services:
       - type: bind
         source: /var/run/docker.sock
         target: /var/run/docker.sock      
+      - type: bind
+        source: /
+        target: /host
+        read_only: true
+        bind:
+          propagation: rslave
+      - type: bind
+        source: /dev/kmsg
+        target: /dev/kmsg
+        read_only: true
     command: [
       "run",
       "--server.http.listen-addr=0.0.0.0:12345",
       "--stability.level=public-preview",
+      "--disable-reporting",
       "/etc/alloy/config.alloy",
     ]
     deploy:
       resources:
+        reservations:
+          memory: 64M
         limits:
-          memory: 96M
+          memory: 128M
     depends_on:
       - loki
       - prometheus

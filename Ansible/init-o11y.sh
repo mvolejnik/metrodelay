@@ -9,4 +9,4 @@ fi
 
 shift
 
-ansible-playbook init-o11y.yaml --limit localhost -i localhost, --extra-vars @.vault.yaml --extra-vars "cluster=${cluster}" $*
+ansible-playbook init-o11y.yaml -i localhost, --extra-vars @.vault.yaml --extra-vars "cluster=${cluster}" $*
