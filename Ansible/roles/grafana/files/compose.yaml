@@ -33,7 +33,7 @@ services:
     networks:
       - grafana
     volumes:
-      - /data/alertmanager:/var/alertmanager
+      - /data/alertmanager/data:/var/alertmanager
       - ./alertmanager/alertmanager.yaml:/etc/alertmanager/alertmanager.yaml
     command:
       - '--config.file=/etc/alertmanager/alertmanager.yaml'
