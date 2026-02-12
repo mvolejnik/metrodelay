@@ -28,7 +28,7 @@ services:
           memory: 80M
   grafana:
     container_name: grafana
-    image: grafana/grafana:12.3.1
+    image: grafana/grafana:12.3.3
     hostname: grafana
     ports:
       - "3000:3000"
