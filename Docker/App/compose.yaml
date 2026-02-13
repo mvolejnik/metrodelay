@@ -23,7 +23,7 @@ services:
       - metrodelay
   alloy:
     container_name: metrodelay_alloy
-    image: grafana/alloy:v1.12.2
+    image: grafana/alloy:v1.13.1
     hostname: alloy
     ports:
       - "12346:12345"
