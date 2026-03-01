@@ -7,7 +7,7 @@
 
   <groupId>app.metrodelay</groupId>
   <artifactId>metrodelay-build</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.3-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Metro Delay - Build</name>
   <url>https://github.com/mvolejnik/metrodelay</url>

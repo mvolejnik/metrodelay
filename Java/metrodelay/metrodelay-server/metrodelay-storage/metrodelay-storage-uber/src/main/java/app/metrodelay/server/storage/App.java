@@ -5,6 +5,7 @@ import app.metrodelay.server.status.StatusUpdate;
 import app.metrodelay.server.storage.rs.Status;
 import java.io.File;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.Locale;
 import java.util.UUID;
 import org.apache.commons.cli.CommandLine;
@@ -42,15 +43,14 @@ public class App {
 
     private static final Logger l = LogManager.getLogger(App.class);
 
-    public static org.eclipse.jetty.server.Server server(int port) {
-        org.eclipse.jetty.server.Server server = new org.eclipse.jetty.server.Server(port);
-        return server;
+    public static org.eclipse.jetty.server.Server server(String host, int port) {
+        return new org.eclipse.jetty.server.Server(new InetSocketAddress(host, port));
     }
 
     private static Options options() {
         var options = new Options();
         options.addOption("p", ARG_PORT, true, "server port");
-        options.addOption("h", ARG_HOST, true, "server port");
+        options.addOption("h", ARG_HOST, true, "server host");
         options.addOption("ma", REGISTRY_MULTICAST_IP, true, "registry service ip address");
         options.addOption("mp", REGISTRY_MULGTICAST_PORT, true, "registry serivce multicast port");
         return options;
@@ -102,7 +102,10 @@ public class App {
         Status.initCache(
           cacheManager.getCache("status", UUID.class, StatusUpdate.class)
         );
-        org.eclipse.jetty.server.Server server = server(Integer.parseInt(line.getOptionValue(ARG_PORT, DEFAULT_PORT)));
+        var server = server(
+          line.getOptionValue(ARG_HOST, InetAddress.getLocalHost().getHostName()),
+          Integer.parseInt(line.getOptionValue(ARG_PORT, DEFAULT_PORT))
+        );
         server.setHandler(restHandler(
           line.getOptionValue(REGISTRY_MULTICAST_IP, DEFAULT_MULTICAST_IP),
           line.getOptionValue(REGISTRY_MULGTICAST_PORT, DEFAULT_MULTICAST_PORT),

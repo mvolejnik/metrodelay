@@ -1,2 +1,0 @@
-- import_playbook: init-network.yaml
-- import_playbook: init-o11y-instance.yaml

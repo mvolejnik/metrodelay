@@ -1,4 +1,4 @@
-- hosts: g_{{ cluster }}:&g_app
+- hosts: g_{{ cluster }}:&g_metrodelay
   remote_user: root
   roles:
     - metrodelay

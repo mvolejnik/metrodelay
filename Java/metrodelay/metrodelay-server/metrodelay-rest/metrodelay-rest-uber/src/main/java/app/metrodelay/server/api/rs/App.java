@@ -11,6 +11,7 @@ import org.eclipse.jetty.server.handler.ContextHandler;
 import org.glassfish.jersey.servlet.ServletContainer;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 
 ///
 /// Metrodelay REST API application.
@@ -19,15 +20,14 @@ public class App {
 
     private static final String ARG_PORT = "port";
     private static final String ARG_HOST = "host";
-    private static final String DEFAULT_PORT = "8080";
+    private static final String DEFAULT_PORT = "8000";
     private static final String REGISTRY_MULTICAST_IP = "multicastip";
     private static final String REGISTRY_MULGTICAST_PORT = "multicastport";
     private static final String DEFAULT_MULTICAST_IP = "233.146.53.48";
     private static final String DEFAULT_MULTICAST_PORT = "6839";
 
-    public static org.eclipse.jetty.server.Server server(int port) {
-        org.eclipse.jetty.server.Server server = new org.eclipse.jetty.server.Server(port);
-        return server;
+    public static org.eclipse.jetty.server.Server server(String host, int port) {
+        return new org.eclipse.jetty.server.Server(new InetSocketAddress(host, port));
     }
 
     private static Options options() {
@@ -62,7 +62,10 @@ public class App {
 
     static void main(String[] args) throws Exception {
         CommandLine line = new DefaultParser().parse(options(), args);
-        org.eclipse.jetty.server.Server server = server(Integer.parseInt(line.getOptionValue(ARG_PORT, DEFAULT_PORT)));
+        org.eclipse.jetty.server.Server server = server(
+          line.getOptionValue(ARG_HOST, InetAddress.getLocalHost().getHostName()),
+          Integer.parseInt(line.getOptionValue(ARG_PORT, DEFAULT_PORT))
+        );
         server.setHandler(restHandler(
           line.getOptionValue(REGISTRY_MULTICAST_IP, DEFAULT_MULTICAST_IP),
           line.getOptionValue(REGISTRY_MULGTICAST_PORT, DEFAULT_MULTICAST_PORT),

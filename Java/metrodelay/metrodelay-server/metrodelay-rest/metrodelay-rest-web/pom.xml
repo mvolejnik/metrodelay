@@ -5,12 +5,12 @@
     <parent>
         <groupId>app.metrodelay.server</groupId>
         <artifactId>metrodelay-rest</artifactId>
-        <version>0.0.2-SNAPSHOT</version>
+        <version>0.0.3-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <groupId>app.metrodelay.server</groupId>
     <artifactId>metrodelay-rest-web</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
     <name>Metro Delay - REST API Web</name>
     <url>https://github.com/mvolejnik/metrodelay</url>
     
