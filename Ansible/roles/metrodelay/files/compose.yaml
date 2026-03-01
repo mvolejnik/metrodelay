@@ -14,10 +14,10 @@ services:
       resources:
         reservations:
           cpus: '0.2'
-          memory: 64M
+          memory: 128M
         limits:
           cpus: '0.4'
-          memory: 128M
+          memory: 256M
   metrodelay-storage:
     image: fra.vultrcr.com/metrodelay/metrodelay-storage:0.0.2
     container_name: metrodelay-storage
@@ -40,9 +40,10 @@ services:
     container_name: metrodelay-rest
     hostname: metrodelay-rest
     ports:
-      - "8080:8080"
+      - "8002:8002"
     networks:
       - metrodelay
+    command: ["-p", "8002"]
     deploy:
       resources:
         reservations:

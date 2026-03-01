@@ -1,3 +1,5 @@
 ---
+- name: Firewall
+  ansible.builtin.import_tasks: firewall.yaml
 - name: Docker
   ansible.builtin.import_tasks: docker.yaml
