@@ -48,7 +48,7 @@ public class App {
     return options;
   }
 
-  public static void main(String[] args) throws Exception {
+  static void main(String[] args) throws Exception {
     CommandLine line = new DefaultParser().parse(options(), args);
     var serviceRegistry = new ServiceRegistryImpl(
             line.getOptionValue(REGISTRY_MULTICAST_IP, ServiceRegistryImpl.MULTICAST_ADDRESS),

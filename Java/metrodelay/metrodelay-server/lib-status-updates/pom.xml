@@ -7,10 +7,10 @@
   <parent>
     <groupId>app.metrodelay.server</groupId>
     <artifactId>metrodelay-server</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
   </parent>
   <artifactId>lib-status-updates</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.3-SNAPSHOT</version>
   <name>Metro Delay - Lib - Status Update</name>
   <url>https://github.com/mvolejnik/metrodelay</url>
         
@@ -30,12 +30,12 @@
     <dependency>
       <groupId>app.metrodelay.server</groupId>
       <artifactId>lib-status-updates-api</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
+      <version>0.0.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>app.metrodelay.server</groupId>
       <artifactId>lib-rss</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
+      <version>0.0.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.mapdb</groupId>

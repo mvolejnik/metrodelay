@@ -7,7 +7,7 @@
   <parent>
     <groupId>app.metrodelay.server</groupId>
     <artifactId>metrodelay-rest</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -28,7 +28,7 @@
     <dependency>
       <groupId>app.metrodelay.server</groupId>
       <artifactId>lib-registry</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
+      <version>0.0.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>jakarta.activation</groupId>

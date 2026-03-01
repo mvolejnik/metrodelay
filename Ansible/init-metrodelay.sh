@@ -9,4 +9,4 @@ fi
 
 shift
 
-ansible-playbook init-metrodelay.yaml --limit localhost -i localhost, --extra-vars @.vault.yaml --extra-vars "cluster=${cluster}" $*
+ansible-playbook init-metrodelay.yaml -i localhost, --extra-vars @.vault.yaml --extra-vars "cluster=${cluster}" $*
