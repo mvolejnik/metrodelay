@@ -31,10 +31,10 @@ services:
       resources:
         reservations:
           cpus: '0.2'
-          memory: 64M
+          memory: 128M
         limits:
           cpus: '0.4'
-          memory: 128M
+          memory: 192M
   metrodelay-rest:
     image: fra.vultrcr.com/metrodelay/metrodelay-rest:0.0.3
     container_name: metrodelay-rest
@@ -48,10 +48,10 @@ services:
       resources:
         reservations:
           cpus: '0.2'
-          memory: 64M
+          memory: 128M
         limits:
           cpus: '0.4'
-          memory: 128M
+          memory: 192M
   alloy:
     container_name: alloy
     image: grafana/alloy:v1.13.2
