@@ -3,11 +3,11 @@
   <parent>
     <artifactId>metrodelay-server</artifactId>
     <groupId>app.metrodelay.server</groupId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
   </parent>
   <groupId>app.metrodelay.server</groupId>
   <artifactId>metrodelay-storage</artifactId>
-  <version>0.0.3-SNAPSHOT</version>
+  <version>0.0.4-SNAPSHOT</version>
   <name>Metro Delay - Storage</name>
   <url>https://github.com/mvolejnik/metrodelay</url>
   <packaging>pom</packaging>

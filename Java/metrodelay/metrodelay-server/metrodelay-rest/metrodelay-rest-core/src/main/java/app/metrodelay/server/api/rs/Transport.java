@@ -1,7 +1,5 @@
 package app.metrodelay.server.api.rs;
 
-import static app.metrodelay.server.management.Metrics.MetricsNames.*;
-
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -17,10 +15,6 @@ import jakarta.ws.rs.core.StreamingOutput;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.Timer;
-
-import app.metrodelay.server.management.Metrics;
 import app.metrodelay.server.model.Cities;
 import app.metrodelay.server.model.Lines;
 import app.metrodelay.server.api.rs.json.JsonIdentifiables;
@@ -30,9 +24,6 @@ import jakarta.ws.rs.PUT;
 @Path("/transport")
 public class Transport {
 	
-	private static final Timer T_CITIES = Metrics.REGISTRY.timer(MetricRegistry.name(Transport.class, METRICS_TRANSPORT_CITIES.getName()));
-	private static final Timer T_LINES = Metrics.REGISTRY.timer(MetricRegistry.name(Transport.class, METRICS_TRANSPORT_LINES.getName()));
-
 	private static final Logger l = LogManager.getLogger(Transport.class);
 	
 	JsonIdentifiables identifialbes = new JsonIdentifiables();
@@ -44,21 +35,15 @@ public class Transport {
 	public Response cities() {
 		l.debug("cities::");
 		try {
-			StreamingOutput stream = new StreamingOutput() {
-				@Override
-				public void write(OutputStream output) throws IOException, WebApplicationException {
-					l.debug("write::");
-					final Timer.Context tc = T_CITIES.time();
-					try {
-						identifialbes.identifiables(output, Cities.PROTOTYPE);//TODO
-					} catch (Exception e) {
-						l.error("write:: Unspecific Error occured!", e);
-						throw new WebApplicationException(e);
-					} finally {
-						tc.stop();
-					}
-				}
-			};
+			StreamingOutput stream = output -> {
+        l.debug("write::");
+        try {
+          identifialbes.identifiables(output, Cities.PROTOTYPE);//TODO
+        } catch (Exception e) {
+          l.error("write:: Unspecific Error occured!", e);
+          throw new WebApplicationException(e);
+        }
+      };
 			return Response.ok(stream).build();
 		} catch (Exception e){
 			l.error("Unspecific Error occured!", e);
@@ -76,14 +61,11 @@ public class Transport {
 				@Override
 				public void write(OutputStream output) throws IOException, WebApplicationException {
 					l.debug("write::");
-					final Timer.Context tc = T_LINES.time();
 					try {
 						identifialbes.identifiables(output, Lines.PROTOTYPE);//TODO
 					} catch (Exception e) {
 						l.error("write:: Unspecific Error occured!", e);
 						throw new WebApplicationException(e);
-					} finally {
-						tc.stop();
 					}
 				}
 			};

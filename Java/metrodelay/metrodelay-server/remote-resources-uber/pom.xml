@@ -7,7 +7,7 @@
   <parent>
     <groupId>app.metrodelay.server</groupId>
     <artifactId>metrodelay-server</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -66,17 +66,22 @@
     <dependency>
       <groupId>app.metrodelay.server</groupId>
       <artifactId>lib-status-updates</artifactId>
-      <version>0.0.3-SNAPSHOT</version>
+      <version>0.0.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>app.metrodelay.server</groupId>
       <artifactId>lib-remote-resources</artifactId>
-      <version>0.0.3-SNAPSHOT</version>
+      <version>0.0.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>app.metrodelay.server</groupId>
       <artifactId>lib-registry</artifactId>
-      <version>0.0.3-SNAPSHOT</version>
+      <version>0.0.4-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>app.metrodelay.server</groupId>
+      <artifactId>lib-metrics</artifactId>
+      <version>0.0.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.ehcache</groupId>
@@ -117,10 +122,6 @@
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-yaml</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.dropwizard.metrics</groupId>
-      <artifactId>metrics-core</artifactId>
     </dependency>
     <dependency>
       <groupId>jakarta.json.bind</groupId>

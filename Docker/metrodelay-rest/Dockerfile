@@ -13,4 +13,8 @@ ADD metrodelay-rest-uber.jar /
 USER java
 WORKDIR /
 
-ENTRYPOINT ["java", "-jar", "metrodelay-rest-uber.jar"]
+ENTRYPOINT [ \
+    "sh", \
+    "-c", \
+    "exec java -XX:+UseG1GC -XX:+PrintCodeCache -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/log/heapdumps -Dcom.sun.management.jmxremote.port=5001 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.authenticate=false $JAVA_OPTS -jar metrodelay-rest-uber.jar" \
+    ]

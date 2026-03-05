@@ -7,20 +7,50 @@ networks:
 
 services:
   remote-resources:
-    image: metrodelay/remote-resources:0.0.3
+    image: metrodelay/remote-resources:0.0.4
     container_name: remote-resources
+    environment:
+      - JAVA_OPTS=-XX:MaxRAMPercentage=70 -XshowSettings:vm
     networks:
       - metrodelay
+    deploy:
+      resources:
+        reservations:
+          cpus: '0.2'
+          memory: 192M
+        limits:
+          cpus: '0.4'
+          memory: 224M
   metrodelay-storage:
-    image: metrodelay/metrodelay-storage:0.0.3
+    image: metrodelay/metrodelay-storage:0.0.4
     container_name: metrodelay-storage
+    environment:
+      - JAVA_OPTS=-XX:MaxRAMPercentage=70 -XshowSettings:vm
     networks:
       - metrodelay
+    deploy:
+      resources:
+        reservations:
+          cpus: '0.2'
+          memory: 128M
+        limits:
+          cpus: '0.4'
+          memory: 192M
   metrodelay-rest:
-    image: metrodelay/metrodelay-rest:0.0.3
+    image: metrodelay/metrodelay-rest:0.0.4
     container_name: metrodelay-rest
+    environment:
+      - JAVA_OPTS=-XX:MaxRAMPercentage=70 -XshowSettings:vm
     networks:
       - metrodelay
+    deploy:
+      resources:
+        reservations:
+          cpus: '0.2'
+          memory: 128M
+        limits:
+          cpus: '0.4'
+          memory: 192M
   alloy:
     container_name: metrodelay_alloy
     image: grafana/alloy:v1.13.2
@@ -41,15 +71,13 @@ services:
       - type: bind
         source: /var/log
         target: /var/log
+        read_only: true
       - type: bind
         source: /var/lib/docker/containers
         target: /var/lib/docker/containers
-      # WARNING: Mounting the Docker socket gives this container full control
-      # over the Docker daemon on the host. Consider using the Docker API
-      # over TLS with authentication instead of mounting /var/run/docker.sock directly.
       - type: bind
         source: /var/run/docker.sock
-        target: /var/run/docker.sock      
+        target: /var/run/docker.sock
     command: [
       "run",
       "--server.http.listen-addr=0.0.0.0:12345",
@@ -60,21 +88,3 @@ services:
       resources:
         limits:
           memory: 96M
-  node_exporter:
-    container_name: metrodelay_node_exporter
-    image: prom/node-exporter:v1.10.2
-    hostname: nodeexporter
-    ports:
-      - "9101:9100"
-    command:
-      - '--path.rootfs=/host'
-    pid: host
-    restart: unless-stopped
-    networks:
-      - metrodelay
-    volumes:
-      - '/:/host:ro,rslave'
-    deploy:
-      resources:
-        limits:
-          memory: 20M

@@ -20,13 +20,6 @@
         state: enabled
   tags: ufw
 
-- name: get instance info
-  vultr.cloud.instance_info:
-    region: "fra"
-    label: "metrodelay"
-    api_key: "{{ vultr.api_key }}"
-  register: instance_app
-
 - name: Allow HTTP traffic in UFW
   community.general.ufw:
     rule: allow

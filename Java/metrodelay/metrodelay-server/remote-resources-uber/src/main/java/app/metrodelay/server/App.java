@@ -1,5 +1,6 @@
 package app.metrodelay.server;
 
+import app.metrodelay.metrics.Metrics;
 import app.metrodelay.server.registry.ServiceRegistryImpl;
 import app.metrodelay.server.scheduler.CachedItem;
 import app.metrodelay.server.scheduler.CachedItemKey;
@@ -10,6 +11,9 @@ import app.metrodelay.server.status.StatusUpdate;
 import java.io.File;
 import java.time.Duration;
 import java.util.UUID;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
@@ -35,6 +39,8 @@ public class App {
   private static final String OPERATORS_DEFAULT = """
                                                   cz.prg.dpp=https://www.dpp.cz/rss/cz/mimoradne-udalosti.xml;""";
                                                   //cz.prg.pid=https://pid.cz/feed/rss-mimoradnosti/""";
+  private static final String O11Y_PORT = "o11yPort";
+  private static final String O11Y_PORT_DEFAULT = "9002";
 
   private static Options options() {
     var options = new Options();
@@ -45,6 +51,7 @@ public class App {
     options.addOption("mp", REGISTRY_MULGTICAST_PORT, true, "registry serivce multicast port");
     options.addOption("s", SERVICE_STATUS_UPDATE, true, "status update service URN");
     options.addOption("o", OPERATORS, true, "operators map as operatorid=url");
+    options.addOption("xp", O11Y_PORT, true, "observability port");
     return options;
   }
 
@@ -57,6 +64,11 @@ public class App {
     Registry.serviceRegistry(serviceRegistry);
     try (
             var cache = cacheManager();
+            var metricsExecutor = new ThreadPoolExecutor(
+              1,
+              2,
+              60L,
+              TimeUnit.SECONDS, new java.util.concurrent.LinkedBlockingQueue<>());
             var scheduler = new QuartzInit(
                     Duration.parse(line.getOptionValue(JOB_INTERVAL_DELAY, "PT2S")),
                     Duration.parse(line.getOptionValue(JOB_INTERVAL, "PT1M")),
@@ -64,11 +76,16 @@ public class App {
                     line.getOptionValue(OPERATORS, OPERATORS_DEFAULT))) {
       cache.init();
       GetUrlResourceJob.initCache(
-              cache.getCache("operator", String.class, String.class),
-              cache.getCache("resource", CachedItemKey.class, CachedItem.class));
+        cache.getCache("operator", String.class, String.class),
+        cache.getCache("resource", CachedItemKey.class, CachedItem.class));
       StatusCache.init(cache.getCache("status", UUID.class, StatusUpdate.class));
-      while (true) {
-        Thread.sleep(100);
+      try (
+        var metrics = new Metrics()
+          .setup("remote-resources")
+          .startEmbeddedServer(metricsExecutor, Integer.parseInt(line.getOptionValue(O11Y_PORT, O11Y_PORT_DEFAULT)), 1)) {
+        while (true) {
+          Thread.sleep(100);
+        }
       }
     }
   }

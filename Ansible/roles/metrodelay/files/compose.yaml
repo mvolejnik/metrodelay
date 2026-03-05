@@ -4,29 +4,44 @@ networks:
 
 services:
   remote-resources:
-    image: fra.vultrcr.com/metrodelay/remote-resources:0.0.3
+    image: fra.vultrcr.com/metrodelay/remote-resources:0.0.4
     container_name: remote-resources
     hostname: remote-resources
+    environment:
+      - JAVA_OPTS=-XX:MaxRAM=208m -XX:MaxRAMPercentage=65 -XX:MaxMetaspaceSize=48m -XX:ReservedCodeCacheSize=32m -XshowSettings:vm -XX:NativeMemoryTracking=summary
+    ports:
+      - "9002:9002"
     networks:
       - metrodelay
-    command: ["-i", "pt2m", "-d", "pt2m"]
+    volumes:
+      - type: bind
+        source: ./heapdumps
+        target: /var/log/heapdumps
+    command: ["-i", "pt2m", "-d", "pt2m", "-xp", "9002"]
     deploy:
       resources:
         reservations:
           cpus: '0.2'
-          memory: 128M
+          memory: 192M
         limits:
           cpus: '0.4'
-          memory: 192M
+          memory: 224M
   metrodelay-storage:
-    image: fra.vultrcr.com/metrodelay/metrodelay-storage:0.0.3
+    image: fra.vultrcr.com/metrodelay/metrodelay-storage:0.0.4
     container_name: metrodelay-storage
     hostname: metrodelay-storage
+    environment:
+      - JAVA_OPTS=-XX:MaxRAM=176m -XX:MaxRAMPercentage=65 -XX:MaxMetaspaceSize=48m -XX:ReservedCodeCacheSize=32m -XshowSettings:vm -XX:NativeMemoryTracking=summary
     ports:
       - "8001:8001"
+      - "9001:9001"
     networks:
       - metrodelay
-    command: ["-p", "8001", ]
+    command: ["-p", "8001", "-xp", "9001"]
+    volumes:
+      - type: bind
+        source: ./heapdumps
+        target: /var/log/heapdumps
     deploy:
       resources:
         reservations:
@@ -36,14 +51,21 @@ services:
           cpus: '0.4'
           memory: 192M
   metrodelay-rest:
-    image: fra.vultrcr.com/metrodelay/metrodelay-rest:0.0.3
+    image: fra.vultrcr.com/metrodelay/metrodelay-rest:0.0.4
     container_name: metrodelay-rest
     hostname: metrodelay-rest
+    environment:
+      - JAVA_OPTS=-XX:MaxRAM=176m -XX:MaxRAMPercentage=65 -XX:MaxMetaspaceSize=48m -XX:ReservedCodeCacheSize=32m -XshowSettings:vm -XX:NativeMemoryTracking=summary
     ports:
       - "8000:8000"
+      - "9000:9000"
+    volumes:
+      - type: bind
+        source: ./heapdumps
+        target: /var/log/heapdumps
     networks:
       - metrodelay
-    command: ["-p", "8000"]
+    command: ["-p", "8000", "-xp", "9000"]
     deploy:
       resources:
         reservations:

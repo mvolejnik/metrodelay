@@ -4,10 +4,10 @@
   <parent>
     <groupId>app.metrodelay.server</groupId>
     <artifactId>metrodelay-server</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
   </parent>
   <artifactId>lib-status-updates-api</artifactId>
-  <version>0.0.3-SNAPSHOT</version>
+  <version>0.0.4-SNAPSHOT</version>
   <name>Metro Delay - Lib - Status Update - API</name>
   <url>https://github.com/mvolejnik/metrodelay</url>
 

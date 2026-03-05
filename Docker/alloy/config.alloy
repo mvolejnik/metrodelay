@@ -39,6 +39,23 @@ loki.source.docker "default" {
   forward_to = [loki.write.loki.receiver]
 }
 
+loki.source.journal "journal" {
+  forward_to = [loki.process.filter_oom.receiver]
+  labels     = { job = "journal", host = "toyosu" }
+}
+
+loki.process "filter_oom" {
+  stage.regex {
+    expression = "(?P<oom_event>Out of memory: Killed process|oom-kill|invoked oom-killer)"
+  }
+  stage.labels {
+    values = {
+      is_oom = "oom_event",
+    }
+  }
+  forward_to = [loki.write.loki.receiver]
+}
+
 loki.write "loki" {
   endpoint {
     url = "http://loki:3100/loki/api/v1/push"

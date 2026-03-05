@@ -3,13 +3,13 @@
   <parent>
     <groupId>app.metrodelay</groupId>
     <artifactId>metrodelay-build</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
     <relativePath>../metrodelay-build/pom.xml</relativePath>
   </parent>
   <groupId>app.metrodelay.server</groupId>
   <artifactId>metrodelay-server</artifactId>
   <packaging>pom</packaging>
-  <version>0.0.3-SNAPSHOT</version>
+  <version>0.0.4-SNAPSHOT</version>
   <name>Metro Delay - Server Application</name>
   <url>https://github.com/mvolejnik/metrodelay</url>
   <modules>
@@ -22,5 +22,6 @@
     <module>lib-registry</module>
     <module>metrodelay-storage</module>
     <module>lib-status-updates-api</module>
+    <module>lib-metrics</module>
   </modules>
 </project>

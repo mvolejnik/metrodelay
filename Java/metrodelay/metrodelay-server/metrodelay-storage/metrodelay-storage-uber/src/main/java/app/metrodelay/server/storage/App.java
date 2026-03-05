@@ -1,5 +1,6 @@
 package app.metrodelay.server.storage;
 
+import app.metrodelay.metrics.Metrics;
 import app.metrodelay.server.management.RegistryInit;
 import app.metrodelay.server.status.StatusUpdate;
 import app.metrodelay.server.storage.rs.Status;
@@ -8,6 +9,9 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
@@ -23,7 +27,6 @@ import org.ehcache.config.builders.CacheEventListenerConfigurationBuilder;
 import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.EntryUnit;
-import org.ehcache.config.units.MemoryUnit;
 import org.ehcache.event.EventType;
 import org.glassfish.jersey.servlet.ServletContainer;
 
@@ -41,6 +44,9 @@ public class App {
     private static final String DEFAULT_MULTICAST_IP = "233.146.53.48";
     private static final String DEFAULT_MULTICAST_PORT = "6839";
 
+    private static final String O11Y_PORT = "o11yPort";
+    private static final String O11Y_PORT_DEFAULT = "9001";
+
     private static final Logger l = LogManager.getLogger(App.class);
 
     public static org.eclipse.jetty.server.Server server(String host, int port) {
@@ -53,6 +59,7 @@ public class App {
         options.addOption("h", ARG_HOST, true, "server host");
         options.addOption("ma", REGISTRY_MULTICAST_IP, true, "registry service ip address");
         options.addOption("mp", REGISTRY_MULGTICAST_PORT, true, "registry serivce multicast port");
+        options.addOption("xp", O11Y_PORT, true, "observability port");
         return options;
     }
 
@@ -111,7 +118,18 @@ public class App {
           line.getOptionValue(REGISTRY_MULGTICAST_PORT, DEFAULT_MULTICAST_PORT),
           line.getOptionValue(ARG_HOST, InetAddress.getLocalHost().getHostName())
         ));
-        server.start();
-        server.join();
+        try (
+          var metricsExecutor = new ThreadPoolExecutor(
+            1,
+            2,
+            60L,
+            TimeUnit.SECONDS, new java.util.concurrent.LinkedBlockingQueue<>());
+          var metrics = new Metrics()
+            .setup("metrodelay-storage")
+            .startEmbeddedServer(metricsExecutor, Integer.parseInt(line.getOptionValue(O11Y_PORT, O11Y_PORT_DEFAULT)), 1);
+          ) {
+            server.start();
+            server.join();
+        }
     }
 }
