@@ -22,6 +22,14 @@
     path: /var/docker
     state: directory
 
+- name: Creates heapdump directory
+  ansible.builtin.file:
+    path: /var/docker/heapdumps
+    state: directory
+    owner: root
+    group: root
+    mode: "1777"
+
 - name: Copy app docker compose file
   ansible.builtin.copy:
     src: ./files/compose.yaml

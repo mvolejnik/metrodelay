@@ -34,6 +34,26 @@ prometheus.scrape "docker" {
   scrape_interval = "60s"
 }
 
+prometheus.scrape "app" {
+  targets = [
+    {"__address__" = "localhost:9000",
+    "app_name" = "metrodelay-rest",
+    "cluster" = "{{ cluster }}",
+    },
+    {"__address__" = "localhost:9001",
+    "app_name" = "metrodelay-storage",
+    "cluster" = "{{ cluster }}",
+    },
+    {"__address__" = "localhost:9002",
+    "app_name" = "remote-resources",
+    "cluster" = "{{ cluster }}",
+    },
+  ]
+  forward_to = [prometheus.remote_write.prometheus.receiver]
+  scrape_interval = "20s"
+  metrics_path    = "/metrics"
+}
+
 prometheus.remote_write "prometheus" {
   endpoint {
     url = "http://{{ o11y_ip }}:9090/api/v1/write"
@@ -57,6 +77,37 @@ loki.source.docker "logs" {
   targets    = discovery.relabel.containers.output
   labels     = {"platform" = "docker"}
   forward_to = [loki.write.loki.receiver]
+}
+
+local.file_match "os_logs" {
+    path_targets = [
+        { "__path__" = "/var/log/messages", "job" = "os-messages", "host" = "{{ inventory_hostname }}" },
+        { "__path__" = "/var/log/docker.log", "job" = "os-docker", "host" = "{{ inventory_hostname }}" },
+    ]
+}
+
+loki.relabel "os_logs_labels" {
+    forward_to = [loki.write.loki.receiver]
+    rule {
+        target_label = "platform"
+        replacement  = "os"
+    }
+    rule {
+        source_labels = ["job"]
+        regex         = "os-messages"
+        target_label  = "service"
+        replacement   = "system-kernel"
+    }
+    rule {
+        source_labels = ["__path__"]
+        regex         = "/var/log/(.*).log"
+        target_label  = "log_filename"
+    }
+}
+
+loki.source.file "host_logs" {
+    targets    = local.file_match.os_logs.targets
+    forward_to = [loki.relabel.os_logs_labels.receiver]
 }
 
 loki.write "loki" {

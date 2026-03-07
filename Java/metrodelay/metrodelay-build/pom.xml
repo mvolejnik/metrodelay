@@ -7,7 +7,7 @@
 
   <groupId>app.metrodelay</groupId>
   <artifactId>metrodelay-build</artifactId>
-  <version>0.0.3-SNAPSHOT</version>
+  <version>0.0.4-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Metro Delay - Build</name>
   <url>https://github.com/mvolejnik/metrodelay</url>
@@ -459,16 +459,14 @@
 
       <!-- Operations -->
       <dependency>
-        <groupId>io.dropwizard.metrics</groupId>
-        <artifactId>metrics-core</artifactId>
-        <version>4.2.38</version>
-        <scope>compile</scope>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-core</artifactId>
+        <version>1.16.3</version>
       </dependency>
       <dependency>
-        <groupId>io.dropwizard.metrics</groupId>
-        <artifactId>metrics-log4j</artifactId>
-        <version>4.2.37</version>
-        <scope>compile</scope>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-registry-prometheus</artifactId>
+        <version>1.16.3</version>
       </dependency>
 
       <!-- Database -->
@@ -583,6 +581,12 @@
         <artifactId>junit-jupiter-params</artifactId>
         <scope>test</scope>
         <version>6.0.3</version>
+      </dependency>
+      <dependency>
+        <groupId>org.awaitility</groupId>
+        <artifactId>awaitility</artifactId>
+        <version>4.3.0</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.wiremock</groupId>

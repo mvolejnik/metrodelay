@@ -1,5 +1,6 @@
 package app.metrodelay.server.api.rs;
 
+import app.metrodelay.metrics.Metrics;
 import app.metrodelay.server.management.RegistryInit;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -12,6 +13,8 @@ import org.glassfish.jersey.servlet.ServletContainer;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 ///
 /// Metrodelay REST API application.
@@ -26,6 +29,9 @@ public class App {
     private static final String DEFAULT_MULTICAST_IP = "233.146.53.48";
     private static final String DEFAULT_MULTICAST_PORT = "6839";
 
+    private static final String O11Y_PORT = "o11yPort";
+    private static final String O11Y_PORT_DEFAULT = "9000";
+
     public static org.eclipse.jetty.server.Server server(String host, int port) {
         return new org.eclipse.jetty.server.Server(new InetSocketAddress(host, port));
     }
@@ -36,6 +42,7 @@ public class App {
         options.addOption("h", ARG_HOST, true, "server hostname");
         options.addOption("ma", REGISTRY_MULTICAST_IP, true, "registry service ip address");
         options.addOption("mp", REGISTRY_MULGTICAST_PORT, true, "registry serivce multicast port");
+        options.addOption("xp", O11Y_PORT, true, "observability port");
         return options;
     }
 
@@ -71,8 +78,19 @@ public class App {
           line.getOptionValue(REGISTRY_MULGTICAST_PORT, DEFAULT_MULTICAST_PORT),
           line.getOptionValue(ARG_HOST, InetAddress.getLocalHost().getHostName())
         ));
-        server.start();
-        server.join();
+        try (
+          var metricsExecutor = new ThreadPoolExecutor(
+            1,
+            2,
+            60L,
+            TimeUnit.SECONDS, new java.util.concurrent.LinkedBlockingQueue<>());
+          var metrics = new Metrics()
+            .setup("metrodelay-rest")
+            .startEmbeddedServer(metricsExecutor, Integer.parseInt(line.getOptionValue(O11Y_PORT, O11Y_PORT_DEFAULT)), 1);
+          ){
+            server.start();
+            server.join();
+        }
     }
 
 }

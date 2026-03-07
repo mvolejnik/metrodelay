@@ -5,11 +5,11 @@
   <parent>
     <groupId>app.metrodelay.server</groupId>
     <artifactId>metrodelay-storage</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
   </parent>
   <groupId>app.metrodelay.server</groupId>
   <artifactId>metrodelay-storage-web</artifactId>
-  <version>0.0.3-SNAPSHOT</version>
+  <version>0.0.4-SNAPSHOT</version>
   <name>Metro Delay - Storage - Web</name>
   <url>https://github.com/mvolejnik/metrodelay</url>
     

@@ -6,11 +6,11 @@
   <parent>
     <groupId>app.metrodelay.server</groupId>
     <artifactId>metrodelay-server</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>lib-remote-resources</artifactId>
-  <version>0.0.3-SNAPSHOT</version>
+  <version>0.0.4-SNAPSHOT</version>
   <name>Metro Delay - Lib - Remote Resources</name>
   <url>http://maven.apache.org</url>
         
@@ -36,7 +36,7 @@
     <dependency>
       <groupId>app.metrodelay.server</groupId>
       <artifactId>lib-status-updates-api</artifactId>
-      <version>0.0.3-SNAPSHOT</version>
+      <version>0.0.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>

@@ -4,12 +4,12 @@
   <parent>
     <groupId>app.metrodelay.server</groupId>
     <artifactId>metrodelay-storage</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
   </parent>
 
   <groupId>app.metrodelay.server</groupId>
   <artifactId>metrodelay-storage-uber</artifactId>
-  <version>0.0.3-SNAPSHOT</version>
+  <version>0.0.4-SNAPSHOT</version>
 
   <name>Metro Delay - Storage - App</name>
   <!-- FIXME change it to the project's website -->
@@ -66,17 +66,22 @@
     <dependency>
       <groupId>app.metrodelay.server</groupId>
       <artifactId>metrodelay-storage-core</artifactId>
-      <version>0.0.3-SNAPSHOT</version>
+      <version>0.0.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>app.metrodelay.server</groupId>
       <artifactId>metrodelay-storage-web</artifactId>
-      <version>0.0.3-SNAPSHOT</version>
+      <version>0.0.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>app.metrodelay.server</groupId>
       <artifactId>lib-registry</artifactId>
-      <version>0.0.3-SNAPSHOT</version>
+      <version>0.0.4-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>app.metrodelay.server</groupId>
+      <artifactId>lib-metrics</artifactId>
+      <version>0.0.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -97,10 +102,6 @@
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-yaml</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.dropwizard.metrics</groupId>
-      <artifactId>metrics-core</artifactId>
     </dependency>
     <!-- jetty dependencies -->
     <dependency>

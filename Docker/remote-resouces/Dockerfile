@@ -15,14 +15,7 @@ USER java
 WORKDIR /
 
 ENTRYPOINT [ \
-    "java", \
-    "-XX:+UseG1GC", \
-    "-XX:+PrintCodeCache", \
-    "-XX:+ExitOnOutOfMemoryError", \
-    "-XX:+HeapDumpOnOutOfMemoryError", \
-    "-Dcom.sun.management.jmxremote.port=5001", \
-    "-Dcom.sun.management.jmxremote.authenticate=false", \
-    "-Dcom.sun.management.jmxremote.authenticate=false", \
-    "-jar", \
-    "remote-resources-uber.jar" \
+    "sh", \
+    "-c", \
+    "exec java -XX:+UseG1GC -XX:+PrintCodeCache -XX:+ExitOnOutOfMemoryError -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/log/heapdumps -Dcom.sun.management.jmxremote.port=5001 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.authenticate=false $JAVA_OPTS -jar remote-resources-uber.jar" \
     ]

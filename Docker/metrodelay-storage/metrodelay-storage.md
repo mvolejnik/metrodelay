@@ -1,13 +1,13 @@
 # Build
 
 ```
-docker build -t metrodelay/metrodelay-storage:0.0.3 .
+docker build -t metrodelay/metrodelay-storage:0.0.4 .
 ```
 
 # Run
 
 ```
-docker run -ti metrodelay/metrodelay-storage:0.0.3
+docker run -ti metrodelay/metrodelay-storage:0.0.4
 ```
 
 # Install loki plugin
@@ -24,5 +24,5 @@ docker run \
     --log-opt loki-url="https://test:test@localhost/loki/api/v1/push" \
     --log-opt loki-retries=5 \
     --log-opt loki-batch-size=400 \
-    -ti metrodelay/metrodelay-storage:0.0.3
+    -ti metrodelay/metrodelay-storage:0.0.4
 ```

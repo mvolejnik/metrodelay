@@ -4,12 +4,12 @@
   <parent>
     <groupId>app.metrodelay.server</groupId>
     <artifactId>metrodelay-storage</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
   </parent>
 
   <groupId>app.metrodelay.server</groupId>
   <artifactId>metrodelay-storage-core</artifactId>
-  <version>0.0.3-SNAPSHOT</version>
+  <version>0.0.4-SNAPSHOT</version>
 
   <name>Metro Delay - Storage - Core</name>
   <!-- FIXME change it to the project's website -->
@@ -23,7 +23,7 @@
     <dependency>
       <groupId>app.metrodelay.server</groupId>
       <artifactId>lib-status-updates-api</artifactId>
-      <version>0.0.3-SNAPSHOT</version>
+      <version>0.0.4-SNAPSHOT</version>
     </dependency>
     <!-- HTTP Spec. --> 
     <dependency>
@@ -95,11 +95,7 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.dropwizard.metrics</groupId>
-      <artifactId>metrics-core</artifactId>
-    </dependency>
-        
+
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
