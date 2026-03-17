@@ -76,7 +76,7 @@ services:
           memory: 192M
   alloy:
     container_name: alloy
-    image: grafana/alloy:v1.13.2
+    image: grafana/alloy:v1.14.1
     hostname: alloy
     user: root
     cap_add:
